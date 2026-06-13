@@ -9,6 +9,7 @@ import json
 import os
 import re
 import secrets
+import socket
 import sqlite3
 import time
 
@@ -23,6 +24,15 @@ COOKIE_NAME = "se_session"
 
 def now_ts():
     return int(time.time())
+
+
+def get_lan_ip():
+    try:
+        with socket.socket(socket.AF_INET, socket.SOCK_DGRAM) as sock:
+            sock.connect(("8.8.8.8", 80))
+            return sock.getsockname()[0]
+    except OSError:
+        return "127.0.0.1"
 
 
 def db():
@@ -670,6 +680,8 @@ def main():
     host = os.environ.get("SUPERESTOQUE_HOST", "0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
     server = ThreadingHTTPServer((host, port), App)
     print(f"SuperEstoque backend em http://{host}:{port}")
+    if host in ("0.0.0.0", ""):
+        print(f"Acesso no celular: http://{get_lan_ip()}:{port}")
     print(f"Banco SQLite em {DB_FILE}")
     print("Login inicial: chefe/admin123 ou funcionario/func123")
     server.serve_forever()

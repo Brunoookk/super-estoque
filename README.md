@@ -24,6 +24,25 @@ http://127.0.0.1:8000/
 
 Nao abra o HTML direto. Login, banco, seguranca e sincronizacao dependem do backend.
 
+## Acesso pelo celular na mesma rede
+
+1. Conecte o computador e o celular na mesma rede Wi-Fi.
+2. Execute:
+
+```text
+iniciar_superestoque.bat
+```
+
+3. Na janela do backend, procure a linha:
+
+```text
+Acesso no celular: http://SEU-IP:8000
+```
+
+4. Abra esse endereco no navegador do celular.
+
+Se o Windows perguntar sobre firewall, permita o acesso em rede privada. Se o celular nao abrir, confira se computador e celular estao na mesma Wi-Fi e se o antivirus/firewall nao bloqueou a porta `8000`.
+
 ## Como subir no Render
 
 1. Suba este repositorio no GitHub.
