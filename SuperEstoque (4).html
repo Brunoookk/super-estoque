@@ -2167,6 +2167,480 @@
       grid-template-columns: 1fr;
     }
   }
+
+  /* MOBILE APP POLISH */
+  @media (max-width: 720px) {
+    html {
+      -webkit-text-size-adjust: 100%;
+    }
+
+    body {
+      background:
+        radial-gradient(circle at 18% 0, rgba(52,213,255,.18), transparent 34%),
+        #06101d;
+      overflow-x: hidden;
+    }
+
+    .sidebar {
+      left: 0;
+      right: 0;
+      top: 0;
+      bottom: auto;
+      width: 100%;
+      height: auto;
+      min-height: 76px;
+      padding: 9px 10px 10px;
+      border: 0;
+      border-radius: 0;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+      overflow: hidden;
+      background: rgba(7,17,31,.96);
+      backdrop-filter: blur(16px);
+    }
+
+    .logo {
+      min-width: 0;
+      width: 100%;
+      margin: 0;
+      padding: 0;
+      border: 0;
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .logo-title {
+      font-size: 16px;
+      white-space: nowrap;
+    }
+
+    .logo-sub {
+      margin: 0;
+      font-size: 9px;
+      text-align: right;
+    }
+
+    .nav-section,
+    .user-chip {
+      display: none !important;
+    }
+
+    .nav-item {
+      width: auto;
+      min-width: 68px;
+      height: 44px;
+      margin: 0;
+      padding: 0 10px;
+      flex: 0 0 auto;
+      justify-content: center;
+      gap: 6px;
+      border-radius: 999px;
+      font-size: 11px;
+      background: rgba(255,255,255,.06);
+      color: #cfe2f7;
+    }
+
+    .nav-item span:not(.nav-icon):not(.nav-badge) {
+      display: inline;
+    }
+
+    .nav-icon {
+      width: auto;
+      font-size: 15px;
+    }
+
+    .nav-badge {
+      position: static;
+      margin-left: 0;
+      min-width: 18px;
+      padding: 2px 5px;
+      font-size: 9px;
+    }
+
+    .sidebar::after {
+      content: "";
+      grid-row: 2;
+      display: block;
+      height: 0;
+    }
+
+    .sidebar {
+      display: flex;
+      flex-wrap: nowrap;
+      align-items: center;
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .logo {
+      flex: 0 0 170px;
+      display: block;
+    }
+
+    .logo-sub {
+      text-align: left;
+      margin-top: 2px;
+    }
+
+    .main {
+      margin: 76px 0 0;
+      padding: 12px;
+      min-height: calc(100vh - 76px);
+    }
+
+    .page.active {
+      min-height: auto;
+    }
+
+    .topbar {
+      margin-bottom: 12px;
+      padding: 4px 2px 0;
+      flex-direction: column;
+      align-items: stretch;
+      gap: 10px;
+    }
+
+    .topbar > div:last-child,
+    .topbar > button {
+      width: 100%;
+    }
+
+    .topbar > div[style*="display:flex"] {
+      display: grid !important;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px !important;
+    }
+
+    .page-title {
+      font-size: 22px;
+      line-height: 1.1;
+    }
+
+    .page-sub {
+      font-size: 12px;
+    }
+
+    .btn {
+      min-height: 42px;
+      justify-content: center;
+      padding: .62rem .8rem;
+      border-radius: 10px;
+      font-size: 12px;
+    }
+
+    .btn-sm {
+      min-height: 38px;
+      padding: .5rem .7rem;
+    }
+
+    .login-screen {
+      padding: 14px;
+      align-items: flex-start;
+      padding-top: max(22px, env(safe-area-inset-top));
+    }
+
+    .login-card {
+      width: 100%;
+      padding: 22px;
+      border-radius: 16px;
+    }
+
+    .login-brand strong {
+      font-size: 25px;
+    }
+
+    .form-input,
+    .search-input {
+      min-height: 44px;
+      font-size: 16px;
+      border-radius: 10px;
+    }
+
+    .search-bar {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .search-input,
+    select.search-input {
+      min-width: 0;
+      max-width: none !important;
+      width: 100%;
+    }
+
+    .card,
+    .command-panel,
+    .stock-panel {
+      padding: 14px !important;
+      border-radius: 14px !important;
+      margin-bottom: 12px;
+    }
+
+    .impact-hero,
+    .stock-hero {
+      min-height: 0;
+      padding: 18px !important;
+      border-radius: 18px !important;
+    }
+
+    .impact-hero h1,
+    .stock-hero h1 {
+      font-size: 30px !important;
+      line-height: 1.02;
+      overflow-wrap: anywhere;
+    }
+
+    .impact-hero p,
+    .stock-hero p {
+      font-size: 13px;
+      line-height: 1.45;
+    }
+
+    .hero-actions {
+      display: grid !important;
+      grid-template-columns: 1fr;
+      gap: 8px;
+    }
+
+    .operations-snapshot,
+    .command-orb,
+    .warehouse-visual {
+      width: 100%;
+      max-width: none;
+      min-height: 0;
+    }
+
+    .ops-strip,
+    .kpi-grid,
+    .executive-grid,
+    .dashboard-grid-pro,
+    .stock-ledger,
+    .warehouse-map,
+    .admin-grid {
+      grid-template-columns: 1fr !important;
+      gap: 10px;
+    }
+
+    .ops-metric strong,
+    .kpi-value {
+      font-size: 26px;
+    }
+
+    .donut-wrap,
+    .premium-donut {
+      align-items: center;
+    }
+
+    .priority-table,
+    .table-wrap {
+      overflow: visible;
+    }
+
+    table,
+    thead,
+    tbody,
+    tr,
+    th,
+    td {
+      display: block;
+      width: 100%;
+    }
+
+    thead {
+      display: none;
+    }
+
+    tbody tr {
+      margin-bottom: 10px;
+      padding: 12px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,.045);
+      box-shadow: 0 12px 36px rgba(0,0,0,.18);
+    }
+
+    tbody tr:hover {
+      background: rgba(52,213,255,.08);
+    }
+
+    td {
+      min-height: 34px;
+      padding: 7px 0;
+      display: grid;
+      grid-template-columns: minmax(86px, 32%) minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      border: 0;
+      font-size: 13px !important;
+    }
+
+    td::before {
+      content: attr(data-label);
+      color: var(--text2);
+      font-size: 10px;
+      font-weight: 800;
+      letter-spacing: .5px;
+      text-transform: uppercase;
+    }
+
+    td:not([data-label])::before {
+      content: none;
+    }
+
+    td:empty {
+      display: none;
+    }
+
+    td[colspan] {
+      display: block;
+      text-align: center !important;
+    }
+
+    td[colspan]::before {
+      content: none;
+    }
+
+    .desc-cell {
+      max-width: none;
+      white-space: normal;
+      overflow: visible;
+      text-overflow: clip;
+      line-height: 1.35;
+    }
+
+    .code-cell,
+    .qty-cell {
+      font-size: 13px !important;
+    }
+
+    .badge {
+      width: fit-content;
+      max-width: 100%;
+      white-space: normal;
+      text-align: center;
+    }
+
+    .action-btns {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 7px;
+    }
+
+    .action-btns .btn {
+      min-width: 0;
+      padding-inline: 6px;
+    }
+
+    .pagination {
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 12px;
+    }
+
+    .page-btn {
+      min-width: 36px;
+      min-height: 36px;
+    }
+
+    .modal-overlay {
+      align-items: flex-end;
+      padding: 0;
+    }
+
+    .modal {
+      width: 100% !important;
+      max-width: 100vw;
+      max-height: 92vh;
+      padding: 18px 14px calc(18px + env(safe-area-inset-bottom));
+      border-radius: 18px 18px 0 0;
+    }
+
+    .modal-title {
+      font-size: 18px;
+      margin-bottom: 14px;
+    }
+
+    .form-row,
+    .modal .form-row,
+    .modal div[style*="grid-template-columns:1fr 1fr"] {
+      grid-template-columns: 1fr !important;
+    }
+
+    .modal div[style*="grid-column:span 2"] {
+      grid-column: auto !important;
+    }
+
+    .modal-actions {
+      position: sticky;
+      bottom: -18px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      margin: 16px -14px -18px;
+      padding: 12px 14px calc(12px + env(safe-area-inset-bottom));
+      background: #fff;
+      border-top: 1px solid #dce5f0;
+    }
+
+    .label-preview {
+      overflow-x: auto;
+      justify-content: flex-start;
+    }
+
+    .label-card {
+      width: 280px;
+      min-width: 280px;
+    }
+
+    .movement-item {
+      grid-template-columns: 18px minmax(0, 1fr) auto;
+      gap: 8px;
+    }
+
+    .movement-main strong,
+    .movement-main span {
+      white-space: normal;
+      overflow-wrap: anywhere;
+    }
+
+    .sync-indicator {
+      right: 10px;
+      bottom: 10px;
+      padding: 7px 9px;
+      font-size: 10px;
+      opacity: .9;
+    }
+  }
+
+  @media (max-width: 390px) {
+    .logo {
+      flex-basis: 148px;
+    }
+
+    .logo-title {
+      font-size: 14px;
+    }
+
+    .nav-item {
+      min-width: 58px;
+      padding-inline: 8px;
+      font-size: 10px;
+    }
+
+    .impact-hero h1,
+    .stock-hero h1 {
+      font-size: 26px !important;
+    }
+  }
 </style>
 </head>
 <body>
@@ -2905,12 +3379,12 @@ function renderDashboard() {
     .slice(0,10);
   document.getElementById('alertas-tbody').innerHTML = alertas.length
     ? alertas.map((d,i) => `<tr>
-        <td class="code-cell">${d.cod}</td>
-        <td class="desc-cell" title="${d.desc}">${d.desc}</td>
-        <td>${d.loc||'—'}</td>
-        <td class="qty-cell" style="color:var(--red)">${d.qty}</td>
-        <td><span class="badge ${d.status === 'SEM ESTOQUE' ? 'badge-sem' : 'badge-comprar'}">${d.status}</span></td>
-        <td><button class="btn btn-outline btn-sm" onclick="openLabelModal(${DATA.indexOf(d)})">🖨 Etiqueta</button></td>
+        <td data-label="Codigo" class="code-cell">${d.cod}</td>
+        <td data-label="Item" class="desc-cell" title="${d.desc}">${d.desc}</td>
+        <td data-label="Local">${d.loc||'—'}</td>
+        <td data-label="Qtd" class="qty-cell" style="color:var(--red)">${d.qty}</td>
+        <td data-label="Status"><span class="badge ${d.status === 'SEM ESTOQUE' ? 'badge-sem' : 'badge-comprar'}">${d.status}</span></td>
+        <td data-label="Acao"><button class="btn btn-outline btn-sm" onclick="openLabelModal(${DATA.indexOf(d)})">🖨 Etiqueta</button></td>
       </tr>`).join('')
     : '<tr><td colspan="6" style="text-align:center;color:var(--text2);padding:2rem;">✅ Nenhum item critico para reposicao!</td></tr>';
 
@@ -2968,14 +3442,14 @@ function renderTable() {
       ? `<button class="btn btn-outline btn-sm" onclick="deleteItem(${idx})" title="Excluir" style="color:var(--red)">🗑</button>`
       : '';
     return `<tr>
-      <td class="code-cell">${d.cod}</td>
-      <td class="desc-cell" title="${d.desc}">${d.desc}</td>
-      <td style="font-size:12px">${d.loc||'—'}</td>
-      <td style="font-size:12px;font-family:'IBM Plex Mono'">${d.end||'—'}</td>
-      <td class="qty-cell">${d.qty}</td>
-      <td style="font-size:13px">${d.min}</td>
-      <td>${statusBadge(d.status)}</td>
-      <td>
+      <td data-label="Codigo" class="code-cell">${d.cod}</td>
+      <td data-label="Descricao" class="desc-cell" title="${d.desc}">${d.desc}</td>
+      <td data-label="Local" style="font-size:12px">${d.loc||'—'}</td>
+      <td data-label="Endereco" style="font-size:12px;font-family:'IBM Plex Mono'">${d.end||'—'}</td>
+      <td data-label="Qtd atual" class="qty-cell">${d.qty}</td>
+      <td data-label="Minimo" style="font-size:13px">${d.min}</td>
+      <td data-label="Status">${statusBadge(d.status)}</td>
+      <td data-label="Acoes">
         <div class="action-btns">
           <button class="btn btn-outline btn-sm" onclick="openModal('edit',${idx})" title="Editar">✏️</button>
           <button class="btn btn-outline btn-sm" onclick="openLabelModal(${idx})" title="Etiqueta">🖨</button>
@@ -3023,14 +3497,14 @@ function renderCompras() {
       ? '<span class="badge badge-sem">🔴 Sem Estoque</span>'
       : '<span class="badge badge-comprar">🟠 Comprar</span>';
     return `<tr>
-      <td class="code-cell">${d.cod}</td>
-      <td class="desc-cell" title="${d.desc}">${d.desc}</td>
-      <td style="font-size:12px">${d.loc||'—'}</td>
-      <td class="qty-cell" style="color:var(--red)">${d.qty}</td>
-      <td>${d.min}</td>
-      <td><strong style="color:var(--orange)">${toOrder}</strong></td>
-      <td>${badge}</td>
-      <td><button class="btn btn-outline btn-sm" onclick="openLabelModal(${idx})">🖨</button></td>
+      <td data-label="Codigo" class="code-cell">${d.cod}</td>
+      <td data-label="Descricao" class="desc-cell" title="${d.desc}">${d.desc}</td>
+      <td data-label="Local" style="font-size:12px">${d.loc||'—'}</td>
+      <td data-label="Qtd atual" class="qty-cell" style="color:var(--red)">${d.qty}</td>
+      <td data-label="Minimo">${d.min}</td>
+      <td data-label="Comprar"><strong style="color:var(--orange)">${toOrder}</strong></td>
+      <td data-label="Status">${badge}</td>
+      <td data-label="Acao"><button class="btn btn-outline btn-sm" onclick="openLabelModal(${idx})">🖨</button></td>
     </tr>`;
   }).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--green);padding:2rem;font-weight:600;">✅ Todos os itens estão OK!</td></tr>';
 }
@@ -3047,14 +3521,14 @@ function renderHist() {
   document.getElementById('hist-empty').style.display = 'none';
   const sorted = [...HIST].reverse();
   document.getElementById('hist-tbody').innerHTML = sorted.map(h => `<tr>
-    <td style="font-size:12px;white-space:nowrap">${h.dt}</td>
-    <td class="code-cell">${h.cod}</td>
-    <td class="desc-cell" title="${h.desc}">${h.desc}</td>
-    <td><span class="${h.tipo==='ENTRADA'?'mov-entrada':'mov-saida'}">${h.tipo==='ENTRADA'?'📥':'📤'} ${h.tipo}</span></td>
-    <td class="qty-cell">${h.tipo==='ENTRADA'?'+':'-'}${h.qty}</td>
-    <td>${h.resp||'—'}</td>
-    <td style="font-size:12px;color:var(--text2)">${h.obs||'—'}</td>
-    <td class="qty-cell">${h.saldo}</td>
+    <td data-label="Data" style="font-size:12px;white-space:nowrap">${h.dt}</td>
+    <td data-label="Codigo" class="code-cell">${h.cod}</td>
+    <td data-label="Descricao" class="desc-cell" title="${h.desc}">${h.desc}</td>
+    <td data-label="Tipo"><span class="${h.tipo==='ENTRADA'?'mov-entrada':'mov-saida'}">${h.tipo==='ENTRADA'?'📥':'📤'} ${h.tipo}</span></td>
+    <td data-label="Qtd" class="qty-cell">${h.tipo==='ENTRADA'?'+':'-'}${h.qty}</td>
+    <td data-label="Responsavel">${h.resp||'—'}</td>
+    <td data-label="Motivo" style="font-size:12px;color:var(--text2)">${h.obs||'—'}</td>
+    <td data-label="Saldo" class="qty-cell">${h.saldo}</td>
   </tr>`).join('');
 }
 
@@ -3245,16 +3719,16 @@ async function loadAdminUsers() {
     const res = await apiFetch('/api/admin/users');
     document.getElementById('admin-users-tbody').innerHTML = res.users.map(u => `
       <tr>
-        <td class="code-cell">${u.username}</td>
-        <td>${u.display_name}</td>
-        <td>
+        <td data-label="Usuario" class="code-cell">${u.username}</td>
+        <td data-label="Nome">${u.display_name}</td>
+        <td data-label="Perfil">
           <select class="form-input admin-role" id="role-${u.id}">
             <option value="employee" ${u.role === 'employee' ? 'selected' : ''}>Funcionário</option>
             <option value="admin" ${u.role === 'admin' ? 'selected' : ''}>Chefe/Admin</option>
           </select>
         </td>
-        <td><span class="status-dot ${u.active ? '' : 'off'}">${u.active ? 'Ativo' : 'Inativo'}</span></td>
-        <td>
+        <td data-label="Status"><span class="status-dot ${u.active ? '' : 'off'}">${u.active ? 'Ativo' : 'Inativo'}</span></td>
+        <td data-label="Acoes">
           <div class="action-btns">
             <button class="btn btn-outline btn-sm" onclick="updateAdminUser(${u.id}, ${u.active ? 1 : 0})">Salvar perfil</button>
             <button class="btn btn-outline btn-sm" onclick="resetAdminPassword(${u.id})">Nova senha</button>
