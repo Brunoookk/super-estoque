@@ -2641,6 +2641,239 @@
       font-size: 26px !important;
     }
   }
+
+  /* MOBILE HARD FIX: app-style bottom navigation */
+  @media (max-width: 720px) {
+    body {
+      width: 100%;
+      padding: 0 0 calc(74px + env(safe-area-inset-bottom));
+      background: #06101d !important;
+    }
+
+    .sidebar {
+      position: fixed !important;
+      left: 0 !important;
+      right: 0 !important;
+      top: auto !important;
+      bottom: 0 !important;
+      width: 100% !important;
+      height: calc(64px + env(safe-area-inset-bottom)) !important;
+      min-height: 0 !important;
+      padding: 7px 8px calc(7px + env(safe-area-inset-bottom)) !important;
+      display: grid !important;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(52px, 1fr);
+      gap: 6px;
+      overflow-x: auto;
+      overflow-y: hidden;
+      border: 0 !important;
+      border-top: 1px solid rgba(255,255,255,.12) !important;
+      border-radius: 0 !important;
+      background: rgba(7,17,31,.98) !important;
+      box-shadow: 0 -16px 44px rgba(0,0,0,.35) !important;
+      backdrop-filter: blur(16px);
+      scrollbar-width: none;
+    }
+
+    .sidebar::-webkit-scrollbar {
+      display: none;
+    }
+
+    .logo,
+    .nav-section,
+    .user-chip {
+      display: none !important;
+    }
+
+    .nav-item {
+      position: relative !important;
+      width: auto !important;
+      min-width: 52px !important;
+      height: 50px !important;
+      margin: 0 !important;
+      padding: 0 !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      flex: none !important;
+      border: 1px solid transparent !important;
+      border-radius: 14px !important;
+      background: transparent !important;
+      color: #a9bdd6 !important;
+      font-size: 0 !important;
+      box-shadow: none !important;
+    }
+
+    .nav-item.active,
+    .nav-item:hover {
+      color: #fff !important;
+      background: rgba(52,213,255,.16) !important;
+      border-color: rgba(52,213,255,.28) !important;
+    }
+
+    .nav-icon {
+      width: auto !important;
+      font-size: 22px !important;
+      line-height: 1 !important;
+    }
+
+    .nav-badge {
+      position: absolute !important;
+      top: 5px !important;
+      right: 7px !important;
+      min-width: 17px !important;
+      height: 17px !important;
+      padding: 0 4px !important;
+      display: inline-flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      font-size: 9px !important;
+      line-height: 1 !important;
+      border: 2px solid #07111f !important;
+    }
+
+    .main {
+      width: 100% !important;
+      margin: 0 !important;
+      padding: 12px 12px 0 !important;
+    }
+
+    .client-os,
+    .dashboard-shell {
+      gap: 12px !important;
+    }
+
+    .impact-hero {
+      display: block !important;
+      min-height: 0 !important;
+      padding: 18px !important;
+      border-radius: 18px !important;
+    }
+
+    .system-kicker {
+      font-size: 10px !important;
+      margin-bottom: 8px !important;
+    }
+
+    .impact-hero h1 {
+      max-width: 100% !important;
+      margin: 0 0 10px !important;
+      font-size: 28px !important;
+      line-height: 1.05 !important;
+    }
+
+    .impact-hero p {
+      max-width: 100% !important;
+      font-size: 13px !important;
+    }
+
+    .operations-snapshot {
+      margin-top: 14px !important;
+      padding: 14px !important;
+      border-radius: 14px !important;
+    }
+
+    .snapshot-list {
+      gap: 8px !important;
+    }
+
+    .snapshot-list > div {
+      padding: 10px !important;
+      border-radius: 12px !important;
+    }
+
+    .hero-actions,
+    .topbar > div[style*="display:flex"] {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+
+    .ops-strip {
+      display: grid !important;
+      grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+      gap: 8px !important;
+    }
+
+    .ops-metric {
+      min-height: 112px !important;
+      padding: 13px !important;
+      border-radius: 14px !important;
+    }
+
+    .ops-metric:first-child {
+      grid-column: 1 / -1;
+    }
+
+    .ops-metric strong {
+      font-size: 28px !important;
+    }
+
+    .executive-grid,
+    .admin-grid {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 12px !important;
+    }
+
+    .panel-head {
+      align-items: flex-start !important;
+      gap: 10px !important;
+    }
+
+    .panel-pill {
+      white-space: nowrap !important;
+    }
+
+    .donut-wrap {
+      justify-content: center !important;
+    }
+
+    .warehouse-map,
+    .stock-ledger {
+      display: grid !important;
+      grid-template-columns: 1fr !important;
+      gap: 8px !important;
+    }
+
+    .card {
+      overflow: hidden;
+    }
+
+    .table-wrap,
+    .priority-table {
+      margin: 0 -2px;
+    }
+
+    tbody tr {
+      background: rgba(10,27,48,.92) !important;
+      border-color: rgba(255,255,255,.1) !important;
+    }
+
+    td {
+      grid-template-columns: 92px minmax(0, 1fr) !important;
+      gap: 8px !important;
+      color: var(--text) !important;
+      overflow-wrap: anywhere;
+    }
+
+    td::before {
+      min-width: 0;
+    }
+
+    .action-btns {
+      grid-template-columns: repeat(3, minmax(42px, 1fr)) !important;
+    }
+
+    .admin-grid .action-btns {
+      grid-template-columns: 1fr !important;
+    }
+
+    .sync-indicator {
+      bottom: calc(76px + env(safe-area-inset-bottom)) !important;
+      right: 10px !important;
+    }
+  }
 </style>
 </head>
 <body>
