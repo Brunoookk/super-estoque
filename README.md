@@ -77,11 +77,12 @@ Sem disco persistente, o app pode funcionar para teste, mas os dados do SQLite p
 ## Acessos iniciais
 
 ```text
-Chefe/Admin: chefe / admin123
-Funcionario: funcionario / func123
+Configure no ambiente antes do primeiro deploy:
+SUPERESTOQUE_ADMIN_PASSWORD=sua_senha_forte
+SUPERESTOQUE_EMPLOYEE_PASSWORD=sua_senha_forte
 ```
 
-Troque essas senhas pela tela de Administracao antes de usar em producao.
+Se essas variaveis nao forem configuradas, o backend gera senhas aleatorias no primeiro banco criado. Guarde as credenciais configuradas com seguranca.
 
 ## O que esta funcional
 

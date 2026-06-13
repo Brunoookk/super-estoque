@@ -15,7 +15,8 @@ import time
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML_FILE = ROOT / "SuperEstoque (4).html"
+HTML_FILE = ROOT / "index.html"
+LEGACY_HTML_FILE = ROOT / "SuperEstoque (4).html"
 DATA_DIR = Path(os.environ.get("SUPERESTOQUE_DATA_DIR", ROOT / "backend" / "data"))
 DB_FILE = DATA_DIR / "superestoque.db"
 SESSION_TTL = 8 * 60 * 60
@@ -215,8 +216,8 @@ def init_db():
 
         if conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
             for username, display, role, password in (
-                ("chefe", "Chefe do Estoque", "admin", "admin123"),
-                ("funcionario", "Funcionário Estoque", "employee", "func123"),
+                ("chefe", "Chefe do Estoque", "admin", os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD", secrets.token_urlsafe(18))),
+                ("funcionario", "Funcionário Estoque", "employee", os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD", secrets.token_urlsafe(18))),
             ):
                 salt, digest = hash_password(password)
                 conn.execute(
@@ -321,7 +322,8 @@ class App(BaseHTTPRequestHandler):
         parsed = urlparse(self.path)
         path = parsed.path
         if path == "/":
-            html = HTML_FILE.read_text(encoding="utf-8")
+            html_file = HTML_FILE if HTML_FILE.exists() else LEGACY_HTML_FILE
+            html = html_file.read_text(encoding="utf-8")
             headers = self.security_headers()
             headers["Cache-Control"] = "no-store"
             return text_response(self, HTTPStatus.OK, html, "text/html; charset=utf-8", headers)
@@ -404,6 +406,21 @@ class App(BaseHTTPRequestHandler):
                 ).fetchall()
             return json_response(self, HTTPStatus.OK, {"users": [dict(r) for r in rows]}, self.security_headers())
         return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Rota não encontrada."}, self.security_headers())
+
+    def do_HEAD(self):
+        parsed = urlparse(self.path)
+        if parsed.path == "/health":
+            self.send_response(HTTPStatus.OK)
+            self.send_header("Content-Length", "0")
+            for key, value in self.security_headers().items():
+                self.send_header(key, value)
+            self.end_headers()
+            return
+        self.send_response(HTTPStatus.NOT_FOUND)
+        self.send_header("Content-Length", "0")
+        for key, value in self.security_headers().items():
+            self.send_header(key, value)
+        self.end_headers()
 
     def do_POST(self):
         parsed = urlparse(self.path)
@@ -683,7 +700,7 @@ def main():
     if host in ("0.0.0.0", ""):
         print(f"Acesso no celular: http://{get_lan_ip()}:{port}")
     print(f"Banco SQLite em {DB_FILE}")
-    print("Login inicial: chefe/admin123 ou funcionario/func123")
+    print("Credenciais iniciais configuradas por variaveis de ambiente ou geradas automaticamente.")
     server.serve_forever()
 
 
