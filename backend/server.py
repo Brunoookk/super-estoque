@@ -15,7 +15,7 @@ import time
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML_FILE = ROOT / "SuperEstoque (4).html"
-DATA_DIR = ROOT / "backend" / "data"
+DATA_DIR = Path(os.environ.get("SUPERESTOQUE_DATA_DIR", ROOT / "backend" / "data"))
 DB_FILE = DATA_DIR / "superestoque.db"
 SESSION_TTL = 8 * 60 * 60
 COOKIE_NAME = "se_session"
@@ -666,10 +666,11 @@ class App(BaseHTTPRequestHandler):
 
 def main():
     init_db()
-    host = os.environ.get("SUPERESTOQUE_HOST", "127.0.0.1")
-    port = int(os.environ.get("SUPERESTOQUE_PORT", "8000"))
+    port = int(os.environ.get("PORT", os.environ.get("SUPERESTOQUE_PORT", "8000")))
+    host = os.environ.get("SUPERESTOQUE_HOST", "0.0.0.0" if "PORT" in os.environ else "127.0.0.1")
     server = ThreadingHTTPServer((host, port), App)
     print(f"SuperEstoque backend em http://{host}:{port}")
+    print(f"Banco SQLite em {DB_FILE}")
     print("Login inicial: chefe/admin123 ou funcionario/func123")
     server.serve_forever()
 

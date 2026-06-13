@@ -24,6 +24,37 @@ http://127.0.0.1:8000/
 
 Nao abra o HTML direto. Login, banco, seguranca e sincronizacao dependem do backend.
 
+## Como subir no Render
+
+1. Suba este repositorio no GitHub.
+2. No Render, clique em **New > Web Service**.
+3. Conecte o repositorio `Brunoookk/super-estoque`.
+4. Configure:
+
+```text
+Name: super-estoque
+Branch: main
+Runtime: Python
+Build Command: python --version
+Start Command: python backend/server.py
+```
+
+5. Em **Advanced**, adicione:
+
+```text
+Health Check Path: /health
+```
+
+Para manter o banco SQLite entre deploys/restarts, adicione tambem um **Persistent Disk**:
+
+```text
+Mount Path: /var/data
+Environment Variable:
+SUPERESTOQUE_DATA_DIR=/var/data
+```
+
+Sem disco persistente, o app pode funcionar para teste, mas os dados do SQLite podem ser perdidos quando o Render recriar o servico.
+
 ## Acessos iniciais
 
 ```text
