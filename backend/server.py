@@ -269,6 +269,12 @@ def init_db():
               key TEXT PRIMARY KEY,
               value TEXT NOT NULL
             );
+
+            CREATE TABLE IF NOT EXISTS app_data (
+              key TEXT PRIMARY KEY,
+              value TEXT NOT NULL,
+              updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+            );
             """
         )
         conn.execute("INSERT OR IGNORE INTO app_state (key, value) VALUES ('data_version', '1')")
@@ -447,6 +453,14 @@ class App(BaseHTTPRequestHandler):
                 },
                 self.security_headers(),
             )
+        if path == "/api/app-data":
+            user = self.require_user()
+            if not user:
+                return
+            with db() as conn:
+                row = conn.execute("SELECT value FROM app_data WHERE key = 'client_state'").fetchone()
+            data = json.loads(row["value"]) if row else {}
+            return json_response(self, HTTPStatus.OK, {"data": data}, self.security_headers())
         if path == "/api/admin/users":
             user = self.require_user()
             if not user or not self.require_admin(user):
@@ -515,6 +529,8 @@ class App(BaseHTTPRequestHandler):
         user = self.require_user()
         if not user or not self.require_csrf(user):
             return
+        if urlparse(self.path).path == "/api/app-data":
+            return self.update_app_data()
         match = re.fullmatch(r"/api/items/(\d+)", urlparse(self.path).path)
         if match:
             return self.update_item(int(match.group(1)))
@@ -524,6 +540,25 @@ class App(BaseHTTPRequestHandler):
                 return
             return self.update_user(int(match.group(1)), user)
         return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Rota não encontrada."}, self.security_headers())
+
+    def update_app_data(self):
+        payload = self.read_json()
+        data = payload.get("data", payload)
+        if not isinstance(data, dict):
+            return json_response(self, HTTPStatus.BAD_REQUEST, {"error": "Dados inválidos."}, self.security_headers())
+        raw = json.dumps(data, ensure_ascii=False)
+        if len(raw.encode("utf-8")) > 5_000_000:
+            return json_response(self, HTTPStatus.BAD_REQUEST, {"error": "Dados muito grandes."}, self.security_headers())
+        with db() as conn:
+            conn.execute(
+                """
+                INSERT INTO app_data (key, value, updated_at)
+                VALUES ('client_state', ?, datetime('now','localtime'))
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value, updated_at = excluded.updated_at
+                """,
+                (raw,),
+            )
+        return json_response(self, HTTPStatus.OK, {"ok": True}, self.security_headers())
 
     def do_DELETE(self):
         user = self.require_user()

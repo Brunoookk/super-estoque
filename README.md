@@ -537,6 +537,8 @@ Banco padrao:
 backend/data/superestoque.db
 ```
 
+O banco guarda usuarios, itens, movimentacoes e tambem o estado complementar da interface, como fornecedores, ordens de compra, custos, lotes, pedidos marcados e auditoria local. Ao reiniciar o backend, essas informacoes sao carregadas novamente.
+
 Backup manual simples:
 
 1. Feche o sistema ou pare o backend.

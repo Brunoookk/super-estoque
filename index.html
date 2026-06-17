@@ -1498,6 +1498,7 @@
     let dataVersion = 0;
     let syncTimer = null;
     let syncing = false;
+    let appDataPersistTimer = null;
 
     // Persistencia centralizada em localStorage.
     function readStore(key, fallback) {
@@ -1524,6 +1525,7 @@
       writeStore(STORAGE.purchaseOrders, purchaseOrders);
       writeStore(STORAGE.costs, costs);
       writeStore(STORAGE.lots, lots);
+      scheduleAppDataPersist();
     }
 
     function costKey(cod, supplierId) {
@@ -1636,6 +1638,7 @@
       audit.unshift({ dt: nowIso(), user: currentUser(), action });
       audit = audit.slice(0, 250);
       writeStore(STORAGE.audit, audit);
+      scheduleAppDataPersist();
       renderAdmin();
     }
 
@@ -1667,6 +1670,69 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || "Falha na operacao.");
       return payload;
+    }
+
+    // Estado complementar que antes ficava apenas no navegador.
+    function buildClientState() {
+      return {
+        orders,
+        suppliers,
+        purchaseOrders,
+        costs,
+        lots,
+        audit,
+        loginHistory,
+        obsRequiredQty
+      };
+    }
+
+    function applyClientState(data = {}) {
+      orders = data.orders && typeof data.orders === "object" ? data.orders : orders;
+      suppliers = Array.isArray(data.suppliers) ? data.suppliers : suppliers;
+      purchaseOrders = Array.isArray(data.purchaseOrders) ? data.purchaseOrders : purchaseOrders;
+      costs = data.costs && typeof data.costs === "object" ? data.costs : costs;
+      lots = Array.isArray(data.lots) ? data.lots : lots;
+      audit = Array.isArray(data.audit) ? data.audit : audit;
+      loginHistory = Array.isArray(data.loginHistory) ? data.loginHistory : loginHistory;
+      if (Number.isFinite(Number(data.obsRequiredQty))) {
+        obsRequiredQty = Number(data.obsRequiredQty);
+        localStorage.setItem(STORAGE.obsLimit, String(obsRequiredQty));
+      }
+      saveAll();
+      populateFilters();
+      renderAll();
+    }
+
+    async function loadAppDataFromServer() {
+      if (!currentSession?.csrf) return;
+      try {
+        const payload = await api("/api/app-data");
+        if (payload.data && Object.keys(payload.data).length) {
+          applyClientState(payload.data);
+        } else {
+          await persistAppDataNow();
+        }
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    function scheduleAppDataPersist() {
+      if (!currentSession?.csrf) return;
+      if (appDataPersistTimer) clearTimeout(appDataPersistTimer);
+      appDataPersistTimer = setTimeout(() => persistAppDataNow(), 600);
+    }
+
+    async function persistAppDataNow() {
+      if (!currentSession?.csrf) return;
+      try {
+        await api("/api/app-data", {
+          method: "PUT",
+          body: JSON.stringify({ data: buildClientState() })
+        });
+      } catch (err) {
+        console.warn(err);
+      }
     }
 
     // Converte item recebido do backend para o formato usado pela interface.
@@ -1713,7 +1779,8 @@
         history = payload.movements.map(movementFromServer).reverse();
       }
       dataVersion = Number(payload.version || dataVersion || 0);
-      saveAll();
+      writeStore(STORAGE.items, items);
+      writeStore(STORAGE.history, history);
       populateFilters();
       renderAll();
       if (!silent) toast("Dados sincronizados.");
@@ -3218,7 +3285,9 @@
       byId("logoutButton").addEventListener("click", () => {
         currentSession = null;
         if (syncTimer) clearInterval(syncTimer);
+        if (appDataPersistTimer) clearTimeout(appDataPersistTimer);
         syncTimer = null;
+        appDataPersistTimer = null;
         byId("loginScreen").classList.remove("hidden");
         addAudit("Saiu do sistema");
       });
@@ -3264,6 +3333,7 @@
       loginHistory.unshift({ dt: nowIso(), user, success });
       try {
         writeStore(STORAGE.login, loginHistory);
+        scheduleAppDataPersist();
       } catch (err) {
         console.warn(err);
       }
@@ -3276,6 +3346,7 @@
           applyPermissions();
           clearUserForm();
           await syncFromServer(true);
+          await loadAppDataFromServer();
           startAutoSync();
           if (hasPermission("admin")) await loadAdminUsers();
           addAudit("Entrou no sistema");
