@@ -452,6 +452,19 @@
       text-transform: uppercase;
     }
 
+    th[data-sort],
+    th[data-history-sort],
+    th[data-purchase-sort] {
+      cursor: pointer;
+      user-select: none;
+    }
+
+    th.is-sorted::after {
+      content: attr(data-sort-mark);
+      margin-left: 6px;
+      color: var(--blue);
+    }
+
     tbody tr:nth-child(even) {
       background: rgba(255, 255, 255, .018);
     }
@@ -610,6 +623,22 @@
       font-size: 12px;
     }
 
+    .mobile-menu-button {
+      display: none;
+      position: fixed;
+      left: 14px;
+      bottom: 14px;
+      z-index: 2100;
+    }
+
+    .sidebar-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 19;
+      background: rgba(0, 0, 0, .54);
+    }
+
     @media (max-width: 1180px) {
       .app {
         grid-template-columns: 1fr;
@@ -617,41 +646,29 @@
 
       .sidebar {
         position: fixed;
-        inset: auto 0 0;
+        inset: 0 auto 0 0;
         z-index: 20;
-        height: 72px;
-        display: grid;
-        grid-template-columns: repeat(5, minmax(62px, 1fr));
-        gap: 8px;
-        padding: 8px;
-        border-top: 1px solid var(--border-soft);
-        border-right: 0;
+        width: min(86vw, 300px);
+        height: 100vh;
+        transform: translateX(-105%);
+        transition: transform .18s ease;
+        border-right: 1px solid var(--border-soft);
       }
 
-      .brand,
-      .section-label,
-      .user-panel {
-        display: none;
+      body.sidebar-open .sidebar {
+        transform: translateX(0);
       }
 
-      .nav-section {
-        display: contents;
+      body.sidebar-open .sidebar-overlay {
+        display: block;
       }
 
-      .nav-button {
-        min-height: 54px;
-        justify-content: center;
-        padding: 0;
-        font-size: 0;
-      }
-
-      .nav-button svg {
-        width: 22px;
-        height: 22px;
+      .mobile-menu-button {
+        display: inline-flex;
       }
 
       .main {
-        padding: 18px 18px 92px;
+        padding: 18px 18px 84px;
       }
     }
 
@@ -727,14 +744,14 @@
       <div class="login-form">
         <div class="field">
           <label for="loginUser">Usuario</label>
-          <input class="input" id="loginUser" autocomplete="username" value="operador">
+          <input class="input" id="loginUser" autocomplete="username" value="chefe">
         </div>
         <div class="field">
           <label for="loginPassword">Senha</label>
           <input class="input" id="loginPassword" type="password" autocomplete="current-password">
         </div>
         <div class="login-error" id="loginError"></div>
-        <button class="button primary" id="loginSubmitButton" type="submit" onclick="return window.superEstoqueLogin && window.superEstoqueLogin(event)">Entrar no sistema</button>
+        <button class="button primary" id="loginSubmitButton" type="submit">Entrar no sistema</button>
       </div>
         <div class="login-hint">Use seu usuário autorizado do sistema.</div>
     </form>
@@ -752,26 +769,26 @@
 
       <nav class="nav-section" aria-label="Navegacao principal">
         <div class="section-label">Menu</div>
-        <button class="nav-button active" data-page="dashboard"><svg><use href="#icon-layout"></use></svg><span>Dashboard</span></button>
-        <button class="nav-button" data-page="estoque"><svg><use href="#icon-table"></use></svg><span>Estoque</span></button>
-        <button class="nav-button" data-page="compras"><svg><use href="#icon-cart"></use></svg><span>Lista de Compras</span></button>
-        <button class="nav-button" data-page="historico"><svg><use href="#icon-table"></use></svg><span>Historico</span></button>
-        <button class="nav-button" data-page="fornecedores"><svg><use href="#icon-box"></use></svg><span>Fornecedores</span></button>
+        <button class="nav-button active" data-page="dashboard" data-permission="dashboard"><svg><use href="#icon-layout"></use></svg><span>Dashboard</span></button>
+        <button class="nav-button" data-page="estoque" data-permission="estoque"><svg><use href="#icon-table"></use></svg><span>Estoque</span></button>
+        <button class="nav-button" data-page="compras" data-permission="compras"><svg><use href="#icon-cart"></use></svg><span>Lista de Compras</span></button>
+        <button class="nav-button" data-page="historico" data-permission="historico"><svg><use href="#icon-table"></use></svg><span>Historico</span></button>
+        <button class="nav-button" data-page="fornecedores" data-permission="fornecedores"><svg><use href="#icon-box"></use></svg><span>Fornecedores</span></button>
       </nav>
 
       <nav class="nav-section" aria-label="Acompanhamento">
         <div class="section-label">Operacao</div>
-        <button class="nav-button" data-page="saude"><svg><use href="#icon-activity"></use></svg><span>Saude do Estoque</span></button>
-        <button class="nav-button" data-page="relatorios"><svg><use href="#icon-activity"></use></svg><span>Relatorios</span></button>
-        <button class="nav-button" data-page="financeiro"><svg><use href="#icon-activity"></use></svg><span>Financeiro</span></button>
-        <button class="nav-button" data-page="rastreabilidade"><svg><use href="#icon-table"></use></svg><span>Rastreabilidade</span></button>
-        <button class="nav-button" data-page="ocs"><svg><use href="#icon-cart"></use></svg><span>Ordens de Compra</span></button>
-        <button class="nav-button" data-page="admin"><svg><use href="#icon-lock"></use></svg><span>Admin</span></button>
+        <button class="nav-button" data-page="saude" data-permission="saude"><svg><use href="#icon-activity"></use></svg><span>Saude do Estoque</span></button>
+        <button class="nav-button" data-page="relatorios" data-permission="relatorios"><svg><use href="#icon-activity"></use></svg><span>Relatorios</span></button>
+        <button class="nav-button" data-page="financeiro" data-permission="financeiro"><svg><use href="#icon-activity"></use></svg><span>Financeiro</span></button>
+        <button class="nav-button" data-page="rastreabilidade" data-permission="rastreabilidade"><svg><use href="#icon-table"></use></svg><span>Rastreabilidade</span></button>
+        <button class="nav-button" data-page="ocs" data-permission="ocs"><svg><use href="#icon-cart"></use></svg><span>Ordens de Compra</span></button>
+        <button class="nav-button" data-page="admin" data-permission="admin"><svg><use href="#icon-lock"></use></svg><span>Admin</span></button>
       </nav>
 
       <div class="user-panel">
-        <div class="user-name" id="userName">Operador Manutencao</div>
-        <div class="user-role">Equipe de manutencao</div>
+        <div class="user-name" id="userName">Equipe SuperEstoque</div>
+        <div class="user-role">Operacao de estoque</div>
         <button class="logout-button" id="logoutButton"><svg><use href="#icon-log-out"></use></svg>Sair</button>
       </div>
     </aside>
@@ -785,7 +802,13 @@
             <h1>Controle de estoque para manutencao e compras</h1>
             <p class="lead">Visao consolidada de disponibilidade, ruptura, reposicao e itens criticos por local de armazenamento.</p>
           </div>
-          <button class="button primary" id="exportButton"><svg><use href="#icon-download"></use></svg>Exportar CSV</button>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="button" id="notificationButton">Notificacoes</button>
+            <button class="button" id="obsLimitButton">Limite observacao</button>
+            <button class="button" id="presentationButton">Modo apresentacao</button>
+            <button class="button" id="summaryPdfButton">Exportar resumo em PDF</button>
+            <button class="button primary" id="exportButton"><svg><use href="#icon-download"></use></svg>Exportar CSV</button>
+          </div>
         </div>
 
         <div class="grid kpi-grid" id="kpiGrid"></div>
@@ -842,6 +865,7 @@
                 <thead>
                   <tr>
                     <th data-sort="cod">Codigo</th>
+                    <th>Fav</th>
                     <th data-sort="desc">Descricao</th>
                     <th data-sort="loc">Local</th>
                     <th data-sort="qty">Qtd</th>
@@ -852,6 +876,7 @@
                     <th>Validade</th>
                     <th>Saida</th>
                     <th>QR</th>
+                    <th>Acoes</th>
                   </tr>
                 </thead>
                 <tbody id="stockTable"></tbody>
@@ -875,6 +900,10 @@
             <h1>Tabela de estoque</h1>
             <p class="lead">Filtre rapidamente por status, local ou termo de busca para apoiar a rotina operacional.</p>
           </div>
+          <div style="display:flex;gap:10px;flex-wrap:wrap">
+            <button class="button" id="stockCsvButton">Exportar CSV</button>
+            <button class="button primary" id="stockExcelButton">Exportar Excel</button>
+          </div>
         </div>
         <section class="card panel">
           <div class="filters">
@@ -895,17 +924,19 @@
             <table>
               <thead>
                 <tr>
-                  <th>Codigo</th>
-                  <th>Descricao</th>
-                  <th>Local</th>
-                  <th>Qtd</th>
-                  <th>Minimo</th>
-                  <th>Status</th>
+                  <th data-sort="cod">Codigo</th>
+                  <th>Fav</th>
+                  <th data-sort="desc">Descricao</th>
+                  <th data-sort="loc">Local</th>
+                  <th data-sort="qty">Qtd</th>
+                  <th data-sort="min">Minimo</th>
+                  <th data-sort="status">Status</th>
                   <th>Fornecedor</th>
                   <th>Custo</th>
                   <th>Validade</th>
                   <th>Saida</th>
                   <th>QR</th>
+                  <th>Acoes</th>
                 </tr>
               </thead>
               <tbody id="stockTableFull"></tbody>
@@ -927,14 +958,14 @@
             <table>
               <thead>
                 <tr>
-                  <th>Codigo</th>
-                  <th>Descricao</th>
-                  <th>Local</th>
-                  <th>Qtd atual</th>
-                  <th>Minimo</th>
-                  <th>Comprar</th>
-                  <th>Status</th>
-                  <th>Tendencia</th>
+                  <th data-purchase-sort="cod">Codigo</th>
+                  <th data-purchase-sort="desc">Descricao</th>
+                  <th data-purchase-sort="loc">Local</th>
+                  <th data-purchase-sort="qty">Qtd atual</th>
+                  <th data-purchase-sort="min">Minimo</th>
+                  <th data-purchase-sort="suggested">Comprar</th>
+                  <th data-purchase-sort="status">Status</th>
+                  <th data-purchase-sort="trend">Tendencia</th>
                   <th>Pedido</th>
                 </tr>
               </thead>
@@ -981,7 +1012,7 @@
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th>Data</th><th>Codigo</th><th>Descricao</th><th>Tipo</th><th>Qtd</th><th>Responsavel</th></tr></thead>
+              <thead><tr><th data-history-sort="dt">Data</th><th data-history-sort="cod">Codigo</th><th data-history-sort="desc">Descricao</th><th data-history-sort="tipo">Tipo</th><th data-history-sort="qty">Qtd</th><th data-history-sort="resp">Responsavel</th></tr></thead>
               <tbody id="historyTable"></tbody>
             </table>
           </div>
@@ -1134,14 +1165,34 @@
         <div class="topbar">
           <div>
             <p class="eyebrow">Admin</p>
-            <h1>Auditoria e usuarios</h1>
-            <p class="lead">Log completo de acoes, historico de login e ativacao de funcionarios.</p>
+            <h1>Usuarios e permissoes</h1>
+            <p class="lead">Acesso total do chefe para liberar areas por setor, incluindo RH, compras, financeiro e operacao.</p>
           </div>
         </div>
         <div class="grid content-grid">
           <section class="card panel">
-            <h2 class="panel-title">Funcionarios</h2>
-            <div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Nome</th><th>Status</th><th>Acao</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
+            <h2 class="panel-title">Criar ou editar usuario</h2>
+            <form id="userAdminForm" class="grid">
+              <input id="adminUserId" type="hidden">
+              <div class="field"><label for="adminUsername">Usuario</label><input class="input" id="adminUsername" autocomplete="off" placeholder="ex: rh"></div>
+              <div class="field"><label for="adminDisplayName">Nome</label><input class="input" id="adminDisplayName" placeholder="ex: RH"></div>
+              <div class="field"><label for="adminDepartment">Setor</label><input class="input" id="adminDepartment" placeholder="ex: RH, Compras, Financeiro"></div>
+              <div class="field"><label for="adminRole">Perfil</label><select class="select" id="adminRole"><option value="employee">Usuario</option><option value="admin">Chefe/Admin total</option></select></div>
+              <div class="field"><label for="adminPassword">Senha</label><input class="input" id="adminPassword" type="password" placeholder="minimo 6 caracteres"></div>
+              <label style="display:flex;gap:8px;align-items:center"><input id="adminActive" type="checkbox" checked> Ativo</label>
+              <div class="field" style="grid-column:1/-1">
+                <label>Permissoes</label>
+                <div id="permissionGrid" class="filters" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:0"></div>
+              </div>
+              <div style="display:flex;gap:10px;flex-wrap:wrap">
+                <button class="button primary" type="submit">Salvar usuario</button>
+                <button class="button" id="clearUserFormButton" type="button">Novo usuario</button>
+              </div>
+            </form>
+          </section>
+          <section class="card panel">
+            <h2 class="panel-title">Usuarios cadastrados</h2>
+            <div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Nome</th><th>Setor</th><th>Perfil</th><th>Permissoes</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
           </section>
           <section class="card panel">
             <h2 class="panel-title">Historico de login</h2>
@@ -1156,7 +1207,7 @@
     </main>
   </div>
 
-  <div id="toastHost" style="position:fixed;right:16px;bottom:16px;z-index:2000;display:grid;gap:10px"></div>
+  <div id="toastHost" style="position:fixed;right:16px;bottom:76px;z-index:2000;display:grid;gap:10px"></div>
   <div id="qrModal" style="display:none;position:fixed;inset:0;z-index:1900;background:rgba(0,0,0,.55);place-items:center;padding:24px">
     <div class="card panel" style="width:min(100%,360px)">
       <div class="panel-head"><h2 class="panel-title" id="qrTitle">QR Code</h2><button class="button" id="closeQrButton">Fechar</button></div>
@@ -1167,6 +1218,18 @@
     <div class="card panel" style="width:min(100%,520px)">
       <div class="panel-head"><h2 class="panel-title">Leitor de codigo</h2><button class="button" id="closeScannerButton">Fechar</button></div>
       <div id="barcodeReader"></div>
+    </div>
+  </div>
+  <div id="confirmModal" style="display:none;position:fixed;inset:0;z-index:1950;background:rgba(0,0,0,.55);place-items:center;padding:24px">
+    <div class="card panel" style="width:min(100%,460px)">
+      <div class="panel-head"><h2 class="panel-title" id="confirmTitle">Confirmar acao</h2><button class="button" id="confirmCloseButton">Fechar</button></div>
+      <div class="summary-list">
+        <div class="summary-row"><div><strong id="confirmMessage">Confirme a acao.</strong><span id="confirmDetail">Esta operacao exige confirmacao dupla.</span></div></div>
+      </div>
+      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
+        <button class="button" id="confirmFirstButton">Estou ciente</button>
+        <button class="button primary" id="confirmFinalButton" disabled>Confirmar definitivamente</button>
+      </div>
     </div>
   </div>
   <button class="button primary" id="aiOpenButton" style="position:fixed;right:16px;bottom:16px;z-index:1800">IA</button>
@@ -1186,39 +1249,38 @@
   </div>
 
   <script>
-    // Dados iniciais preservados para migracao segura quando nao houver localStorage.
-    const SEED = [
-      { "cod": "IND-1001", "desc": "Rolamento industrial 6208 ZZ", "loc": "Almoxarifado A", "qty": 18, "min": 8, "status": "OK" },
-      { "cod": "ELE-2044", "desc": "Contator tripolar 32A 220V", "loc": "Eletrica", "qty": 3, "min": 5, "status": "COMPRAR" },
-      { "cod": "HID-3307", "desc": "Mangueira hidraulica 1/2 alta pressao", "loc": "Oficina", "qty": 0, "min": 4, "status": "SEM ESTOQUE" },
-      { "cod": "FER-1109", "desc": "Disco de corte 7 polegadas inox", "loc": "Ferramentaria", "qty": 12, "min": 12, "status": "NO LIMITE" },
-      { "cod": "SEG-5021", "desc": "Luva nitrilica para manutencao", "loc": "EPI", "qty": 46, "min": 20, "status": "OK" },
-      { "cod": "PNE-7802", "desc": "Valvula solenoide pneumatica 5/2", "loc": "Automacao", "qty": 2, "min": 6, "status": "COMPRAR" },
-      { "cod": "LUB-0904", "desc": "Graxa industrial EP2 balde 20kg", "loc": "Lubrificantes", "qty": 7, "min": 4, "status": "OK" },
-      { "cod": "ELE-2188", "desc": "Sensor indutivo M18 PNP NA", "loc": "Eletrica", "qty": 1, "min": 3, "status": "COMPRAR" },
-      { "cod": "FER-1403", "desc": "Jogo de chaves combinadas 8 a 24mm", "loc": "Ferramentaria", "qty": 0, "min": 2, "status": "SEM ESTOQUE" },
-      { "cod": "MEC-6105", "desc": "Correia em V perfil B-72", "loc": "Almoxarifado A", "qty": 6, "min": 6, "status": "NO LIMITE" },
-      { "cod": "HID-3312", "desc": "Conexao hidraulica JIC 90 graus", "loc": "Oficina", "qty": 24, "min": 10, "status": "OK" },
-      { "cod": "ELE-2401", "desc": "Disjuntor bipolar curva C 20A", "loc": "Eletrica", "qty": 9, "min": 6, "status": "OK" }
-    ];
-
     const STORAGE = {
-      items: "superestoque.items.v2",
-      history: "superestoque.history.v2",
-      audit: "superestoque.audit.v2",
-      login: "superestoque.login.v2",
-      employees: "superestoque.employees.v2",
-      orders: "superestoque.orders.v2",
-      suppliers: "superestoque.suppliers.v1",
-      purchaseOrders: "superestoque.purchaseOrders.v1",
-      costs: "superestoque.costs.v1",
-      lots: "superestoque.lots.v1",
+      items: "superestoque.items.company.v1",
+      history: "superestoque.history.company.v1",
+      audit: "superestoque.audit.company.v1",
+      login: "superestoque.login.company.v1",
+      employees: "superestoque.employees.company.v1",
+      orders: "superestoque.orders.company.v1",
+      suppliers: "superestoque.suppliers.company.v1",
+      purchaseOrders: "superestoque.purchaseOrders.company.v1",
+      costs: "superestoque.costs.company.v1",
+      lots: "superestoque.lots.company.v1",
+      obsLimit: "superestoque.obsRequiredQty.company.v1",
       anthropicKey: "superestoque.anthropicKey.disabled"
     };
 
     const byId = id => document.getElementById(id);
     const nowIso = () => new Date().toISOString();
-    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "operador";
+    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "chefe";
+    const ALL_PERMISSIONS = ["dashboard", "estoque", "compras", "historico", "fornecedores", "saude", "relatorios", "financeiro", "rastreabilidade", "ocs", "admin"];
+    const PERMISSION_LABELS = {
+      dashboard: "Dashboard",
+      estoque: "Estoque",
+      compras: "Compras",
+      historico: "Historico",
+      fornecedores: "Fornecedores",
+      saude: "Saude do estoque",
+      relatorios: "Relatorios",
+      financeiro: "Financeiro",
+      rastreabilidade: "Rastreabilidade",
+      ocs: "Ordens de compra",
+      admin: "Admin/usuarios"
+    };
     const formatNumber = value => Number(value || 0).toLocaleString("pt-BR");
     const statusMeta = {
       "OK": { label: "OK", className: "ok", color: "var(--green)" },
@@ -1232,6 +1294,7 @@
     let audit = [];
     let loginHistory = [];
     let employees = [];
+    let currentSession = null;
     let orders = {};
     let suppliers = [];
     let purchaseOrders = [];
@@ -1241,7 +1304,13 @@
     let historyFilters = { start: "", end: "", type: "" };
     let financeFilters = { start: "", end: "" };
     let sortState = { key: "cod", dir: "asc" };
+    let historySortState = { key: "dt", dir: "desc" };
+    let purchaseSortState = { key: "status", dir: "asc" };
     let scanner = null;
+    let lastNotificationSignature = localStorage.getItem("superestoque.notificationSignature") || "";
+    let confirmationAction = null;
+    let presentationMode = false;
+    let obsRequiredQty = Number(localStorage.getItem(STORAGE.obsLimit) || 10);
 
     // Persistencia centralizada em localStorage.
     function readStore(key, fallback) {
@@ -1270,106 +1339,33 @@
       writeStore(STORAGE.lots, lots);
     }
 
-    function createSeedHistory() {
-      const base = new Date();
-      return Array.from({ length: 30 }, (_, index) => {
-        const item = SEED[index % SEED.length];
-        const date = new Date(base);
-        date.setDate(base.getDate() - (index * 2));
-        const tipo = index % 3 === 0 ? "ENTRADA" : "SAIDA";
-        return {
-          id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now() + index),
-          dt: date.toISOString(),
-          cod: item.cod,
-          desc: item.desc,
-          tipo,
-          qty: (index % 5) + 1,
-          resp: index % 2 ? "Manutencao" : "Compras"
-        };
-      });
-    }
-
-    function createSeedSuppliers() {
-      return [
-        { id: "SUP-001", name: "Norte Industrial Pecas Ltda", cnpj: "04.218.991/0001-40", contact: "Marcos Lima", email: "compras@norteindustrial.com", leadTime: 7, rating: { price: 4, deadline: 5, quality: 4 } },
-        { id: "SUP-002", name: "EletroManaus Automacao S.A.", cnpj: "12.884.610/0001-22", contact: "Aline Costa", email: "atendimento@eletromanaus.com", leadTime: 10, rating: { price: 3, deadline: 4, quality: 5 } },
-        { id: "SUP-003", name: "HidraPorto Componentes ME", cnpj: "33.771.205/0001-09", contact: "Rafael Nunes", email: "vendas@hidraporto.com", leadTime: 5, rating: { price: 5, deadline: 4, quality: 4 } }
-      ];
-    }
-
-    function createSeedPurchaseOrders() {
-      const today = new Date();
-      const date = offset => {
-        const d = new Date(today);
-        d.setDate(today.getDate() - offset);
-        return d.toISOString();
-      };
-      return [
-        { number: "OC-2026-0001", date: date(12), supplierId: "SUP-001", status: "Aprovado", approvedBy: "chefe", items: [{ cod: "IND-1001", qty: 8 }] },
-        { number: "OC-2026-0002", date: date(6), supplierId: "SUP-002", status: "Enviado", approvedBy: "chefe", items: [{ cod: "ELE-2044", qty: 5 }, { cod: "ELE-2188", qty: 4 }] },
-        { number: "OC-2026-0003", date: date(1), supplierId: "SUP-003", status: "Rascunho", approvedBy: "", items: [{ cod: "HID-3307", qty: 6 }] }
-      ];
-    }
-
     function costKey(cod, supplierId) {
       return `${cod}::${supplierId}`;
     }
 
-    function createSeedCosts(seedSuppliers = suppliers) {
-      const result = {};
-      SEED.forEach((item, itemIndex) => {
-        seedSuppliers.forEach((supplier, supplierIndex) => {
-          const base = 18 + (itemIndex * 7) + (supplierIndex * 4);
-          result[costKey(item.cod, supplier.id)] = Number((base * (supplierIndex === 1 ? 1.08 : supplierIndex === 2 ? .94 : 1)).toFixed(2));
-        });
-      });
-      return result;
-    }
-
-    function createSeedLots() {
-      const today = new Date();
-      return SEED.slice(0, 8).map((item, index) => {
-        const validity = new Date(today);
-        validity.setDate(today.getDate() + 18 + (index * 14));
-        return {
-          id: `LOT-${item.cod}-${index + 1}`,
-          cod: item.cod,
-          lote: `LT-${String(index + 1).padStart(4, "0")}`,
-          validity: validity.toISOString().slice(0, 10),
-          qty: Math.max(Number(item.qty || 0), 1),
-          initialQty: Math.max(Number(item.qty || 0), 1),
-          source: "Carga inicial",
-          exits: []
-        };
-      });
-    }
-
     function initData() {
-      items = readStore(STORAGE.items, SEED.map(item => ({ ...item })));
-      history = readStore(STORAGE.history, createSeedHistory());
-      if (history.length < 30) {
-        history = [...history, ...createSeedHistory().slice(history.length)];
-      }
+      items = readStore(STORAGE.items, []);
+      history = readStore(STORAGE.history, []);
       audit = readStore(STORAGE.audit, []);
       loginHistory = readStore(STORAGE.login, []);
       employees = readStore(STORAGE.employees, [
         { username: "chefe", name: "Chefe do Estoque", active: true },
-        { username: "funcionario", name: "Funcionario Estoque", active: true },
-        { username: "operador", name: "Operador Manutencao", active: true }
+        { username: "funcionario", name: "Funcionario Estoque", active: true }
       ]);
       orders = readStore(STORAGE.orders, {});
-      suppliers = readStore(STORAGE.suppliers, createSeedSuppliers());
-      purchaseOrders = readStore(STORAGE.purchaseOrders, createSeedPurchaseOrders());
-      costs = readStore(STORAGE.costs, createSeedCosts(suppliers));
-      lots = readStore(STORAGE.lots, createSeedLots());
-      items = items.map((item, index) => ({
+      suppliers = readStore(STORAGE.suppliers, []);
+      purchaseOrders = readStore(STORAGE.purchaseOrders, []);
+      costs = readStore(STORAGE.costs, {});
+      lots = readStore(STORAGE.lots, []);
+      items = items.map(item => ({
         ...item,
-        supplierId: item.supplierId || suppliers[index % suppliers.length]?.id || ""
+        favorite: !!item.favorite,
+        supplierId: item.supplierId || ""
       }));
       items.forEach(item => {
         suppliers.forEach(supplier => {
           const key = costKey(item.cod, supplier.id);
-          if (!costs[key]) costs[key] = createSeedCosts(suppliers)[key] || 1;
+          if (!costs[key]) costs[key] = 0;
         });
       });
       history = history.map(row => row.tipo === "ENTRADA" && !row.lote
@@ -1389,11 +1385,139 @@
       setTimeout(() => el.remove(), 3600);
     }
 
+    function notify(message, type = "sucesso") {
+      toast(message, type);
+      if ("Notification" in window && Notification.permission === "granted") {
+        new Notification("SuperEstoque", { body: message });
+      }
+    }
+
+    // Modal reutilizavel para acoes destrutivas; exige dois cliques antes de executar.
+    function requestDoubleConfirmation(title, message, detail, action) {
+      confirmationAction = action;
+      byId("confirmTitle").textContent = title;
+      byId("confirmMessage").textContent = message;
+      byId("confirmDetail").textContent = detail;
+      byId("confirmFinalButton").disabled = true;
+      byId("confirmModal").style.display = "grid";
+    }
+
+    function closeConfirmation() {
+      confirmationAction = null;
+      byId("confirmModal").style.display = "none";
+    }
+
+    function confirmFirstStep() {
+      byId("confirmFinalButton").disabled = false;
+    }
+
+    function confirmFinalStep() {
+      if (confirmationAction) confirmationAction();
+      closeConfirmation();
+    }
+
+    // Quantidade acima da qual toda movimentacao exige observacao obrigatoria.
+    function requireMovementObservation(qty, obs) {
+      return Number(qty || 0) <= obsRequiredQty || String(obs || "").trim().length > 0;
+    }
+
+    // Calculos simples para comparar movimentacoes do mes atual contra o mes anterior.
+    function monthKey(date = new Date()) {
+      return date.toISOString().slice(0, 7);
+    }
+
+    function previousMonthKey() {
+      const date = new Date();
+      date.setMonth(date.getMonth() - 1);
+      return monthKey(date);
+    }
+
+    function monthlyMovementTotal(key) {
+      return history
+        .filter(row => String(row.dt || "").slice(0, 7) === key)
+        .reduce((sum, row) => sum + Number(row.qty || 0), 0);
+    }
+
+    function monthlyIndicator() {
+      const current = monthlyMovementTotal(monthKey());
+      const previous = monthlyMovementTotal(previousMonthKey());
+      const arrow = current === previous ? "→" : current > previous ? "↑" : "↓";
+      return `${arrow} mes atual ${formatNumber(current)} vs anterior ${formatNumber(previous)}`;
+    }
+
     function addAudit(action) {
       audit.unshift({ dt: nowIso(), user: currentUser(), action });
       audit = audit.slice(0, 250);
       writeStore(STORAGE.audit, audit);
       renderAdmin();
+    }
+
+    function hasPermission(permission) {
+      if (!currentSession?.user) return permission !== "admin";
+      if (currentSession.user.role === "admin") return true;
+      return (currentSession.user.permissions || []).includes(permission);
+    }
+
+    function applyPermissions() {
+      document.querySelectorAll(".nav-button[data-permission]").forEach(button => {
+        button.style.display = hasPermission(button.dataset.permission) ? "" : "none";
+      });
+      if (!hasPermission("admin") && document.querySelector("#page-admin.active")) {
+        switchPage("dashboard");
+      }
+    }
+
+    async function api(path, options = {}) {
+      const response = await fetch(path, {
+        ...options,
+        credentials: "same-origin",
+        headers: {
+          "Content-Type": "application/json",
+          ...(currentSession?.csrf ? { "X-CSRF-Token": currentSession.csrf } : {}),
+          ...(options.headers || {})
+        }
+      });
+      const payload = await response.json().catch(() => ({}));
+      if (!response.ok) throw new Error(payload.error || "Falha na operacao.");
+      return payload;
+    }
+
+    function renderPermissionGrid(selected = [], role = "employee") {
+      const chosen = new Set(role === "admin" ? ALL_PERMISSIONS : selected);
+      byId("permissionGrid").innerHTML = ALL_PERMISSIONS.map(permission => `
+        <label style="display:flex;gap:8px;align-items:center">
+          <input type="checkbox" data-permission-option="${permission}" ${chosen.has(permission) ? "checked" : ""} ${role === "admin" ? "disabled" : ""}>
+          ${PERMISSION_LABELS[permission]}
+        </label>
+      `).join("");
+    }
+
+    function selectedPermissions() {
+      return [...document.querySelectorAll("[data-permission-option]:checked")].map(input => input.dataset.permissionOption);
+    }
+
+    function clearUserForm() {
+      byId("adminUserId").value = "";
+      byId("adminUsername").value = "";
+      byId("adminUsername").disabled = false;
+      byId("adminDisplayName").value = "";
+      byId("adminDepartment").value = "";
+      byId("adminRole").value = "employee";
+      byId("adminPassword").value = "";
+      byId("adminActive").checked = true;
+      renderPermissionGrid(["dashboard", "estoque"], "employee");
+    }
+
+    async function loadAdminUsers() {
+      if (!hasPermission("admin")) return;
+      try {
+        const payload = await api("/api/admin/users");
+        employees = payload.users || [];
+        writeStore(STORAGE.employees, employees);
+        renderAdmin();
+      } catch (err) {
+        toast(err.message, "erro");
+      }
     }
 
     function statusBadge(status) {
@@ -1406,7 +1530,9 @@
     }
 
     function supplierOptions(selected = "") {
-      return suppliers.map(supplier => `<option value="${supplier.id}" ${supplier.id === selected ? "selected" : ""}>${supplier.name}</option>`).join("");
+      return suppliers.length
+        ? suppliers.map(supplier => `<option value="${supplier.id}" ${supplier.id === selected ? "selected" : ""}>${supplier.name}</option>`).join("")
+        : `<option value="">Cadastre um fornecedor</option>`;
     }
 
     function stars(value) {
@@ -1455,6 +1581,22 @@
       URL.revokeObjectURL(url);
     }
 
+    function compareValues(a, b) {
+      const an = Number(a);
+      const bn = Number(b);
+      if (Number.isFinite(an) && Number.isFinite(bn) && String(a).trim() !== "" && String(b).trim() !== "") {
+        return an - bn;
+      }
+      return String(a ?? "").localeCompare(String(b ?? ""), "pt-BR", { numeric: true, sensitivity: "base" });
+    }
+
+    function sortByState(list, state, getter = row => row[state.key]) {
+      return [...list].sort((a, b) => {
+        const result = compareValues(getter(a), getter(b));
+        return state.dir === "asc" ? result : -result;
+      });
+    }
+
     function getFilteredItems() {
       const query = filters.q.trim().toLowerCase();
       const list = items.filter(item => {
@@ -1463,21 +1605,30 @@
           (!filters.status || item.status === filters.status) &&
           (!filters.local || item.loc === filters.local);
       });
-      return [...list].sort((a, b) => {
-        const av = a[sortState.key];
-        const bv = b[sortState.key];
-        const result = typeof av === "number" ? av - bv : String(av).localeCompare(String(bv), "pt-BR");
-        return sortState.dir === "asc" ? result : -result;
-      });
+      return sortByState(list, sortState).sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite));
     }
 
     function getFilteredHistory() {
-      return history.filter(row => {
+      const list = history.filter(row => {
         const day = row.dt.slice(0, 10);
         return (!historyFilters.start || day >= historyFilters.start) &&
           (!historyFilters.end || day <= historyFilters.end) &&
           (!historyFilters.type || row.tipo === historyFilters.type);
       });
+      return sortByState(list, historySortState);
+    }
+
+    function getCriticalPurchases() {
+      const statusWeight = { "SEM ESTOQUE": 0, "COMPRAR": 1, "NO LIMITE": 2, "OK": 3 };
+      const critical = items
+        .filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR")
+        .map(item => ({ ...item, suggested: suggestedPurchase(item), trend: getTrend(item.cod) }));
+      return sortByState(critical, purchaseSortState, item => (
+        purchaseSortState.key === "suggested" ? item.suggested :
+        purchaseSortState.key === "trend" ? item.trend :
+        purchaseSortState.key === "status" ? statusWeight[item.status] :
+        item[purchaseSortState.key]
+      ));
     }
 
     function getTrend(cod) {
@@ -1503,13 +1654,14 @@
         limit: items.filter(i => i.status === "NO LIMITE").length,
         ok: items.filter(i => i.status === "OK").length
       };
+      const monthNote = monthlyIndicator();
       const kpis = [
-        { label: "Total", value: counts.total, note: "Itens cadastrados", color: "var(--blue)" },
-        { label: "Sem Estoque", value: counts.empty, note: "Ruptura imediata", color: "var(--red)" },
-        { label: "Comprar", value: counts.buy, note: "Abaixo do minimo", color: "var(--orange)" },
-        { label: "No Limite", value: counts.limit, note: "Saldo minimo exato", color: "var(--yellow)" },
-        { label: "OK", value: counts.ok, note: "Disponibilidade adequada", color: "var(--green)" },
-        { label: "Valor em estoque", value: formatCurrency(stockValue()), note: "Custo atual estimado", color: "var(--blue)" }
+        { label: "Total", value: counts.total, note: `Itens cadastrados · ${monthNote}`, color: "var(--blue)" },
+        { label: "Sem Estoque", value: counts.empty, note: `Ruptura imediata · ${monthNote}`, color: "var(--red)" },
+        { label: "Comprar", value: counts.buy, note: `Abaixo do minimo · ${monthNote}`, color: "var(--orange)" },
+        { label: "No Limite", value: counts.limit, note: `Saldo minimo exato · ${monthNote}`, color: "var(--yellow)" },
+        { label: "OK", value: counts.ok, note: `Disponibilidade adequada · ${monthNote}`, color: "var(--green)" },
+        { label: "Valor em estoque", value: formatCurrency(stockValue()), note: `Custo atual estimado · ${monthNote}`, color: "var(--blue)" }
       ];
       byId("kpiGrid").innerHTML = kpis.map(kpi => `
         <article class="card kpi-card" style="--status-color:${kpi.color}">
@@ -1533,6 +1685,7 @@
       byId(targetId).innerHTML = data.map(item => `
         <tr>
           <td class="mono">${item.cod}</td>
+          <td><button class="button" data-favorite="${item.cod}">${item.favorite ? "★" : "☆"}</button></td>
           <td><span class="item-name">${item.desc}</span></td>
           <td>${item.loc}</td>
           <td class="mono">${formatNumber(item.qty)}</td>
@@ -1543,12 +1696,18 @@
           <td>${nextLot(item)?.validity || "Sem lote"}<br><span class="muted">${lotStatus(nextLot(item))}</span></td>
           <td><button class="button" data-exit="${item.cod}">Registrar saida</button></td>
           <td><button class="button" data-qr="${item.cod}">QR</button></td>
+          <td>
+            <button class="button" data-duplicate="${item.cod}">Duplicar</button>
+            <button class="button" data-repeat-movement="${item.cod}">Repetir</button>
+            <button class="button" data-zero="${item.cod}">Zerar</button>
+            <button class="button" data-delete="${item.cod}">Excluir</button>
+          </td>
         </tr>
       `).join("");
     }
 
     function renderPurchases() {
-      const critical = items.filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR");
+      const critical = getCriticalPurchases();
       byId("purchaseTable").innerHTML = critical.map(item => {
         const order = orders[item.cod];
         return `
@@ -1558,9 +1717,9 @@
             <td>${item.loc}</td>
             <td class="mono">${formatNumber(item.qty)}</td>
             <td class="mono">${formatNumber(item.min)}</td>
-            <td class="mono">${formatNumber(suggestedPurchase(item))}</td>
+            <td class="mono">${formatNumber(item.suggested)}</td>
             <td>${statusBadge(item.status)}</td>
-            <td>${getTrend(item.cod)}</td>
+            <td>${item.trend}</td>
             <td>${order ? `${order.date} - ${order.resp}` : `<button class="button" data-order="${item.cod}">Marcar pedido</button>`}</td>
           </tr>
         `;
@@ -1599,9 +1758,23 @@
     }
 
     function renderAdmin() {
-      byId("employeeTable").innerHTML = employees.map(emp => `
-        <tr><td class="mono">${emp.username}</td><td>${emp.name}</td><td>${emp.active ? "Ativo" : "Inativo"}</td><td><button class="button" data-employee="${emp.username}">${emp.active ? "Desativar" : "Reativar"}</button></td></tr>
-      `).join("");
+      if (byId("userAdminForm")) byId("userAdminForm").style.display = hasPermission("admin") ? "grid" : "none";
+      byId("employeeTable").innerHTML = hasPermission("admin")
+        ? employees.map(emp => `
+          <tr>
+            <td class="mono">${emp.username}</td>
+            <td>${emp.display_name || emp.name || ""}</td>
+            <td>${emp.department || ""}</td>
+            <td>${emp.role === "admin" ? "Chefe/Admin total" : "Usuario"}</td>
+            <td>${(emp.permissions || []).map(permission => PERMISSION_LABELS[permission] || permission).join(", ")}</td>
+            <td>${emp.active ? "Ativo" : "Inativo"}</td>
+            <td>
+              <button class="button" data-user-edit="${emp.id}">Editar</button>
+              <button class="button" data-user-toggle="${emp.id}">${emp.active ? "Desativar" : "Ativar"}</button>
+            </td>
+          </tr>
+        `).join("")
+        : `<tr><td colspan="7">Acesso restrito ao chefe/admin.</td></tr>`;
       byId("loginTable").innerHTML = loginHistory.slice(0, 60).map(row => `<tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td>${row.user}</td><td>${row.success ? "Sucesso" : "Falha"}</td></tr>`).join("");
       byId("auditTable").innerHTML = audit.slice(0, 100).map(row => `<tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td>${row.user}</td><td>${row.action}</td></tr>`).join("");
     }
@@ -1697,6 +1870,10 @@
     }
 
     function createPurchaseOrder(supplierId, cod, qty) {
+      if (!supplierId || !cod) {
+        toast("Cadastre fornecedor e item antes de criar uma OC.", "erro");
+        return;
+      }
       const year = new Date().getFullYear();
       const next = purchaseOrders.length + 1;
       const number = `OC-${year}-${String(next).padStart(4, "0")}`;
@@ -1717,7 +1894,7 @@
     function advancePurchaseOrder(number) {
       const po = purchaseOrders.find(order => order.number === number);
       if (!po || po.status === "Recebido") return;
-      if (po.status === "Rascunho" && currentUser() !== "chefe") {
+      if (po.status === "Rascunho" && !hasPermission("admin")) {
         toast("Apenas Admin pode aprovar OC.", "erro");
         return;
       }
@@ -1744,6 +1921,8 @@
       po.items.forEach(line => {
         const item = items.find(row => row.cod === line.cod);
         if (!item) return;
+        const obs = Number(line.qty || 0) > obsRequiredQty ? prompt(`Observacao obrigatoria para entrada acima de ${obsRequiredQty}:`) : "";
+        if (!requireMovementObservation(line.qty, obs)) throw new Error("Observacao obrigatoria para movimentacao acima do limite configurado.");
         const lote = prompt(`Informe o numero do lote para entrada do item ${item.cod}:`);
         if (!lote) throw new Error("Numero de lote obrigatorio para entrada.");
         const validity = prompt(`Informe a validade do lote ${lote} no formato AAAA-MM-DD:`);
@@ -1751,38 +1930,154 @@
         item.qty = Number(item.qty || 0) + Number(line.qty || 0);
         item.status = item.qty <= 0 ? "SEM ESTOQUE" : item.qty < item.min ? "COMPRAR" : item.qty === item.min ? "NO LIMITE" : "OK";
         lots.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), cod: item.cod, lote, validity, qty: Number(line.qty || 0), initialQty: Number(line.qty || 0), source: po.number, exits: [] });
-        history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "ENTRADA", qty: Number(line.qty || 0), resp: `OC ${po.number}`, lote });
+        history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "ENTRADA", qty: Number(line.qty || 0), resp: `OC ${po.number}`, obs, lote });
       });
     }
 
-    function registerExit(cod) {
+    // Atualiza o status do item sempre que uma movimentacao altera o saldo.
+    function refreshItemStatus(item) {
+      item.status = item.qty <= 0 ? "SEM ESTOQUE" : item.qty < item.min ? "COMPRAR" : item.qty === item.min ? "NO LIMITE" : "OK";
+    }
+
+    // Registra entrada ou saida com validacoes preventivas antes de alterar o saldo.
+    function registerMovement(cod, defaults = {}) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
-      const qty = Number(prompt(`Quantidade de saida para ${cod}:`, "1") || 0);
+      const tipo = normalizeMovementPrompt(prompt(`Tipo de movimentacao para ${cod}:`, defaults.tipo || "SAIDA"));
+      if (!tipo) return toast("Tipo invalido. Use ENTRADA ou SAIDA.", "erro");
+      const qty = Number(prompt(`Quantidade para ${cod}:`, defaults.qty || "1") || 0);
       if (!qty || qty <= 0) return;
-      if (qty > Number(item.qty || 0)) return toast("Saldo insuficiente.", "erro");
+      if (tipo === "SAIDA" && qty > Number(item.qty || 0)) {
+        return toast(`Saida bloqueada: saldo disponivel de ${formatNumber(item.qty)} item(ns).`, "erro");
+      }
+      const resp = prompt("Responsavel:", defaults.resp || currentUser()) || currentUser();
+      const obs = prompt(Number(qty) > obsRequiredQty ? `Observacao obrigatoria acima de ${obsRequiredQty}:` : "Observacao:", defaults.obs || "") || "";
+      if (!requireMovementObservation(qty, obs)) {
+        return toast(`Observacao obrigatoria para movimentacoes acima de ${obsRequiredQty}.`, "erro");
+      }
       let remaining = qty;
       const consumed = [];
-      lots
-        .filter(lot => lot.cod === cod && Number(lot.qty || 0) > 0)
-        .sort((a, b) => new Date(a.validity) - new Date(b.validity))
-        .forEach(lot => {
-          if (remaining <= 0) return;
-          const take = Math.min(Number(lot.qty || 0), remaining);
-          lot.qty -= take;
-          remaining -= take;
-          const exit = { dt: nowIso(), qty: take, resp: currentUser() };
-          lot.exits = [...(lot.exits || []), exit];
-          consumed.push({ lote: lot.lote, qty: take });
-        });
-      if (remaining > 0) return toast("Nao ha lote suficiente para rastrear a saida.", "erro");
-      item.qty -= qty;
-      item.status = item.qty <= 0 ? "SEM ESTOQUE" : item.qty < item.min ? "COMPRAR" : item.qty === item.min ? "NO LIMITE" : "OK";
-      history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "SAIDA", qty, resp: currentUser(), lote: consumed.map(row => `${row.lote}:${row.qty}`).join("; ") });
+      if (tipo === "SAIDA") {
+        lots
+          .filter(lot => lot.cod === cod && Number(lot.qty || 0) > 0)
+          .sort((a, b) => new Date(a.validity) - new Date(b.validity))
+          .forEach(lot => {
+            if (remaining <= 0) return;
+            const take = Math.min(Number(lot.qty || 0), remaining);
+            lot.qty -= take;
+            remaining -= take;
+            const exit = { dt: nowIso(), qty: take, resp };
+            lot.exits = [...(lot.exits || []), exit];
+            consumed.push({ lote: lot.lote, qty: take });
+          });
+        item.qty -= qty;
+      } else {
+        item.qty = Number(item.qty || 0) + qty;
+      }
+      refreshItemStatus(item);
+      history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo, qty, resp, obs, lote: consumed.map(row => `${row.lote}:${row.qty}`).join("; ") });
       saveAll();
-      addAudit(`Registrou saida de ${qty} do item ${cod}`);
-      toast("Saida registrada com rastreabilidade.");
+      addAudit(`Registrou ${tipo.toLowerCase()} de ${qty} do item ${cod}`);
+      toast("Movimentacao registrada.");
       renderAll();
+    }
+
+    function normalizeMovementPrompt(value) {
+      const cleaned = String(value || "").trim().toUpperCase().replace("Í", "I");
+      if (cleaned === "ENTRADA") return "ENTRADA";
+      if (cleaned === "SAIDA") return "SAIDA";
+      return "";
+    }
+
+    function registerExit(cod) {
+      registerMovement(cod, { tipo: "SAIDA" });
+    }
+
+    // Marca favorito e fixa no topo sem alterar os demais dados do item.
+    function toggleFavorite(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      item.favorite = !item.favorite;
+      saveAll();
+      renderAll();
+    }
+
+    // Copia um cadastro existente e pede um novo codigo para acelerar cadastros similares.
+    function duplicateItem(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      const newCod = prompt(`Novo codigo para duplicar ${cod}:`, `${cod}-COPIA`);
+      if (!newCod) return;
+      if (items.some(row => row.cod.toLowerCase() === newCod.trim().toLowerCase())) {
+        return toast("Ja existe item com este codigo.", "erro");
+      }
+      const desc = prompt("Descricao do novo item:", item.desc) || item.desc;
+      items.push({
+        ...item,
+        id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
+        cod: newCod.trim(),
+        desc,
+        qty: 0,
+        favorite: false,
+        status: "SEM ESTOQUE"
+      });
+      saveAll();
+      populateFilters();
+      addAudit(`Duplicou item ${cod} para ${newCod.trim()}`);
+      toast("Item duplicado.");
+      renderAll();
+    }
+
+    // Reutiliza os dados da ultima movimentacao do item, permitindo confirmar ou ajustar.
+    function repeatLastMovement(cod) {
+      const last = history.find(row => row.cod === cod);
+      if (!last) return toast("Este item ainda nao tem movimentacao para repetir.", "aviso");
+      registerMovement(cod, {
+        tipo: last.tipo,
+        qty: last.qty,
+        resp: last.resp,
+        obs: last.obs || ""
+      });
+    }
+
+    function zeroItem(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      requestDoubleConfirmation(
+        "Zerar item",
+        `Zerar saldo do item ${cod}?`,
+        "Esta acao grava uma movimentacao de ajuste e deixa a quantidade em zero.",
+        () => {
+          const previous = Number(item.qty || 0);
+          item.qty = 0;
+          refreshItemStatus(item);
+          history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "SAIDA", qty: previous, resp: currentUser(), obs: "Zerado manualmente com confirmacao dupla" });
+          saveAll();
+          addAudit(`Zerou item ${cod}`);
+          toast("Item zerado.");
+          renderAll();
+        }
+      );
+    }
+
+    function deleteItem(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      requestDoubleConfirmation(
+        "Excluir item",
+        `Excluir definitivamente o item ${cod}?`,
+        "Esta acao remove o cadastro da lista local, mas nao apaga historico ja registrado.",
+        () => {
+          items = items.filter(row => row.cod !== cod);
+          delete orders[cod];
+          lots = lots.filter(lot => lot.cod !== cod);
+          saveAll();
+          populateFilters();
+          addAudit(`Excluiu item ${cod}`);
+          toast("Item excluido.");
+          renderAll();
+        }
+      );
     }
 
     function generatePurchaseOrderPdf(number) {
@@ -1910,6 +2205,78 @@
       toast("PDF exportado.");
     }
 
+    // Gera uma pagina unica e objetiva com os principais numeros do dashboard.
+    function exportDashboardSummaryPdf() {
+      if (!window.jspdf?.jsPDF) return toast("jsPDF nao carregou.", "erro");
+      const counts = {
+        total: items.length,
+        empty: items.filter(i => i.status === "SEM ESTOQUE").length,
+        buy: items.filter(i => i.status === "COMPRAR").length,
+        limit: items.filter(i => i.status === "NO LIMITE").length,
+        ok: items.filter(i => i.status === "OK").length
+      };
+      const doc = new jspdf.jsPDF();
+      doc.setFontSize(18);
+      doc.text("Resumo SuperEstoque", 14, 18);
+      doc.setFontSize(10);
+      doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, 14, 28);
+      doc.text(`Comparativo mensal: ${monthlyIndicator()}`, 14, 36);
+      doc.setFontSize(13);
+      [
+        `Total de itens: ${counts.total}`,
+        `Sem estoque: ${counts.empty}`,
+        `Comprar: ${counts.buy}`,
+        `No limite: ${counts.limit}`,
+        `OK: ${counts.ok}`,
+        `Valor em estoque: ${formatCurrency(stockValue())}`
+      ].forEach((line, index) => doc.text(line, 14, 52 + (index * 9)));
+      doc.setFontSize(11);
+      doc.text("Itens criticos", 14, 116);
+      items
+        .filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR")
+        .slice(0, 12)
+        .forEach((item, index) => doc.text(`${item.cod} - ${item.desc} (${item.status})`, 14, 126 + (index * 7)));
+      doc.save("resumo-superestoque.pdf");
+      addAudit("Exportou resumo do dashboard em PDF");
+      toast("Resumo PDF exportado.");
+    }
+
+    // Modo apresentacao: tela cheia, sem menu e sem controles operacionais.
+    function togglePresentationMode() {
+      presentationMode ? exitPresentationMode() : enterPresentationMode();
+    }
+
+    function enterPresentationMode() {
+      presentationMode = true;
+      switchPage("relatorios");
+      renderReports();
+      document.documentElement.requestFullscreen?.().catch(() => {});
+      document.querySelectorAll(".sidebar, .topbar button, form, .filters, .table-wrap, #aiOpenButton").forEach(el => {
+        el.dataset.presentationDisplay = el.style.display || "";
+        el.style.display = "none";
+      });
+      const exitButton = document.createElement("button");
+      exitButton.className = "button primary";
+      exitButton.id = "presentationExitButton";
+      exitButton.textContent = "Sair apresentacao";
+      exitButton.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:2200";
+      exitButton.addEventListener("click", exitPresentationMode);
+      document.body.appendChild(exitButton);
+      toast("Modo apresentacao ativado.");
+    }
+
+    function exitPresentationMode() {
+      presentationMode = false;
+      document.querySelectorAll("[data-presentation-display]").forEach(el => {
+        el.style.display = el.dataset.presentationDisplay;
+        delete el.dataset.presentationDisplay;
+      });
+      byId("presentationExitButton")?.remove();
+      document.exitFullscreen?.().catch(() => {});
+      switchPage("dashboard");
+      toast("Modo apresentacao encerrado.");
+    }
+
     function getTopMovedItems() {
       const totals = {};
       getFilteredHistory().forEach(row => totals[row.cod] = (totals[row.cod] || 0) + row.qty);
@@ -1996,6 +2363,18 @@
       renderPurchaseOrders();
       renderFinance();
       renderTraceability();
+      renderSortIndicators();
+      notifyCriticalItems();
+    }
+
+    function renderSortIndicators() {
+      document.querySelectorAll("th[data-sort], th[data-history-sort], th[data-purchase-sort]").forEach(th => {
+        const state = th.dataset.sort ? sortState : th.dataset.historySort ? historySortState : purchaseSortState;
+        const key = th.dataset.sort || th.dataset.historySort || th.dataset.purchaseSort;
+        const active = state.key === key;
+        th.classList.toggle("is-sorted", active);
+        th.setAttribute("data-sort-mark", active ? (state.dir === "asc" ? "↑" : "↓") : "");
+      });
     }
 
     function syncFilterControls() {
@@ -2019,15 +2398,25 @@
     }
 
     function exportCsv() {
-      const rows = getFilteredItems().map(item => [item.cod, item.desc, item.loc, item.qty, item.min, item.status]);
-      download("superestoque.csv", [["Codigo", "Descricao", "Local", "Qtd", "Minimo", "Status"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
+      const rows = getFilteredItems().map(item => [item.cod, item.desc, item.loc, item.qty, item.min, item.status, supplierName(item.supplierId), itemCost(item), nextLot(item)?.validity || ""]);
+      download("superestoque.csv", [["Codigo", "Descricao", "Local", "Qtd", "Minimo", "Status", "Fornecedor", "Custo", "Validade"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
       addAudit("Exportou estoque em CSV");
       toast("CSV exportado.");
     }
 
     function exportExcel() {
       if (!window.XLSX) return toast("SheetJS nao carregou.", "erro");
-      const data = getFilteredItems().map(item => ({ Codigo: item.cod, Descricao: item.desc, Local: item.loc, Qtd: item.qty, Minimo: item.min, Status: item.status }));
+      const data = getFilteredItems().map(item => ({
+        Codigo: item.cod,
+        Descricao: item.desc,
+        Local: item.loc,
+        Qtd: item.qty,
+        Minimo: item.min,
+        Status: item.status,
+        Fornecedor: supplierName(item.supplierId),
+        Custo: itemCost(item),
+        Validade: nextLot(item)?.validity || ""
+      }));
       const wb = XLSX.utils.book_new();
       XLSX.utils.book_append_sheet(wb, XLSX.utils.json_to_sheet(data), "Estoque");
       XLSX.writeFile(wb, "superestoque.xlsx");
@@ -2061,9 +2450,27 @@
       if (!item || !window.QRCode) return toast("QRCode.js nao carregou.", "erro");
       byId("qrTitle").textContent = `QR Code - ${cod}`;
       byId("qrBox").innerHTML = "";
-      new QRCode(byId("qrBox"), JSON.stringify(item));
+      const payload = {
+        type: "superestoque-item",
+        cod: item.cod,
+        desc: item.desc,
+        loc: item.loc
+      };
+      new QRCode(byId("qrBox"), JSON.stringify(payload));
+      byId("qrBox").insertAdjacentHTML("beforeend", `<div style="margin-top:12px;color:#111;text-align:center;font-weight:700">${item.cod}<br><span style="font-weight:500">${item.desc}</span></div>`);
       byId("qrModal").style.display = "grid";
       addAudit(`Gerou QR Code do item ${cod}`);
+    }
+
+    function extractScannedCode(raw) {
+      const text = String(raw || "").trim();
+      try {
+        const payload = JSON.parse(text);
+        return String(payload.cod || payload.codigo || payload.code || text).trim();
+      } catch {
+        const match = text.match(/[A-Z]{2,5}-\d{3,6}/i);
+        return (match ? match[0] : text).trim();
+      }
     }
 
     function markOrder(cod) {
@@ -2081,21 +2488,78 @@
       toast("Historico exportado.");
     }
 
-    function toggleEmployee(username) {
-      const employee = employees.find(emp => emp.username === username);
-      if (!employee) return;
-      employee.active = !employee.active;
-      saveAll();
-      renderAdmin();
-      addAudit(`${employee.active ? "Reativou" : "Desativou"} funcionario ${username}`);
-      toast("Status do funcionario atualizado.");
+    function editUser(userId) {
+      const user = employees.find(emp => String(emp.id) === String(userId));
+      if (!user) return;
+      byId("adminUserId").value = user.id;
+      byId("adminUsername").value = user.username;
+      byId("adminUsername").disabled = true;
+      byId("adminDisplayName").value = user.display_name || user.name || "";
+      byId("adminDepartment").value = user.department || "";
+      byId("adminRole").value = user.role || "employee";
+      byId("adminPassword").value = "";
+      byId("adminActive").checked = !!user.active;
+      renderPermissionGrid(user.permissions || [], user.role || "employee");
+    }
+
+    async function saveAdminUser(event) {
+      event.preventDefault();
+      if (!hasPermission("admin")) return toast("Acesso restrito ao chefe/admin.", "erro");
+      const userId = byId("adminUserId").value;
+      const payload = {
+        username: byId("adminUsername").value.trim(),
+        display_name: byId("adminDisplayName").value.trim(),
+        department: byId("adminDepartment").value.trim(),
+        role: byId("adminRole").value,
+        active: byId("adminActive").checked,
+        permissions: selectedPermissions()
+      };
+      const password = byId("adminPassword").value;
+      if (password) payload.password = password;
+      if (!userId && !password) return toast("Informe uma senha inicial.", "erro");
+      try {
+        await api(userId ? `/api/admin/users/${userId}` : "/api/admin/users", {
+          method: userId ? "PUT" : "POST",
+          body: JSON.stringify(payload)
+        });
+        toast("Usuario salvo.");
+        clearUserForm();
+        await loadAdminUsers();
+      } catch (err) {
+        toast(err.message, "erro");
+      }
+    }
+
+    async function toggleUser(userId) {
+      const user = employees.find(emp => String(emp.id) === String(userId));
+      if (!user) return;
+      if (currentSession?.user?.id === user.id && user.active) {
+        return toast("Voce nao pode desativar seu proprio acesso.", "erro");
+      }
+      try {
+        await api(`/api/admin/users/${user.id}`, {
+          method: "PUT",
+          body: JSON.stringify({
+            display_name: user.display_name,
+            department: user.department,
+            role: user.role,
+            active: !user.active,
+            permissions: user.permissions || []
+          })
+        });
+        toast("Status do usuario atualizado.");
+        await loadAdminUsers();
+      } catch (err) {
+        toast(err.message, "erro");
+      }
     }
 
     function startScanner() {
       if (!window.Html5Qrcode) return toast("html5-qrcode nao carregou.", "erro");
       byId("scannerModal").style.display = "grid";
       scanner = new Html5Qrcode("barcodeReader");
-      scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 220 }, code => {
+      scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 220 }, rawCode => {
+        const code = extractScannedCode(rawCode);
         updateFilters({ q: code });
         stopScanner();
         switchPage("estoque");
@@ -2108,31 +2572,74 @@
       byId("scannerModal").style.display = "none";
     }
 
-    // Comportamento hamburguer em mobile sem alterar o CSS existente.
+    async function enableNotifications() {
+      if (!("Notification" in window)) {
+        toast("Este navegador nao suporta notificacoes.", "erro");
+        return;
+      }
+      let permission = Notification.permission;
+      try {
+        permission = permission === "default" ? await Notification.requestPermission() : permission;
+      } catch {
+        toast("Nao foi possivel solicitar notificacoes neste navegador.", "erro");
+        return;
+      }
+      if (permission === "granted") {
+        toast("Notificacoes ativadas.");
+        notifyCriticalItems(true);
+      } else {
+        toast("Permissao de notificacao nao liberada.", "aviso");
+      }
+    }
+
+    function notifyCriticalItems(force = false) {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      const critical = items.filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR");
+      const signature = critical.map(item => `${item.cod}:${item.status}:${item.qty}`).sort().join("|");
+      if (!force && signature === lastNotificationSignature) return;
+      lastNotificationSignature = signature;
+      localStorage.setItem("superestoque.notificationSignature", signature);
+      if (!critical.length) return;
+      const zeros = critical.filter(item => item.status === "SEM ESTOQUE").length;
+      const message = zeros
+        ? `${zeros} item(ns) sem estoque e ${critical.length - zeros} abaixo do minimo.`
+        : `${critical.length} item(ns) abaixo do minimo.`;
+      new Notification("SuperEstoque", { body: message });
+    }
+
+    // Permite configurar a quantidade que torna a observacao obrigatoria.
+    function configureObservationLimit() {
+      const next = Number(prompt("Observacao obrigatoria acima de qual quantidade?", String(obsRequiredQty)) || obsRequiredQty);
+      if (!Number.isFinite(next) || next < 0) return toast("Limite invalido.", "erro");
+      obsRequiredQty = next;
+      localStorage.setItem(STORAGE.obsLimit, String(obsRequiredQty));
+      toast(`Observacao obrigatoria acima de ${formatNumber(obsRequiredQty)}.`);
+    }
+
+    // Comportamento hamburguer em mobile.
     function setupMobileMenu() {
       const btn = document.createElement("button");
-      btn.className = "button";
+      btn.className = "button primary mobile-menu-button";
       btn.textContent = "Menu";
-      btn.style.cssText = "display:none;position:fixed;left:12px;bottom:84px;z-index:2100";
       document.body.appendChild(btn);
-      const sidebar = document.querySelector(".sidebar");
-      const apply = () => {
-        if (innerWidth < 768) {
-          btn.style.display = "inline-flex";
-          sidebar.style.display = "none";
-        } else {
-          btn.style.display = "none";
-          sidebar.style.display = "";
-        }
-      };
-      btn.addEventListener("click", () => sidebar.style.display = sidebar.style.display === "none" ? "" : "none");
-      document.querySelectorAll(".nav-button").forEach(item => item.addEventListener("click", () => { if (innerWidth < 768) sidebar.style.display = "none"; }));
-      addEventListener("resize", apply);
-      apply();
+      const overlay = document.createElement("div");
+      overlay.className = "sidebar-overlay";
+      document.body.appendChild(overlay);
+      const close = () => document.body.classList.remove("sidebar-open");
+      btn.addEventListener("click", () => document.body.classList.toggle("sidebar-open"));
+      overlay.addEventListener("click", close);
+      document.querySelectorAll(".nav-button").forEach(item => item.addEventListener("click", close));
+      addEventListener("resize", () => { if (innerWidth > 1180) close(); });
     }
 
     function initEvents() {
-      document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => switchPage(button.dataset.page)));
+      document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => {
+        if (button.dataset.permission && !hasPermission(button.dataset.permission)) {
+          toast("Sem permissao para acessar esta area.", "erro");
+          return;
+        }
+        switchPage(button.dataset.page);
+      }));
       byId("searchInput").addEventListener("input", event => updateFilters({ q: event.target.value }));
       byId("searchInput2").addEventListener("input", event => updateFilters({ q: event.target.value }));
       byId("statusFilter").addEventListener("change", event => updateFilters({ status: event.target.value }));
@@ -2140,12 +2647,21 @@
       byId("localFilter").addEventListener("change", event => updateFilters({ local: event.target.value }));
       byId("localFilter2").addEventListener("change", event => updateFilters({ local: event.target.value }));
       byId("exportButton").addEventListener("click", exportCsv);
+      byId("stockCsvButton").addEventListener("click", exportCsv);
       byId("excelButton").addEventListener("click", exportExcel);
+      byId("stockExcelButton").addEventListener("click", exportExcel);
+      byId("notificationButton").addEventListener("click", enableNotifications);
+      byId("obsLimitButton").addEventListener("click", configureObservationLimit);
+      byId("presentationButton").addEventListener("click", togglePresentationMode);
+      byId("summaryPdfButton").addEventListener("click", exportDashboardSummaryPdf);
       byId("importCsvButton").addEventListener("click", () => byId("csvFileInput").click());
       byId("csvFileInput").addEventListener("change", event => event.target.files[0] && importCsvFile(event.target.files[0]));
       byId("barcodeButton").addEventListener("click", startScanner);
       byId("closeScannerButton").addEventListener("click", stopScanner);
       byId("closeQrButton").addEventListener("click", () => byId("qrModal").style.display = "none");
+      byId("confirmCloseButton").addEventListener("click", closeConfirmation);
+      byId("confirmFirstButton").addEventListener("click", confirmFirstStep);
+      byId("confirmFinalButton").addEventListener("click", confirmFinalStep);
       byId("historyCsvButton").addEventListener("click", exportHistoryCsv);
       byId("printReportButton").addEventListener("click", exportReportPdf);
       byId("aiOpenButton").addEventListener("click", () => {
@@ -2171,16 +2687,38 @@
         sortState = { key, dir: sortState.key === key && sortState.dir === "asc" ? "desc" : "asc" };
         renderAll();
       }));
+      document.querySelectorAll("th[data-history-sort]").forEach(th => th.addEventListener("click", () => {
+        const key = th.dataset.historySort;
+        historySortState = { key, dir: historySortState.key === key && historySortState.dir === "asc" ? "desc" : "asc" };
+        renderAll();
+      }));
+      document.querySelectorAll("th[data-purchase-sort]").forEach(th => th.addEventListener("click", () => {
+        const key = th.dataset.purchaseSort;
+        purchaseSortState = { key, dir: purchaseSortState.key === key && purchaseSortState.dir === "asc" ? "desc" : "asc" };
+        renderAll();
+      }));
       document.body.addEventListener("click", event => {
         const qr = event.target.closest("[data-qr]");
+        const favorite = event.target.closest("[data-favorite]");
+        const duplicate = event.target.closest("[data-duplicate]");
+        const repeatMovement = event.target.closest("[data-repeat-movement]");
+        const zero = event.target.closest("[data-zero]");
+        const deleteButton = event.target.closest("[data-delete]");
         const order = event.target.closest("[data-order]");
-        const employee = event.target.closest("[data-employee]");
+        const userEdit = event.target.closest("[data-user-edit]");
+        const userToggle = event.target.closest("[data-user-toggle]");
         const poNext = event.target.closest("[data-po-next]");
         const poPdf = event.target.closest("[data-po-pdf]");
         const exit = event.target.closest("[data-exit]");
         if (qr) showQr(qr.dataset.qr);
+        if (favorite) toggleFavorite(favorite.dataset.favorite);
+        if (duplicate) duplicateItem(duplicate.dataset.duplicate);
+        if (repeatMovement) repeatLastMovement(repeatMovement.dataset.repeatMovement);
+        if (zero) zeroItem(zero.dataset.zero);
+        if (deleteButton) deleteItem(deleteButton.dataset.delete);
         if (order) markOrder(order.dataset.order);
-        if (employee) toggleEmployee(employee.dataset.employee);
+        if (userEdit) editUser(userEdit.dataset.userEdit);
+        if (userToggle) toggleUser(userToggle.dataset.userToggle);
         if (poNext) advancePurchaseOrder(poNext.dataset.poNext);
         if (poPdf) generatePurchaseOrderPdf(poPdf.dataset.poPdf);
         if (exit) registerExit(exit.dataset.exit);
@@ -2229,7 +2767,21 @@
         createPurchaseOrder(byId("poSupplier").value, byId("poItem").value, byId("poQty").value);
         event.target.reset();
       });
+      byId("userAdminForm").addEventListener("submit", saveAdminUser);
+      byId("clearUserFormButton").addEventListener("click", clearUserForm);
+      byId("adminRole").addEventListener("change", event => renderPermissionGrid(selectedPermissions(), event.target.value));
+      addEventListener("keydown", event => {
+        const target = event.target;
+        const typing = target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
+        if (!typing && event.key.toLowerCase() === "f") {
+          event.preventDefault();
+          const input = document.querySelector("#page-estoque.active #searchInput2") || byId("searchInput");
+          input.focus();
+          input.select();
+        }
+      });
       byId("logoutButton").addEventListener("click", () => {
+        currentSession = null;
         byId("loginScreen").classList.remove("hidden");
         addAudit("Saiu do sistema");
       });
@@ -2242,36 +2794,35 @@
       const user = byId("loginUser").value.trim().toLowerCase();
       const pass = byId("loginPassword").value;
       const error = byId("loginError");
+      const submitButton = byId("loginSubmitButton");
       const names = {
-        operador: "Operador Manutencao",
         chefe: "Chefe do Estoque",
         funcionario: "Funcionario Estoque"
       };
-      const employee = employees.find(emp => emp.username === user);
-      const inactive = employee && employee.active === false && !["chefe", "operador", "funcionario"].includes(user);
-      const demoEnabled = new URLSearchParams(location.search).get("demo") === "1";
-      const demoPasswords = { operador: "demo-operador", chefe: "demo-admin", funcionario: "demo-func" };
       let success = false;
       let displayName = names[user] || user;
-      if (!inactive) {
-        try {
-          const response = await fetch("/api/login", {
-            method: "POST",
-            credentials: "same-origin",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ username: user, password: pass })
-          });
-          if (response.ok) {
-            const payload = await response.json();
-            displayName = payload.user?.display_name || displayName;
-            success = true;
-          }
-        } catch (err) {
-          success = false;
+      let serverError = "";
+      submitButton.disabled = true;
+      try {
+        const response = await fetch("/api/login", {
+          method: "POST",
+          credentials: "same-origin",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ username: user, password: pass })
+        });
+        const payload = await response.json().catch(() => ({}));
+        if (response.ok) {
+          currentSession = payload;
+          displayName = payload.user?.display_name || displayName;
+          success = true;
+        } else {
+          serverError = payload.error || "Usuario ou senha invalidos.";
         }
-      }
-      if (!success && demoEnabled) {
-        success = !!(names[user] && !inactive && demoPasswords[user] === pass);
+      } catch (err) {
+        success = false;
+        serverError = location.protocol === "file:"
+          ? "Abra pelo endereco http://127.0.0.1:8000/. Nao abra o HTML direto."
+          : "Nao foi possivel falar com o backend. Inicie o sistema pelo arquivo iniciar_superestoque.bat.";
       }
       loginHistory.unshift({ dt: nowIso(), user, success });
       try {
@@ -2285,15 +2836,20 @@
         byId("userName").textContent = displayName;
         byId("loginScreen").classList.add("hidden");
         try {
+          applyPermissions();
+          clearUserForm();
+          if (hasPermission("admin")) await loadAdminUsers();
           addAudit("Entrou no sistema");
           toast("Login realizado.");
           renderAdmin();
         } catch (err) {
           console.warn(err);
         }
+        submitButton.disabled = false;
         return false;
       }
-      error.textContent = "Usuario ou senha invalidos. No deploy, configure as senhas no ambiente do backend.";
+      submitButton.disabled = false;
+      error.textContent = serverError || "Usuario ou senha invalidos.";
       error.style.display = "block";
       toast("Falha no login.", "erro");
       renderAdmin();
