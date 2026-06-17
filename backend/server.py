@@ -17,7 +17,19 @@ import time
 ROOT = Path(__file__).resolve().parents[1]
 HTML_FILE = ROOT / "index.html"
 LEGACY_HTML_FILE = ROOT / "SuperEstoque (4).html"
-DATA_DIR = Path(os.environ.get("SUPERESTOQUE_DATA_DIR", ROOT / "backend" / "data"))
+
+# Use volume mount on Render, or relative path as fallback
+_data_dir = os.environ.get("SUPERESTOQUE_DATA_DIR")
+if _data_dir:
+    DATA_DIR = Path(_data_dir)
+else:
+    # Use Render's discardable volume if available, otherwise use local backend/data
+    render_volume = os.environ.get("RENDER_DISCARDABLE_VOLUME_MOUNT_POINT")
+    if render_volume:
+        DATA_DIR = Path(render_volume) / "super-estoque-data"
+    else:
+        DATA_DIR = ROOT / "backend" / "data"
+
 DB_FILE = DATA_DIR / "superestoque.db"
 SESSION_TTL = 8 * 60 * 60
 COOKIE_NAME = "se_session"
