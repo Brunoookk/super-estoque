@@ -1331,6 +1331,9 @@
     let confirmationAction = null;
     let presentationMode = false;
     let obsRequiredQty = Number(localStorage.getItem(STORAGE.obsLimit) || 10);
+    let dataVersion = 0;
+    let syncTimer = null;
+    let syncing = false;
 
     // Persistencia centralizada em localStorage.
     function readStore(key, fallback) {
@@ -1500,6 +1503,84 @@
       const payload = await response.json().catch(() => ({}));
       if (!response.ok) throw new Error(payload.error || "Falha na operacao.");
       return payload;
+    }
+
+    // Converte item recebido do backend para o formato usado pela interface.
+    function itemFromServer(row) {
+      const current = items.find(item => item.id === row.id || item.cod === row.cod) || {};
+      return {
+        ...current,
+        id: row.id,
+        cod: row.cod,
+        desc: row.desc,
+        qty: Number(row.qty || 0),
+        min: Number(row.min || 0),
+        loc: row.loc || "",
+        end: row.end || "",
+        obs: row.obs || "",
+        arm: row.arm || "",
+        status: row.status || calcItemStatus(row.qty, row.min),
+        favorite: !!current.favorite,
+        supplierId: current.supplierId || ""
+      };
+    }
+
+    // Converte movimentacao do backend para o historico da tela.
+    function movementFromServer(row) {
+      const tipo = String(row.tipo || "").replace("Í", "I");
+      return {
+        id: row.id,
+        dt: row.dt,
+        cod: row.cod,
+        desc: row.desc,
+        tipo,
+        qty: Number(row.qty || 0),
+        resp: row.resp || row.user || "",
+        obs: row.obs || "",
+        saldo: row.saldo
+      };
+    }
+
+    function applyServerState(payload, silent = true) {
+      if (Array.isArray(payload.items)) {
+        items = payload.items.map(itemFromServer);
+      }
+      if (Array.isArray(payload.movements)) {
+        history = payload.movements.map(movementFromServer).reverse();
+      }
+      dataVersion = Number(payload.version || dataVersion || 0);
+      saveAll();
+      populateFilters();
+      renderAll();
+      if (!silent) toast("Dados sincronizados.");
+    }
+
+    // Sincroniza estoque e movimentacoes entre usuarios logados.
+    async function syncFromServer(force = false) {
+      if (!currentSession?.csrf || syncing) return;
+      syncing = true;
+      try {
+        if (force || !dataVersion) {
+          const [itemsPayload, movementsPayload] = await Promise.all([
+            api("/api/items"),
+            api("/api/movements?limit=300")
+          ]);
+          applyServerState({ items: itemsPayload.items || [], movements: movementsPayload.movements || [], version: Math.max(itemsPayload.version || 0, movementsPayload.version || 0) });
+          return;
+        }
+        const payload = await api(`/api/sync?since=${dataVersion}`);
+        if (payload.changed) applyServerState(payload);
+        dataVersion = Number(payload.version || dataVersion || 0);
+      } catch (err) {
+        console.warn(err);
+      } finally {
+        syncing = false;
+      }
+    }
+
+    function startAutoSync() {
+      if (syncTimer) clearInterval(syncTimer);
+      syncTimer = setInterval(() => syncFromServer(false), 4000);
     }
 
     function renderPermissionGrid(selected = [], role = "employee") {
@@ -1961,7 +2042,7 @@
     }
 
     // Registra entrada ou saida com validacoes preventivas antes de alterar o saldo.
-    function registerMovement(cod, defaults = {}) {
+    async function registerMovement(cod, defaults = {}) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
       const tipo = normalizeMovementPrompt(prompt(`Tipo de movimentacao para ${cod}:`, defaults.tipo || "SAIDA"));
@@ -1976,6 +2057,30 @@
       if (!requireMovementObservation(qty, obs)) {
         return toast(`Observacao obrigatoria para movimentacoes acima de ${obsRequiredQty}.`, "erro");
       }
+
+      // Com login ativo, a movimentacao vai primeiro para o backend e sincroniza para todos.
+      if (currentSession?.csrf) {
+        try {
+          const payload = await api("/api/movements", {
+            method: "POST",
+            body: JSON.stringify({ cod, tipo, qty, resp, obs })
+          });
+          if (payload.item) {
+            const updated = itemFromServer(payload.item);
+            const index = items.findIndex(row => row.cod === cod);
+            if (index >= 0) items[index] = updated;
+          }
+          if (payload.movement) history.unshift(movementFromServer(payload.movement));
+          saveAll();
+          addAudit(`Registrou ${tipo.toLowerCase()} de ${qty} do item ${cod}`);
+          toast("Movimentacao registrada.");
+          syncFromServer(true);
+          return;
+        } catch (err) {
+          return toast(err.message, "erro");
+        }
+      }
+
       let remaining = qty;
       const consumed = [];
       if (tipo === "SAIDA") {
@@ -2070,7 +2175,7 @@
       if (duplicate) return toast("Ja existe item com este codigo.", "erro");
 
       const previous = items.find(row => row.cod === editingCod);
-      const item = {
+      let item = {
         ...(previous || {}),
         id: previous?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
         cod,
@@ -2085,6 +2190,19 @@
         favorite: !!previous?.favorite,
         supplierId: previous?.supplierId || ""
       };
+
+      // Com login ativo, salva primeiro no backend para todos os usuarios receberem a mudanca.
+      if (currentSession?.csrf) {
+        try {
+          const payload = previous?.id
+            ? await api(`/api/items/${previous.id}`, { method: "PUT", body: JSON.stringify(item) })
+            : await api("/api/items", { method: "POST", body: JSON.stringify(item) });
+          item = itemFromServer(payload.item);
+          dataVersion = Math.max(dataVersion, Number(payload.version || dataVersion || 0));
+        } catch (err) {
+          return toast(err.message, "erro");
+        }
+      }
 
       if (previous) {
         Object.assign(previous, item);
@@ -2102,15 +2220,7 @@
       renderAll();
       clearItemForm();
       toast(previous ? "Item atualizado." : "Item cadastrado.");
-
-      // Tenta enviar tambem para o backend quando houver sessao ativa; se falhar, mantem o cadastro local.
-      if (currentSession?.csrf && !previous) {
-        try {
-          await api("/api/items", { method: "POST", body: JSON.stringify(item) });
-        } catch (err) {
-          console.warn(err);
-        }
-      }
+      syncFromServer(true);
     }
 
     // Marca favorito e fixa no topo sem alterar os demais dados do item.
@@ -2123,7 +2233,7 @@
     }
 
     // Copia um cadastro existente e pede um novo codigo para acelerar cadastros similares.
-    function duplicateItem(cod) {
+    async function duplicateItem(cod) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
       const newCod = prompt(`Novo codigo para duplicar ${cod}:`, `${cod}-COPIA`);
@@ -2132,7 +2242,7 @@
         return toast("Ja existe item com este codigo.", "erro");
       }
       const desc = prompt("Descricao do novo item:", item.desc) || item.desc;
-      items.push({
+      let copy = {
         ...item,
         id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
         cod: newCod.trim(),
@@ -2140,12 +2250,22 @@
         qty: 0,
         favorite: false,
         status: "SEM ESTOQUE"
-      });
+      };
+      if (currentSession?.csrf) {
+        try {
+          const payload = await api("/api/items", { method: "POST", body: JSON.stringify(copy) });
+          copy = itemFromServer(payload.item);
+        } catch (err) {
+          return toast(err.message, "erro");
+        }
+      }
+      items.push(copy);
       saveAll();
       populateFilters();
       addAudit(`Duplicou item ${cod} para ${newCod.trim()}`);
       toast("Item duplicado.");
       renderAll();
+      syncFromServer(true);
     }
 
     // Reutiliza os dados da ultima movimentacao do item, permitindo confirmar ou ajustar.
@@ -2187,7 +2307,14 @@
         "Excluir item",
         `Excluir definitivamente o item ${cod}?`,
         "Esta acao remove o cadastro da lista local, mas nao apaga historico ja registrado.",
-        () => {
+        async () => {
+          if (currentSession?.csrf && item.id) {
+            try {
+              await api(`/api/items/${item.id}`, { method: "DELETE" });
+            } catch (err) {
+              return toast(err.message, "erro");
+            }
+          }
           items = items.filter(row => row.cod !== cod);
           delete orders[cod];
           lots = lots.filter(lot => lot.cod !== cod);
@@ -2196,6 +2323,7 @@
           addAudit(`Excluiu item ${cod}`);
           toast("Item excluido.");
           renderAll();
+          syncFromServer(true);
         }
       );
     }
@@ -2546,21 +2674,36 @@
 
     function importCsvFile(file) {
       const reader = new FileReader();
-      reader.onload = () => {
+      reader.onload = async () => {
         const lines = String(reader.result).split(/\r?\n/).filter(Boolean);
         const imported = lines.slice(1).map(line => {
           const cols = line.split(",").map(v => v.replace(/^"|"$/g, "").trim());
-          return { cod: cols[0], desc: cols[1], loc: cols[2], qty: Number(cols[3] || 0), min: Number(cols[4] || 1), status: cols[5] || "OK" };
+          return { cod: cols[0], desc: cols[1], loc: cols[2], qty: Number(cols[3] || 0), min: Number(cols[4] || 1), status: cols[5] || "OK", favorite: false, supplierId: "" };
         }).filter(item => item.cod && item.desc);
-        imported.forEach(item => {
-          const idx = items.findIndex(i => i.cod === item.cod);
-          idx >= 0 ? items[idx] = item : items.push(item);
-        });
+        for (const item of imported) {
+          if (currentSession?.csrf) {
+            try {
+              const existing = items.find(row => row.cod === item.cod);
+              const payload = existing?.id
+                ? await api(`/api/items/${existing.id}`, { method: "PUT", body: JSON.stringify({ ...existing, ...item }) })
+                : await api("/api/items", { method: "POST", body: JSON.stringify(item) });
+              const synced = itemFromServer(payload.item);
+              const idx = items.findIndex(i => i.cod === synced.cod);
+              idx >= 0 ? items[idx] = synced : items.push(synced);
+            } catch (err) {
+              toast(`${item.cod}: ${err.message}`, "erro");
+            }
+          } else {
+            const idx = items.findIndex(i => i.cod === item.cod);
+            idx >= 0 ? items[idx] = item : items.push(item);
+          }
+        }
         saveAll();
         populateFilters();
         renderAll();
         addAudit(`Importou ${imported.length} item(ns) via CSV`);
         toast(`${imported.length} item(ns) importado(s).`);
+        syncFromServer(true);
       };
       reader.readAsText(file, "utf-8");
     }
@@ -2904,8 +3047,14 @@
           input.select();
         }
       });
+      addEventListener("focus", () => syncFromServer(false));
+      document.addEventListener("visibilitychange", () => {
+        if (!document.hidden) syncFromServer(false);
+      });
       byId("logoutButton").addEventListener("click", () => {
         currentSession = null;
+        if (syncTimer) clearInterval(syncTimer);
+        syncTimer = null;
         byId("loginScreen").classList.remove("hidden");
         addAudit("Saiu do sistema");
       });
@@ -2962,6 +3111,8 @@
         try {
           applyPermissions();
           clearUserForm();
+          await syncFromServer(true);
+          startAutoSync();
           if (hasPermission("admin")) await loadAdminUsers();
           addAudit("Entrou no sistema");
           toast("Login realizado.");
