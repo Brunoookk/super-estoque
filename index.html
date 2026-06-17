@@ -650,6 +650,7 @@
         z-index: 20;
         width: min(86vw, 300px);
         height: 100vh;
+        overflow-y: auto;
         transform: translateX(-105%);
         transition: transform .18s ease;
         border-right: 1px solid var(--border-soft);
@@ -668,7 +669,7 @@
       }
 
       .main {
-        padding: 18px 18px 84px;
+        padding: 18px 18px 96px;
       }
     }
 
@@ -684,37 +685,200 @@
 
       .topbar {
         flex-direction: column;
+        gap: 14px;
+      }
+
+      .topbar > div {
+        width: 100%;
+      }
+
+      .topbar > div:last-child {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px !important;
+      }
+
+      .topbar .button,
+      form .button {
+        width: 100%;
+      }
+
+      .panel > div[style*="display:flex"],
+      form > div[style*="display:flex"] {
+        display: grid !important;
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 10px !important;
+      }
+
+      form.grid,
+      #itemForm,
+      #supplierForm,
+      #poForm,
+      #userAdminForm {
+        grid-template-columns: 1fr;
+      }
+
+      form.grid > div,
+      form.grid > button,
+      form.grid > label {
+        min-width: 0;
       }
     }
 
     @media (max-width: 640px) {
+      body {
+        font-size: 13px;
+      }
+
       .main {
-        padding: 14px 12px 88px;
+        padding: 12px 10px 104px;
+      }
+
+      .page {
+        width: 100%;
+      }
+
+      .topbar h1 {
+        font-size: 24px;
+        line-height: 1.12;
+      }
+
+      .lead {
+        font-size: 13px;
       }
 
       .kpi-grid {
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        grid-template-columns: 1fr;
         gap: 10px;
       }
 
       .kpi-card:first-child {
-        grid-column: 1 / -1;
+        grid-column: auto;
       }
 
       .kpi-card {
-        min-height: 112px;
-      }
-
-      .kpi-value {
-        font-size: 28px;
-      }
-
-      .panel {
+        min-height: 98px;
         padding: 14px;
       }
 
+      .kpi-value {
+        font-size: 26px;
+      }
+
+      .health-card {
+        padding: 14px;
+      }
+
+      .health-head,
+      .panel-head,
+      .summary-row {
+        grid-template-columns: 1fr;
+        align-items: start;
+      }
+
+      .panel-head {
+        display: grid;
+      }
+
+      .panel {
+        padding: 12px;
+      }
+
+      .filters {
+        gap: 8px;
+      }
+
+      .input,
+      .select,
+      .button {
+        min-height: 44px;
+      }
+
+      .button {
+        width: 100%;
+        padding: 0 10px;
+        white-space: normal;
+        text-align: center;
+      }
+
+      .panel > div[style*="display:flex"],
+      form > div[style*="display:flex"],
+      .topbar > div:last-child {
+        grid-template-columns: 1fr !important;
+      }
+
+      .table-wrap {
+        max-width: calc(100vw - 20px);
+        border-radius: 10px;
+      }
+
       table {
-        min-width: 760px;
+        min-width: 980px;
+        font-size: 13px;
+      }
+
+      th,
+      td {
+        padding: 10px 8px;
+      }
+
+      td .button,
+      td .input,
+      td .select {
+        min-height: 36px;
+        width: auto;
+        min-width: 86px;
+      }
+
+      .sidebar {
+        width: min(92vw, 320px);
+        padding: 16px 12px;
+      }
+
+      .nav-button {
+        min-height: 46px;
+      }
+
+      .mobile-menu-button {
+        left: 10px;
+        right: auto;
+        bottom: 10px;
+        width: auto;
+        min-width: 96px;
+      }
+
+      #aiOpenButton {
+        right: 10px !important;
+        bottom: 10px !important;
+        width: auto;
+        min-width: 64px;
+      }
+
+      #toastHost {
+        left: 10px !important;
+        right: 10px !important;
+        bottom: 66px !important;
+      }
+
+      #qrModal,
+      #scannerModal,
+      #confirmModal,
+      #aiModal {
+        padding: 10px !important;
+        place-items: center !important;
+      }
+
+      #qrModal .card,
+      #scannerModal .card,
+      #confirmModal .card,
+      #aiModal .card {
+        width: 100% !important;
+        max-height: calc(100vh - 20px);
+        overflow: auto;
+      }
+
+      #permissionGrid {
+        grid-template-columns: 1fr !important;
       }
     }
   </style>
