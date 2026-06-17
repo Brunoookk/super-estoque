@@ -334,7 +334,7 @@ Permite:
 
 ### Cadastrar item
 
-Atualmente o cadastro principal de itens pode ser feito via importacao CSV ou por fluxos existentes do sistema. Campos principais:
+O cadastro principal de itens fica na tela `Estoque`, no formulario `Novo item`. Tambem e possivel importar itens por CSV. Campos principais:
 
 - Codigo.
 - Descricao.

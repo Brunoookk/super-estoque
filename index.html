@@ -906,6 +906,26 @@
           </div>
         </div>
         <section class="card panel">
+          <div class="panel-head">
+            <h2 class="panel-title">Novo item</h2>
+          </div>
+          <form id="itemForm" class="grid">
+            <input id="itemEditCod" type="hidden">
+            <div class="field"><label for="itemCod">Codigo</label><input class="input" id="itemCod" required placeholder="ex: ABC-001"></div>
+            <div class="field"><label for="itemDesc">Descricao</label><input class="input" id="itemDesc" required placeholder="Nome do item"></div>
+            <div class="field"><label for="itemLoc">Local</label><input class="input" id="itemLoc" placeholder="Almoxarifado"></div>
+            <div class="field"><label for="itemQty">Quantidade</label><input class="input" id="itemQty" type="number" min="0" step="0.01" value="0"></div>
+            <div class="field"><label for="itemMin">Minimo</label><input class="input" id="itemMin" type="number" min="0" step="0.01" value="1"></div>
+            <div class="field"><label for="itemEnd">Endereco</label><input class="input" id="itemEnd" placeholder="Rua, prateleira, posicao"></div>
+            <div class="field"><label for="itemArm">Armazem</label><input class="input" id="itemArm" placeholder="Deposito"></div>
+            <div class="field"><label for="itemObs">Observacao</label><input class="input" id="itemObs" placeholder="Detalhes internos"></div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap">
+              <button class="button primary" type="submit">Salvar item</button>
+              <button class="button" id="clearItemFormButton" type="button">Novo cadastro</button>
+            </div>
+          </form>
+        </section>
+        <section class="card panel">
           <div class="filters">
             <div class="field">
               <label for="searchInput2">Buscar</label>
@@ -1698,6 +1718,7 @@
           <td><button class="button" data-qr="${item.cod}">QR</button></td>
           <td>
             <button class="button" data-duplicate="${item.cod}">Duplicar</button>
+            <button class="button" data-edit-item="${item.cod}">Editar</button>
             <button class="button" data-repeat-movement="${item.cod}">Repetir</button>
             <button class="button" data-zero="${item.cod}">Zerar</button>
             <button class="button" data-delete="${item.cod}">Excluir</button>
@@ -1991,6 +2012,105 @@
 
     function registerExit(cod) {
       registerMovement(cod, { tipo: "SAIDA" });
+    }
+
+    // Calcula o status do item a partir da quantidade e do minimo configurado.
+    function calcItemStatus(qty, min) {
+      const amount = Number(qty || 0);
+      const minimum = Number(min || 0);
+      if (amount <= 0) return "SEM ESTOQUE";
+      if (amount < minimum) return "COMPRAR";
+      if (amount === minimum) return "NO LIMITE";
+      return "OK";
+    }
+
+    // Limpa o formulario de item para um novo cadastro.
+    function clearItemForm() {
+      byId("itemEditCod").value = "";
+      byId("itemCod").value = "";
+      byId("itemCod").disabled = false;
+      byId("itemDesc").value = "";
+      byId("itemLoc").value = "";
+      byId("itemQty").value = "0";
+      byId("itemMin").value = "1";
+      byId("itemEnd").value = "";
+      byId("itemArm").value = "";
+      byId("itemObs").value = "";
+    }
+
+    // Carrega um item existente no formulario para edicao rapida.
+    function editItem(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      byId("itemEditCod").value = item.cod;
+      byId("itemCod").value = item.cod;
+      byId("itemCod").disabled = true;
+      byId("itemDesc").value = item.desc || "";
+      byId("itemLoc").value = item.loc || "";
+      byId("itemQty").value = Number(item.qty || 0);
+      byId("itemMin").value = Number(item.min || 1);
+      byId("itemEnd").value = item.end || "";
+      byId("itemArm").value = item.arm || "";
+      byId("itemObs").value = item.obs || "";
+      switchPage("estoque");
+      byId("itemDesc").focus();
+    }
+
+    // Salva item novo ou edita item existente sem perder campos ja cadastrados.
+    async function saveItemForm(event) {
+      event.preventDefault();
+      const editingCod = byId("itemEditCod").value;
+      const cod = (editingCod || byId("itemCod").value).trim();
+      const desc = byId("itemDesc").value.trim();
+      const qty = Number(byId("itemQty").value || 0);
+      const min = Number(byId("itemMin").value || 0);
+      if (!cod || !desc) return toast("Codigo e descricao sao obrigatorios.", "erro");
+      if (qty < 0 || min < 0) return toast("Quantidade e minimo nao podem ser negativos.", "erro");
+      const duplicate = items.find(row => row.cod.toLowerCase() === cod.toLowerCase() && row.cod !== editingCod);
+      if (duplicate) return toast("Ja existe item com este codigo.", "erro");
+
+      const previous = items.find(row => row.cod === editingCod);
+      const item = {
+        ...(previous || {}),
+        id: previous?.id || (crypto.randomUUID ? crypto.randomUUID() : String(Date.now())),
+        cod,
+        desc,
+        loc: byId("itemLoc").value.trim(),
+        qty,
+        min,
+        end: byId("itemEnd").value.trim(),
+        arm: byId("itemArm").value.trim(),
+        obs: byId("itemObs").value.trim(),
+        status: calcItemStatus(qty, min),
+        favorite: !!previous?.favorite,
+        supplierId: previous?.supplierId || ""
+      };
+
+      if (previous) {
+        Object.assign(previous, item);
+        addAudit(`Editou item ${cod}`);
+      } else {
+        items.push(item);
+        if (qty > 0) {
+          history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "ENTRADA", qty, resp: currentUser(), obs: "Cadastro inicial do item" });
+        }
+        addAudit(`Cadastrou item ${cod}`);
+      }
+
+      saveAll();
+      populateFilters();
+      renderAll();
+      clearItemForm();
+      toast(previous ? "Item atualizado." : "Item cadastrado.");
+
+      // Tenta enviar tambem para o backend quando houver sessao ativa; se falhar, mantem o cadastro local.
+      if (currentSession?.csrf && !previous) {
+        try {
+          await api("/api/items", { method: "POST", body: JSON.stringify(item) });
+        } catch (err) {
+          console.warn(err);
+        }
+      }
     }
 
     // Marca favorito e fixa no topo sem alterar os demais dados do item.
@@ -2701,6 +2821,7 @@
         const qr = event.target.closest("[data-qr]");
         const favorite = event.target.closest("[data-favorite]");
         const duplicate = event.target.closest("[data-duplicate]");
+        const editItemButton = event.target.closest("[data-edit-item]");
         const repeatMovement = event.target.closest("[data-repeat-movement]");
         const zero = event.target.closest("[data-zero]");
         const deleteButton = event.target.closest("[data-delete]");
@@ -2713,6 +2834,7 @@
         if (qr) showQr(qr.dataset.qr);
         if (favorite) toggleFavorite(favorite.dataset.favorite);
         if (duplicate) duplicateItem(duplicate.dataset.duplicate);
+        if (editItemButton) editItem(editItemButton.dataset.editItem);
         if (repeatMovement) repeatLastMovement(repeatMovement.dataset.repeatMovement);
         if (zero) zeroItem(zero.dataset.zero);
         if (deleteButton) deleteItem(deleteButton.dataset.delete);
@@ -2744,6 +2866,8 @@
           renderAll();
         }
       });
+      byId("itemForm").addEventListener("submit", saveItemForm);
+      byId("clearItemFormButton").addEventListener("click", clearItemForm);
       byId("supplierForm").addEventListener("submit", event => {
         event.preventDefault();
         const supplier = {
