@@ -137,6 +137,35 @@ def user_to_dict(row):
     return data
 
 
+def sync_env_user(conn, username, display, role, env_name):
+    password = os.environ.get(env_name)
+    if not password:
+        return
+    if len(password) < 6:
+        raise ValueError(f"{env_name} deve ter pelo menos 6 caracteres.")
+    salt, digest = hash_password(password)
+    permissions = json.dumps(normalize_permissions([], role))
+    row = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
+    if row:
+        conn.execute(
+            """
+            UPDATE users
+            SET display_name = ?, role = ?, permissions = ?, salt = ?, password_hash = ?, active = 1
+            WHERE username = ?
+            """,
+            (display, role, permissions, salt, digest, username),
+        )
+        conn.execute("DELETE FROM sessions WHERE user_id = ?", (row["id"],))
+        return
+    conn.execute(
+        """
+        INSERT INTO users (username, display_name, role, department, permissions, salt, password_hash, active)
+        VALUES (?,?,?,?,?,?,?,1)
+        """,
+        (username, display, role, "", permissions, salt, digest),
+    )
+
+
 def item_to_dict(row):
     return {
         "id": row["id"],
@@ -266,6 +295,8 @@ def init_db():
             "UPDATE users SET permissions = ? WHERE role = 'admin'",
             (json.dumps(normalize_permissions([], "admin")),),
         )
+        sync_env_user(conn, "chefe", "Chefe do Estoque", "admin", "SUPERESTOQUE_ADMIN_PASSWORD")
+        sync_env_user(conn, "funcionario", "Funcionário Estoque", "employee", "SUPERESTOQUE_EMPLOYEE_PASSWORD")
 
 
 class App(BaseHTTPRequestHandler):

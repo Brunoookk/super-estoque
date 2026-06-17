@@ -140,6 +140,8 @@ SUPERESTOQUE_EMPLOYEE_PASSWORD=sua_senha_forte
 
 Se as variaveis nao forem configuradas antes da criacao do banco, o backend gera senhas automaticamente. Guarde as credenciais com seguranca.
 
+Em deploys como Render, se o banco persistente ja existir e o login falhar, defina ou atualize `SUPERESTOQUE_ADMIN_PASSWORD` e reinicie o servico. Na inicializacao, o sistema ativa o usuario `chefe` e redefine a senha dele para o valor dessa variavel.
+
 No banco local usado durante a preparacao deste projeto, as senhas foram redefinidas para acesso inicial operacional:
 
 ```text
@@ -651,6 +653,15 @@ SUPERESTOQUE_DATA_DIR=/var/data
 ```
 
 Sem disco persistente, os dados podem ser perdidos quando o Render recriar o servico.
+
+Para evitar falha de login no Render, configure tambem as variaveis de ambiente:
+
+```text
+SUPERESTOQUE_ADMIN_PASSWORD=sua_senha_forte
+SUPERESTOQUE_EMPLOYEE_PASSWORD=sua_senha_funcionario
+```
+
+Depois salve as variaveis e reinicie/redeploy o servico. O usuario `chefe` sera ativado e tera a senha sincronizada com `SUPERESTOQUE_ADMIN_PASSWORD`.
 
 ## Seguranca
 
