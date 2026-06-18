@@ -13,32 +13,36 @@
   <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
   <style>
     :root {
-      --bg: #eaf4fb;
-      --surface: #fcfeff;
-      --surface-2: #f4f9fd;
-      --surface-3: #e1edf6;
-      --navy: #071826;
-      --navy-2: #0d2435;
-      --text: #22384a;
-      --muted: #5f7284;
-      --muted-2: #7c8c9c;
-      --border: #b8c9d7;
-      --border-soft: #d6e2eb;
-      --blue: #0b5cad;
-      --blue-deep: #08457f;
-      --blue-soft: #d7ecfb;
-      --amber: #c7831a;
-      --amber-soft: #fff1d2;
-      --yellow: var(--amber);
-      --orange: var(--amber);
-      --green: #1d7f5f;
-      --green-soft: #dff4ec;
-      --red: #b83a24;
-      --red-soft: #fde7df;
-      --shadow: 0 8px 20px rgba(7, 24, 38, .08);
-      --radius: 4px;
+      --bg: #0b1120;
+      --surface: #111827;
+      --surface-2: #1c2b40;
+      --surface-3: #243349;
+      --navy: #0b1120;
+      --navy-2: #111827;
+      --navy-3: #1c2b40;
+      --navy-4: #243349;
+      --text: #f1f5fb;
+      --muted: #8fa3be;
+      --muted-2: #526070;
+      --border: rgba(255, 255, 255, .07);
+      --border-2: rgba(255, 255, 255, .12);
+      --border-soft: rgba(255, 255, 255, .07);
+      --blue: #1e6fd9;
+      --blue-deep: #7ab1ff;
+      --blue-soft: #1a3a5c;
+      --amber: #f5a623;
+      --amber-soft: #2a2010;
+      --yellow: #f9a825;
+      --orange: #f57c00;
+      --green: #22c55e;
+      --green-soft: #0d2e1a;
+      --red: #ef4444;
+      --red-soft: #2a0d0d;
+      --shadow: none;
+      --shadow-lg: 0 8px 32px rgba(0, 0, 0, .35);
+      --radius: 10px;
       --font-display: "Space Grotesk", "Arial Narrow", sans-serif;
-      --font-body: "Source Sans 3", "Segoe UI", sans-serif;
+      --font-body: "Space Grotesk", "Source Sans 3", "Segoe UI", sans-serif;
       --font-mono: "IBM Plex Mono", Consolas, monospace;
     }
 
@@ -47,14 +51,13 @@
     }
 
     html {
-      color-scheme: light;
+      color-scheme: dark;
     }
 
     body {
       margin: 0;
       min-height: 100vh;
       background-color: var(--bg);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23071826' stroke-opacity='.055' stroke-width='1'%3E%3Cpath d='M0 24H96M0 48H96M0 72H96M24 0V96M48 0V96M72 0V96'/%3E%3Cpath d='M8 8H32V16H8zM64 56H88V64H64z'/%3E%3C/g%3E%3C/svg%3E");
       color: var(--text);
       font: 400 14px/1.45 var(--font-body);
       letter-spacing: 0;
@@ -87,30 +90,34 @@
     }
 
     .app {
-      display: grid;
-      grid-template-columns: 280px minmax(0, 1fr);
+      display: block;
       min-height: 100vh;
     }
 
     .sidebar {
-      position: sticky;
+      position: fixed;
+      left: 0;
       top: 0;
+      bottom: 0;
+      width: 220px;
       height: 100vh;
       display: flex;
       flex-direction: column;
-      gap: 18px;
-      padding: 18px 14px;
+      gap: 0;
+      z-index: 100;
+      padding: 0 0 16px;
       background-color: var(--navy);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23d6e2eb' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M0 28H56M28 0V56'/%3E%3Cpath d='M6 6H22V12H6zM34 34H50V40H34z'/%3E%3C/g%3E%3C/svg%3E");
-      border-right: 1px solid #0f334a;
+      background-image: none;
+      border-right: 0;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 4px 6px 16px;
-      border-bottom: 1px solid rgba(214, 226, 235, .18);
+      padding: 22px 18px 16px;
+      margin-bottom: 8px;
+      border-bottom: 1px solid rgba(255, 255, 255, .08);
     }
 
     .brand-mark {
@@ -118,7 +125,7 @@
       place-items: center;
       width: 40px;
       height: 40px;
-      border-radius: 3px;
+      border-radius: 8px;
       background: #fcfeff;
       color: var(--blue);
     }
@@ -149,9 +156,9 @@
     }
 
     .section-label {
-      padding: 0 10px;
-      color: #7fa2ba;
-      font-size: 11px;
+      padding: 12px 18px 5px;
+      color: rgba(255, 255, 255, .28);
+      font-size: 10px;
       font-weight: 800;
       letter-spacing: .08em;
       text-transform: uppercase;
@@ -162,13 +169,15 @@
       display: flex;
       align-items: center;
       gap: 10px;
-      width: 100%;
-      min-height: 42px;
-      padding: 0 12px;
+      width: calc(100% - 16px);
+      min-height: 0;
+      margin: 1px 8px;
+      padding: 10px 18px;
       border: 1px solid transparent;
-      border-radius: 3px;
+      border-radius: 8px;
       background: transparent;
-      color: #bfd0de;
+      color: rgba(255, 255, 255, .58);
+      font-size: 13.5px;
       font-weight: 600;
       transition: background .16s ease, color .16s ease, border-color .16s ease;
     }
@@ -194,9 +203,9 @@
 
     .nav-button.active {
       color: #fff;
-      background: rgba(11, 92, 173, .28);
-      border-color: rgba(110, 181, 232, .7);
-      box-shadow: inset 3px 0 0 #6eb5e8;
+      background: var(--blue);
+      border-color: var(--blue);
+      box-shadow: none;
     }
 
     .nav-button.active::before {
@@ -205,10 +214,11 @@
 
     .user-panel {
       margin-top: auto;
-      padding: 14px;
-      border: 1px solid rgba(214, 226, 235, .2);
-      border-radius: 3px;
-      background: rgba(255, 255, 255, .05);
+      padding: 14px 18px;
+      border: 0;
+      border-top: 1px solid rgba(255, 255, 255, .08);
+      border-radius: 0;
+      background: transparent;
       color: #fff;
     }
 
@@ -238,15 +248,16 @@
     }
 
     .main {
+      margin-left: 220px;
       min-width: 0;
-      padding: 22px;
+      padding: 26px 28px;
       background: transparent;
     }
 
     .page {
       display: none;
-      max-width: 1480px;
-      margin: 0 auto;
+      max-width: none;
+      margin: 0;
       opacity: 0;
       transform: translateY(4px);
     }
@@ -296,7 +307,7 @@
       min-height: 40px;
       padding: 0 14px;
       border: 1px solid var(--border);
-      border-radius: 3px;
+      border-radius: var(--radius);
       background: var(--surface);
       color: var(--text);
       font-weight: 700;
@@ -341,13 +352,13 @@
       border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       background: var(--surface);
-      box-shadow: none;
+      box-shadow: var(--shadow);
     }
 
     .kpi-card {
       position: relative;
       min-height: 130px;
-      padding: 16px;
+      padding: 18px 20px;
       overflow: hidden;
       animation: cardIn .22s ease-out both;
     }
@@ -370,7 +381,7 @@
 
     .kpi-value {
       margin-top: 12px;
-      font: 700 34px/1 var(--font-display);
+      font: 700 30px/1 var(--font-mono);
       letter-spacing: .01em;
     }
 
@@ -404,7 +415,7 @@
     .progress {
       height: 12px;
       overflow: hidden;
-      border-radius: 2px;
+      border-radius: 8px;
       background: var(--surface-3);
       border: 1px solid var(--border-soft);
     }
@@ -424,7 +435,7 @@
 
     .panel {
       position: relative;
-      padding: 16px;
+      padding: 18px 20px;
       overflow: hidden;
     }
 
@@ -480,7 +491,7 @@
       min-height: 40px;
       padding: 0 12px;
       border: 1px solid var(--border);
-      border-radius: 3px;
+      border-radius: var(--radius);
       outline: none;
       background: #fff;
       color: var(--text);
@@ -496,19 +507,20 @@
     .table-wrap {
       overflow: auto;
       border: 1px solid var(--border-soft);
-      border-radius: 3px;
+      border-radius: var(--radius);
+      background: #fff;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       min-width: 850px;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     th,
     td {
-      padding: 10px 12px;
+      padding: 10px 14px;
       text-align: left;
       vertical-align: middle;
       border-bottom: 1px solid var(--border-soft);
@@ -518,9 +530,9 @@
       position: sticky;
       top: 0;
       z-index: 1;
-      background: #eef6fb;
+      background: var(--surface-2);
       color: var(--muted);
-      font-size: 12px;
+      font-size: 11px;
       font-weight: 800;
       letter-spacing: .055em;
       text-transform: uppercase;
@@ -544,7 +556,7 @@
     }
 
     tbody tr:hover {
-      background: #e9f3fb;
+      background: var(--blue-soft);
     }
 
     tbody tr:last-child td {
@@ -569,7 +581,7 @@
       align-items: center;
       min-height: 26px;
       padding: 0 9px;
-      border-radius: 2px;
+      border-radius: 20px;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
@@ -662,7 +674,6 @@
       place-items: center;
       padding: 24px;
       background-color: var(--bg);
-      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%23071826' stroke-opacity='.06' stroke-width='1'%3E%3Cpath d='M0 22H88M0 44H88M0 66H88M22 0V88M44 0V88M66 0V88'/%3E%3Cpath d='M10 10H30V17H10zM58 58H78V65H58z'/%3E%3C/g%3E%3C/svg%3E");
     }
 
     .login-screen.hidden {
@@ -671,11 +682,11 @@
 
     .login-card {
       width: min(100%, 420px);
-      padding: 24px;
+      padding: 28px;
       border: 1px solid var(--border-soft);
-      border-radius: 4px;
+      border-radius: 14px;
       background: var(--surface);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-lg);
       animation: loginPanelIn .24s ease-out both;
     }
 
@@ -708,7 +719,7 @@
       display: none;
       padding: 10px 12px;
       border: 1px solid #e0a897;
-      border-radius: 3px;
+      border-radius: var(--radius);
       background: var(--red-soft);
       color: #8f2817;
       font-weight: 700;
@@ -871,9 +882,357 @@
       background: rgba(0, 0, 0, .54);
     }
 
+    .label-preview {
+      display: grid;
+      grid-template-columns: 1.05fr .8fr;
+      gap: 10px;
+      padding: 16px;
+      border: 1px dashed var(--border-soft);
+      border-radius: 8px;
+      background: var(--surface-2);
+    }
+
+    .print-label {
+      display: grid;
+      align-content: center;
+      min-height: 162px;
+      padding: 12px;
+      border: 3px solid #111;
+      background: #fff;
+      color: #111;
+      font-family: Arial, Helvetica, sans-serif;
+      font-weight: 900;
+      text-align: center;
+      text-transform: uppercase;
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .print-label.primary {
+      font-size: 15px;
+    }
+
+    .print-label.secondary {
+      font-size: 28px;
+    }
+
+    .print-label .label-code {
+      margin-bottom: 4px;
+      font-size: 18px;
+    }
+
+    .print-label .label-desc,
+    .print-label .label-line {
+      font-size: 15px;
+    }
+
+    .print-label.secondary .label-line,
+    .print-label.secondary .label-date {
+      font-size: 28px;
+    }
+
+    .label-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 18px;
+    }
+
+    /* Interface baseada no dashboard operacional Nexaro/SuperEstoque */
+    body {
+      background: var(--navy);
+      color: var(--text);
+    }
+
+    .sidebar {
+      background: var(--navy-2);
+      border-right: 1px solid var(--border);
+    }
+
+    .brand {
+      border-bottom-color: var(--border);
+    }
+
+    .brand-mark {
+      background: var(--amber);
+      color: var(--navy);
+      border-radius: 8px;
+    }
+
+    .brand-title {
+      color: var(--text);
+    }
+
+    .brand-subtitle,
+    .user-role {
+      color: var(--muted);
+    }
+
+    .section-label {
+      color: var(--muted-2);
+    }
+
+    .nav-button {
+      color: var(--muted);
+    }
+
+    .nav-button:hover {
+      background: var(--surface-3);
+      border-color: transparent;
+      color: var(--text);
+    }
+
+    .nav-button.active {
+      background: var(--blue-soft);
+      border-color: transparent;
+      color: #7ab1ff;
+    }
+
+    .nav-button.active::before {
+      background: var(--blue);
+    }
+
+    .user-panel {
+      border-top-color: var(--border);
+      color: var(--text);
+    }
+
+    .logout-button {
+      border-color: var(--border);
+      background: var(--surface-3);
+      color: var(--text);
+    }
+
+    .main {
+      background: var(--navy);
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      align-items: center;
+      margin: -26px -28px 22px;
+      padding: 16px 28px;
+      border-bottom: 1px solid var(--border);
+      background: var(--navy-2);
+    }
+
+    .eyebrow {
+      color: var(--blue);
+    }
+
+    h1,
+    .panel-title,
+    .health-title,
+    .item-name,
+    .summary-row strong {
+      color: var(--text);
+    }
+
+    .lead,
+    .muted,
+    .field label,
+    .kpi-label,
+    .kpi-note,
+    .summary-row span {
+      color: var(--muted);
+    }
+
+    .card,
+    .panel,
+    .health-card,
+    .kpi-card,
+    .login-card {
+      background: var(--navy-2);
+      border-color: var(--border);
+      box-shadow: none;
+    }
+
+    .panel::after {
+      opacity: .08;
+      filter: invert(1);
+    }
+
+    .kpi-card:hover,
+    .card:hover,
+    .panel:hover {
+      border-color: var(--border-2);
+    }
+
+    .kpi-value,
+    .health-value,
+    .summary-row .mono {
+      color: var(--text);
+    }
+
+    .button {
+      border-color: var(--border);
+      background: var(--surface-3);
+      color: var(--text);
+    }
+
+    .button:hover {
+      border-color: var(--border-2);
+      background: var(--navy-4);
+      color: var(--text);
+    }
+
+    .button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    .input,
+    .select {
+      border-color: var(--border);
+      background: var(--navy-3);
+      color: var(--text);
+    }
+
+    .input::placeholder {
+      color: var(--muted-2);
+    }
+
+    .input:focus,
+    .select:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(30, 111, 217, .25);
+    }
+
+    .table-wrap {
+      border-color: var(--border);
+      background: var(--navy-2);
+    }
+
+    table {
+      color: var(--text);
+    }
+
+    th {
+      background: var(--navy-3);
+      border-bottom-color: var(--border);
+      color: var(--muted);
+    }
+
+    td {
+      border-bottom-color: var(--border);
+      color: var(--text);
+    }
+
+    tbody tr:nth-child(even) {
+      background: rgba(255, 255, 255, .015);
+    }
+
+    tbody tr:hover {
+      background: rgba(255, 255, 255, .035);
+    }
+
+    .summary-row {
+      border-color: var(--border);
+      background: var(--navy-3);
+    }
+
+    .progress,
+    .technical-scanner {
+      border-color: var(--border);
+      background: var(--navy-3);
+    }
+
+    .badge.ok {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, .2);
+    }
+
+    .badge.limit,
+    .badge.buy {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border: 1px solid rgba(245, 166, 35, .2);
+    }
+
+    .badge.empty {
+      background: var(--red-soft);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, .2);
+    }
+
+    .login-screen {
+      background: var(--navy);
+    }
+
+    .login-error {
+      border-color: rgba(239, 68, 68, .32);
+      background: var(--red-soft);
+      color: #fca5a5;
+    }
+
+    #toastHost > div {
+      background: var(--navy-2) !important;
+      color: var(--text) !important;
+      border-color: var(--border) !important;
+    }
+
+    #qrModal,
+    #labelModal,
+    #scannerModal,
+    #confirmModal,
+    #aiModal {
+      background: rgba(2, 6, 23, .72) !important;
+    }
+
+    #page-dashboard .topbar .lead {
+      max-width: 520px;
+    }
+
+    #page-dashboard #kpiGrid {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+
+    #page-dashboard .kpi-card {
+      min-height: 108px;
+    }
+
+    #page-dashboard .topbar > div:last-child {
+      display: flex !important;
+      gap: 10px !important;
+    }
+
+    #page-dashboard #notificationButton,
+    #page-dashboard #obsLimitButton,
+    #page-dashboard #presentationButton,
+    #page-dashboard #opsKpiGrid,
+    #page-dashboard > section.card.panel,
+    #page-dashboard .content-grid > section {
+      display: none !important;
+    }
+
+    #page-dashboard .content-grid {
+      grid-template-columns: minmax(0, 1fr);
+      margin-top: 12px;
+    }
+
+    .dashboard-simple-grid {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(320px, 1.1fr);
+      gap: 12px;
+      align-items: start;
+    }
+
+    #page-dashboard .health-card {
+      margin-bottom: 0;
+    }
+
+    #page-dashboard #summaryList {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
     @media (max-width: 1180px) {
       .app {
-        grid-template-columns: 1fr;
+        display: block;
       }
 
       .sidebar {
@@ -901,6 +1260,7 @@
       }
 
       .main {
+        margin-left: 0;
         padding: 18px 18px 96px;
       }
     }
@@ -1093,6 +1453,7 @@
       }
 
       #qrModal,
+      #labelModal,
       #scannerModal,
       #confirmModal,
       #aiModal {
@@ -1101,6 +1462,7 @@
       }
 
       #qrModal .card,
+      #labelModal .card,
       #scannerModal .card,
       #confirmModal .card,
       #aiModal .card {
@@ -1111,6 +1473,10 @@
 
       #permissionGrid {
         grid-template-columns: 1fr !important;
+      }
+
+      .label-preview {
+        grid-template-columns: 1fr;
       }
     }
   </style>
@@ -1134,7 +1500,7 @@
         <div class="brand-mark"><svg><use href="#icon-lock"></use></svg></div>
         <div>
           <h1 class="login-title">Nexaro</h1>
-          <p class="login-subtitle">Console operacional de estoque portuario</p>
+          <p class="login-subtitle">Console operacional de estoque portuário</p>
         </div>
       </div>
       <div class="login-form">
@@ -1165,27 +1531,27 @@
         </div>
       </div>
 
-      <nav class="nav-section" aria-label="Navegacao principal">
+      <nav class="nav-section" aria-label="Navegação principal">
         <div class="section-label">Menu</div>
         <button class="nav-button active" data-page="dashboard" data-permission="dashboard"><svg><use href="#icon-layout"></use></svg><span>Dashboard</span></button>
         <button class="nav-button" data-page="estoque" data-permission="estoque"><svg><use href="#icon-table"></use></svg><span>Estoque</span></button>
-        <button class="nav-button" data-page="compras" data-permission="compras"><svg><use href="#icon-cart"></use></svg><span>Lista de Compras</span></button>
-        <button class="nav-button" data-page="historico" data-permission="historico"><svg><use href="#icon-table"></use></svg><span>Historico</span></button>
+        <button class="nav-button" data-page="compras" data-permission="compras"><svg><use href="#icon-cart"></use></svg><span>Lista de compras</span></button>
+        <button class="nav-button" data-page="historico" data-permission="historico"><svg><use href="#icon-table"></use></svg><span>Histórico</span></button>
       </nav>
 
       <nav class="nav-section" aria-label="Acompanhamento">
-        <div class="section-label">Operacao</div>
-        <button class="nav-button" data-page="saude" data-permission="saude"><svg><use href="#icon-activity"></use></svg><span>Saude do Estoque</span></button>
-        <button class="nav-button" data-page="relatorios" data-permission="relatorios"><svg><use href="#icon-activity"></use></svg><span>Relatorios</span></button>
+        <div class="section-label">Operação</div>
+        <button class="nav-button" data-page="saude" data-permission="saude"><svg><use href="#icon-activity"></use></svg><span>Saúde do estoque</span></button>
+        <button class="nav-button" data-page="relatorios" data-permission="relatorios"><svg><use href="#icon-activity"></use></svg><span>Relatórios</span></button>
         <button class="nav-button" data-page="financeiro" data-permission="financeiro"><svg><use href="#icon-activity"></use></svg><span>Financeiro</span></button>
         <button class="nav-button" data-page="rastreabilidade" data-permission="rastreabilidade"><svg><use href="#icon-table"></use></svg><span>Rastreabilidade</span></button>
-        <button class="nav-button" data-page="ocs" data-permission="ocs"><svg><use href="#icon-cart"></use></svg><span>Ordens de Compra</span></button>
+        <button class="nav-button" data-page="ocs" data-permission="ocs"><svg><use href="#icon-cart"></use></svg><span>Ordens de compra</span></button>
         <button class="nav-button" data-page="admin" data-permission="admin"><svg><use href="#icon-lock"></use></svg><span>Admin</span></button>
       </nav>
 
       <div class="user-panel">
         <div class="user-name" id="userName">Equipe SuperEstoque</div>
-        <div class="user-role">Operacao de estoque</div>
+        <div class="user-role">Operação de estoque</div>
         <button class="logout-button" id="logoutButton"><svg><use href="#icon-log-out"></use></svg>Sair</button>
       </div>
     </aside>
@@ -1196,13 +1562,13 @@
         <div class="topbar">
           <div>
             <p class="eyebrow">Painel operacional</p>
-            <h1>Controle de estoque para manutencao e compras</h1>
-            <p class="lead">Visao consolidada de disponibilidade, ruptura, reposicao e itens criticos por local de armazenamento.</p>
+            <h1>Controle de estoque para manutenção e compras</h1>
+            <p class="lead">Visão consolidada de disponibilidade, ruptura, reposição e itens críticos por local de armazenamento.</p>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="button" id="notificationButton">Notificacoes</button>
-            <button class="button" id="obsLimitButton">Limite observacao</button>
-            <button class="button" id="presentationButton">Modo apresentacao</button>
+            <button class="button" id="notificationButton">Notificações</button>
+            <button class="button" id="obsLimitButton">Limite de observação</button>
+            <button class="button" id="presentationButton">Modo apresentação</button>
             <button class="button" id="summaryPdfButton">Exportar resumo em PDF</button>
             <button class="button primary" id="exportButton"><svg><use href="#icon-download"></use></svg>Exportar CSV</button>
           </div>
@@ -1213,20 +1579,20 @@
         <div class="card health-card">
           <div class="health-head">
             <div>
-              <div class="health-title">Saude do estoque</div>
+              <div class="health-title">Saúde do estoque</div>
               <div class="muted">Percentual de itens com status OK</div>
             </div>
             <div class="health-value" id="healthValue">0%</div>
           </div>
-          <div class="progress" aria-label="Progresso de saude do estoque">
+          <div class="progress" aria-label="Progresso de saúde do estoque">
             <div class="progress-fill" id="healthFill"></div>
           </div>
         </div>
 
         <section class="card panel" style="margin-bottom:16px">
           <div class="panel-head">
-            <h2 class="panel-title">Operacao de usuarios</h2>
-            <span class="muted">Sessao, login e movimentacoes</span>
+            <h2 class="panel-title">Operação de usuários</h2>
+            <span class="muted">Sessão, login e movimentações</span>
           </div>
           <div class="grid kpi-grid" id="opsKpiGrid"></div>
         </section>
@@ -1240,7 +1606,7 @@
             <div class="filters">
               <div class="field">
                 <label for="searchInput">Buscar</label>
-                <input class="input" id="searchInput" placeholder="Codigo, descricao ou local">
+                <input class="input" id="searchInput" placeholder="Código, descrição ou local">
               </div>
               <div class="field">
                 <label for="statusFilter">Status</label>
@@ -1259,7 +1625,7 @@
                 </select>
               </div>
               <div class="field">
-                <label for="codeFilter">Codigo</label>
+                <label for="codeFilter">Código</label>
                 <select class="select" id="codeFilter"></select>
               </div>
               <div class="field">
@@ -1270,29 +1636,29 @@
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
               <button class="button" id="excelButton">Exportar Excel</button>
               <button class="button" id="importCsvButton">Importar CSV</button>
-              <button class="button" id="barcodeButton">Ler codigo pela camera</button>
+              <button class="button" id="barcodeButton">Ler código pela câmera</button>
               <input id="csvFileInput" type="file" accept=".csv,text/csv" hidden>
             </div>
             <div class="table-wrap">
               <table>
                 <thead>
                   <tr>
-                    <th data-sort="cod">Codigo</th>
+                    <th data-sort="cod">Código</th>
                     <th>Fav</th>
-                    <th data-sort="desc">Descricao</th>
+                    <th data-sort="desc">Descrição</th>
                     <th data-sort="codeType">Tipo</th>
                     <th data-sort="itemClass">Classe</th>
                     <th data-sort="loc">Local</th>
-                    <th data-sort="end">Endereco</th>
+                    <th data-sort="end">Endereço</th>
                     <th data-sort="qty">Qtd</th>
-                    <th data-sort="min">Minimo</th>
+                    <th data-sort="min">Mínimo</th>
                     <th data-sort="status">Status</th>
                     <th>Origem</th>
                     <th>Custo</th>
                     <th>Validade</th>
-                    <th>Saida</th>
+                    <th>Saída</th>
                     <th>QR</th>
-                    <th>Acoes</th>
+                    <th>Ações</th>
                   </tr>
                 </thead>
                 <tbody id="stockTable"></tbody>
@@ -1312,7 +1678,7 @@
       <section class="page" id="page-estoque">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Inventario</p>
+            <p class="eyebrow">Inventário</p>
             <h1>Tabela de estoque</h1>
             <p class="lead">Filtre rapidamente por status, local ou termo de busca para apoiar a rotina operacional.</p>
           </div>
@@ -1327,16 +1693,16 @@
           </div>
           <form id="itemForm" class="grid">
             <input id="itemEditCod" type="hidden">
-            <div class="field"><label for="itemCod">Codigo</label><input class="input" id="itemCod" required placeholder="ex: ABC-001"></div>
-            <div class="field"><label for="itemDesc">Descricao</label><input class="input" id="itemDesc" required placeholder="Nome do item"></div>
-            <div class="field"><label for="itemClass">Classe</label><select class="select" id="itemClass"><option value="PECA">Peca</option><option value="CONSUMO">Consumo DHAS</option><option value="FERRAMENTA">Ferramenta</option><option value="OUTROS">Outros</option></select></div>
+            <div class="field"><label for="itemCod">Código</label><input class="input" id="itemCod" required placeholder="ex: ABC-001"></div>
+            <div class="field"><label for="itemDesc">Descrição</label><input class="input" id="itemDesc" required placeholder="Nome do item"></div>
+            <div class="field"><label for="itemClass">Classe</label><select class="select" id="itemClass"><option value="PECA">Peça</option><option value="CONSUMO">Consumo DHAS</option><option value="FERRAMENTA">Ferramenta</option><option value="OUTROS">Outros</option></select></div>
             <div class="field"><label for="itemLoc">Local</label><input class="input" id="itemLoc" placeholder="Almoxarifado"></div>
             <div class="field"><label for="itemQty">Quantidade</label><input class="input" id="itemQty" type="number" min="0" step="0.01" value="0"></div>
-            <div class="field"><label for="itemMin">Minimo</label><input class="input" id="itemMin" type="number" min="0" step="0.01" value="1"></div>
-            <div class="field"><label for="itemEnd">Endereco</label><input class="input" id="itemEnd" placeholder="Rua, prateleira, posicao"></div>
-            <div class="field"><label for="itemArm">Armazem</label><input class="input" id="itemArm" placeholder="Deposito"></div>
-            <label style="display:flex;gap:8px;align-items:center"><input id="itemAddressValidated" type="checkbox"> Endereco validado</label>
-            <div class="field"><label for="itemObs">Observacao</label><input class="input" id="itemObs" placeholder="Detalhes internos"></div>
+            <div class="field"><label for="itemMin">Mínimo</label><input class="input" id="itemMin" type="number" min="0" step="0.01" value="1"></div>
+            <div class="field"><label for="itemEnd">Endereço</label><input class="input" id="itemEnd" placeholder="Rua, prateleira, posição"></div>
+            <div class="field"><label for="itemArm">Armazém</label><input class="input" id="itemArm" placeholder="Depósito"></div>
+            <label style="display:flex;gap:8px;align-items:center"><input id="itemAddressValidated" type="checkbox"> Endereço validado</label>
+            <div class="field"><label for="itemObs">Observação</label><input class="input" id="itemObs" placeholder="Detalhes internos"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
               <button class="button primary" type="submit">Salvar item</button>
               <button class="button" id="clearItemFormButton" type="button">Novo cadastro</button>
@@ -1347,7 +1713,7 @@
           <div class="filters">
             <div class="field">
               <label for="searchInput2">Buscar</label>
-              <input class="input mirror-search" id="searchInput2" placeholder="Codigo, descricao ou local">
+              <input class="input mirror-search" id="searchInput2" placeholder="Código, descrição ou local">
             </div>
             <div class="field">
               <label for="statusFilter2">Status</label>
@@ -1358,7 +1724,7 @@
               <select class="select mirror-local" id="localFilter2"></select>
             </div>
             <div class="field">
-              <label for="codeFilter2">Codigo</label>
+              <label for="codeFilter2">Código</label>
               <select class="select" id="codeFilter2"></select>
             </div>
             <div class="field">
@@ -1370,22 +1736,22 @@
             <table>
               <thead>
                 <tr>
-                  <th data-sort="cod">Codigo</th>
+                  <th data-sort="cod">Código</th>
                   <th>Fav</th>
-                  <th data-sort="desc">Descricao</th>
+                  <th data-sort="desc">Descrição</th>
                   <th data-sort="codeType">Tipo</th>
                   <th data-sort="itemClass">Classe</th>
                   <th data-sort="loc">Local</th>
-                  <th data-sort="end">Endereco</th>
+                  <th data-sort="end">Endereço</th>
                   <th data-sort="qty">Qtd</th>
-                  <th data-sort="min">Minimo</th>
+                  <th data-sort="min">Mínimo</th>
                   <th data-sort="status">Status</th>
                   <th>Origem</th>
                   <th>Custo</th>
                   <th>Validade</th>
-                  <th>Saida</th>
+                  <th>Saída</th>
                   <th>QR</th>
-                  <th>Acoes</th>
+                  <th>Ações</th>
                 </tr>
               </thead>
               <tbody id="stockTableFull"></tbody>
@@ -1398,8 +1764,8 @@
         <div class="topbar">
           <div>
             <p class="eyebrow">Compras</p>
-            <h1>Lista de reposicao</h1>
-            <p class="lead">Itens sem estoque ou abaixo do minimo, priorizados para compra e reposicao.</p>
+            <h1>Lista de reposição</h1>
+            <p class="lead">Itens sem estoque ou abaixo do mínimo, priorizados para compra e reposição.</p>
           </div>
         </div>
         <section class="card panel">
@@ -1407,14 +1773,14 @@
             <table>
               <thead>
                 <tr>
-                  <th data-purchase-sort="cod">Codigo</th>
-                  <th data-purchase-sort="desc">Descricao</th>
+                  <th data-purchase-sort="cod">Código</th>
+                  <th data-purchase-sort="desc">Descrição</th>
                   <th data-purchase-sort="loc">Local</th>
                   <th data-purchase-sort="qty">Qtd atual</th>
-                  <th data-purchase-sort="min">Minimo</th>
+                  <th data-purchase-sort="min">Mínimo</th>
                   <th data-purchase-sort="suggested">Comprar</th>
                   <th data-purchase-sort="status">Status</th>
-                  <th data-purchase-sort="trend">Tendencia</th>
+                  <th data-purchase-sort="trend">Tendência</th>
                   <th>Pedido</th>
                 </tr>
               </thead>
@@ -1428,8 +1794,8 @@
         <div class="topbar">
           <div>
             <p class="eyebrow">Indicadores</p>
-            <h1>Saude do estoque</h1>
-            <p class="lead">Distribuicao dos itens por status e locais com maior demanda de reposicao.</p>
+            <h1>Saúde do estoque</h1>
+            <p class="lead">Distribuição dos itens por status e locais com maior demanda de reposição.</p>
           </div>
         </div>
         <div class="grid content-grid">
@@ -1438,7 +1804,7 @@
             <div class="summary-list" id="healthSummary"></div>
           </section>
           <section class="card panel">
-            <h2 class="panel-title">Locais com itens criticos</h2>
+            <h2 class="panel-title">Locais com itens críticos</h2>
             <div class="summary-list" id="locationSummary"></div>
           </section>
         </div>
@@ -1447,21 +1813,21 @@
       <section class="page" id="page-historico">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Historico</p>
-            <h1>Movimentacoes</h1>
-            <p class="lead">Filtre por periodo e tipo para auditar entradas e saidas.</p>
+            <p class="eyebrow">Histórico</p>
+            <h1>Movimentações</h1>
+            <p class="lead">Filtre por período e tipo para auditar entradas e saídas.</p>
           </div>
           <button class="button" id="historyCsvButton">Exportar CSV filtrado</button>
         </div>
         <section class="card panel">
           <div class="filters">
-            <div class="field"><label for="histStart">Data inicio</label><input class="input" id="histStart" type="date"></div>
-            <div class="field"><label for="histEnd">Data fim</label><input class="input" id="histEnd" type="date"></div>
-            <div class="field"><label for="histType">Tipo</label><select class="select" id="histType"><option value="">Todos</option><option value="ENTRADA">Entrada</option><option value="SAIDA">Saida</option></select></div>
+            <div class="field"><label for="histStart">Data de início</label><input class="input" id="histStart" type="date"></div>
+            <div class="field"><label for="histEnd">Data de fim</label><input class="input" id="histEnd" type="date"></div>
+            <div class="field"><label for="histType">Tipo</label><select class="select" id="histType"><option value="">Todos</option><option value="ENTRADA">Entrada</option><option value="SAIDA">Saída</option></select></div>
           </div>
           <div class="table-wrap">
             <table>
-              <thead><tr><th data-history-sort="dt">Data</th><th data-history-sort="cod">Codigo</th><th data-history-sort="desc">Descricao</th><th data-history-sort="tipo">Tipo</th><th data-history-sort="qty">Qtd</th><th data-history-sort="resp">Responsavel</th></tr></thead>
+              <thead><tr><th data-history-sort="dt">Data</th><th data-history-sort="cod">Código</th><th data-history-sort="desc">Descrição</th><th data-history-sort="tipo">Tipo</th><th data-history-sort="qty">Qtd</th><th data-history-sort="resp">Responsável</th></tr></thead>
               <tbody id="historyTable"></tbody>
             </table>
           </div>
@@ -1471,15 +1837,15 @@
       <section class="page" id="page-relatorios">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Relatorios</p>
-            <h1>Saude e movimentacao</h1>
-            <p class="lead">Resumo imprimivel, top 5 itens mais movimentados e grafico dos ultimos 30 dias.</p>
+            <p class="eyebrow">Relatórios</p>
+            <h1>Saúde e movimentação</h1>
+            <p class="lead">Resumo imprimível, top 5 itens mais movimentados e gráfico dos últimos 30 dias.</p>
           </div>
-          <button class="button primary" id="printReportButton">Exportar relatorio PDF</button>
+          <button class="button primary" id="printReportButton">Exportar relatório PDF</button>
         </div>
         <div id="reportArea" class="grid content-grid">
           <section class="card panel">
-            <h2 class="panel-title">Relatorio de saude</h2>
+            <h2 class="panel-title">Relatório de saúde</h2>
             <div class="summary-list" id="reportHealth"></div>
           </section>
           <section class="card panel">
@@ -1487,11 +1853,11 @@
             <div class="summary-list" id="topMoved"></div>
           </section>
           <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Movimentacoes dos ultimos 30 dias</h2>
+            <h2 class="panel-title">Movimentações dos últimos 30 dias</h2>
             <canvas id="movementCanvas" width="1000" height="260"></canvas>
           </section>
           <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Quantidade por deposito</h2>
+            <h2 class="panel-title">Quantidade por depósito</h2>
             <canvas id="depositCanvas" width="1000" height="260"></canvas>
           </section>
           <section class="card panel" style="grid-column:1/-1">
@@ -1504,9 +1870,9 @@
       <section class="page" id="page-ocs">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Ordens de Compra</p>
+            <p class="eyebrow">Ordens de compra</p>
             <h1>Fluxo de compra</h1>
-            <p class="lead">Crie OCs, aprove como Admin, envie ao responsavel e receba itens com entrada automatica no estoque.</p>
+            <p class="lead">Crie OCs, aprove como administrador, envie ao responsável e receba itens com entrada automática no estoque.</p>
           </div>
         </div>
         <div class="grid content-grid">
@@ -1521,7 +1887,7 @@
           </section>
           <section class="card panel">
             <h2 class="panel-title">Ordens de compra</h2>
-            <div class="table-wrap"><table><thead><tr><th>Numero</th><th>Data</th><th>Origem</th><th>Itens</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="poTable"></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Número</th><th>Data</th><th>Origem</th><th>Itens</th><th>Status</th><th>Ações</th></tr></thead><tbody id="poTable"></tbody></table></div>
           </section>
         </div>
       </section>
@@ -1531,24 +1897,24 @@
           <div>
             <p class="eyebrow">Financeiro</p>
             <h1>Custos e comparativos</h1>
-            <p class="lead">Controle preco de custo por item, valor em estoque e custo de compras por periodo.</p>
+            <p class="lead">Controle preço de custo por item, valor em estoque e custo de compras por período.</p>
           </div>
         </div>
         <div class="grid content-grid">
           <section class="card panel">
             <h2 class="panel-title">Custo por item</h2>
-            <div class="table-wrap"><table><thead><tr><th>Item</th><th>Origem</th><th>Custo unitario</th><th>Valor em estoque</th></tr></thead><tbody id="costTable"></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Item</th><th>Origem</th><th>Custo unitário</th><th>Valor em estoque</th></tr></thead><tbody id="costTable"></tbody></table></div>
           </section>
           <section class="card panel">
-            <h2 class="panel-title">Compras por periodo</h2>
+            <h2 class="panel-title">Compras por período</h2>
             <div class="filters">
-              <div class="field"><label for="finStart">Inicio</label><input class="input" id="finStart" type="date"></div>
+              <div class="field"><label for="finStart">Início</label><input class="input" id="finStart" type="date"></div>
               <div class="field"><label for="finEnd">Fim</label><input class="input" id="finEnd" type="date"></div>
             </div>
             <div class="summary-list" id="purchaseCostSummary"></div>
           </section>
           <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Comparativo de preco por origem</h2>
+            <h2 class="panel-title">Comparativo de preço por origem</h2>
             <div class="table-wrap"><table><thead><tr><th>Item</th><th>Comparativo</th></tr></thead><tbody id="priceCompareTable"></tbody></table></div>
           </section>
         </div>
@@ -1559,7 +1925,7 @@
           <div>
             <p class="eyebrow">Rastreabilidade</p>
             <h1>Lotes e validade</h1>
-            <p class="lead">Controle lotes de entrada, vencimentos e consumo por saida.</p>
+            <p class="lead">Controle lotes de entrada, vencimentos e consumo por saída.</p>
           </div>
         </div>
         <div class="grid content-grid">
@@ -1568,8 +1934,8 @@
             <div class="table-wrap"><table><thead><tr><th>Item</th><th>Lote</th><th>Validade</th><th>Saldo</th><th>Status</th></tr></thead><tbody id="lotTable"></tbody></table></div>
           </section>
           <section class="card panel">
-            <h2 class="panel-title">Lotes consumidos em saidas</h2>
-            <div class="table-wrap"><table><thead><tr><th>Data</th><th>Item</th><th>Lote</th><th>Qtd</th><th>Responsavel</th></tr></thead><tbody id="lotConsumptionTable"></tbody></table></div>
+            <h2 class="panel-title">Lotes consumidos em saídas</h2>
+            <div class="table-wrap"><table><thead><tr><th>Data</th><th>Item</th><th>Lote</th><th>Qtd</th><th>Responsável</th></tr></thead><tbody id="lotConsumptionTable"></tbody></table></div>
           </section>
         </div>
       </section>
@@ -1578,51 +1944,51 @@
         <div class="topbar">
           <div>
             <p class="eyebrow">Admin</p>
-            <h1>Usuarios e permissoes</h1>
-            <p class="lead">Acesso administrativo para liberar areas por setor, incluindo RH, compras, financeiro e operacao.</p>
+            <h1>Usuários e permissões</h1>
+            <p class="lead">Acesso administrativo para liberar áreas por setor, incluindo RH, compras, financeiro e operação.</p>
           </div>
         </div>
         <div class="grid content-grid">
           <section class="card panel">
-            <h2 class="panel-title">Criar ou editar usuario</h2>
+            <h2 class="panel-title">Criar ou editar usuário</h2>
             <form id="userAdminForm" class="grid">
               <input id="adminUserId" type="hidden">
               <div class="field"><label for="adminDisplayName">Nome completo</label><input class="input" id="adminDisplayName" placeholder="ex: Bruno Trindade"></div>
               <div class="field"><label for="adminUsername">Registro/Crachá</label><input class="input" id="adminUsername" autocomplete="off" placeholder="ex: 102938"></div>
               <div class="field"><label for="adminCpf">CPF opcional</label><input class="input" id="adminCpf" placeholder="000.000.000-00"></div>
               <div class="field"><label for="adminPosition">Cargo</label><input class="input" id="adminPosition" placeholder="ex: Operador de Almoxarifado"></div>
-              <div class="field"><label for="adminDepartment">Setor</label><input class="input" id="adminDepartment" placeholder="ex: Manutencao, Compras, Operacao"></div>
+              <div class="field"><label for="adminDepartment">Setor</label><input class="input" id="adminDepartment" placeholder="ex: Manutenção, Compras, Operação"></div>
               <div class="field"><label for="adminPhone">Telefone</label><input class="input" id="adminPhone" placeholder="ex: (92) 99999-0000"></div>
               <div class="field"><label for="adminEmail">E-mail</label><input class="input" id="adminEmail" type="email" placeholder="nome@empresa.com"></div>
               <div class="field"><label for="adminPhoto">Foto do colaborador opcional</label><input class="input" id="adminPhoto" placeholder="URL ou base64"></div>
-              <div class="field"><label for="adminRole">Nivel de acesso</label><select class="select" id="adminRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="viewer">Consulta</option><option value="admin">Administrador</option></select></div>
-              <div class="field"><label for="adminPassword">Senha</label><input class="input" id="adminPassword" type="password" placeholder="minimo 8 caracteres"></div>
+              <div class="field"><label for="adminRole">Nível de acesso</label><select class="select" id="adminRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="viewer">Consulta</option><option value="admin">Administrador</option></select></div>
+              <div class="field"><label for="adminPassword">Senha</label><input class="input" id="adminPassword" type="password" placeholder="mínimo de 8 caracteres"></div>
               <label style="display:flex;gap:8px;align-items:center"><input id="adminActive" type="checkbox" checked> Ativo</label>
               <div class="field" style="grid-column:1/-1">
-                <label>Permissoes</label>
+                <label>Permissões</label>
                 <div id="permissionGrid" class="filters" style="grid-template-columns:repeat(auto-fit,minmax(180px,1fr));margin-bottom:0"></div>
               </div>
               <div style="display:flex;gap:10px;flex-wrap:wrap">
-                <button class="button primary" type="submit">Salvar usuario</button>
-                <button class="button" id="clearUserFormButton" type="button">Novo usuario</button>
+                <button class="button primary" type="submit">Salvar usuário</button>
+                <button class="button" id="clearUserFormButton" type="button">Novo usuário</button>
               </div>
             </form>
           </section>
           <section class="card panel">
-            <h2 class="panel-title">Usuarios cadastrados</h2>
-            <div class="table-wrap"><table><thead><tr><th>Registro</th><th>Nome</th><th>Cargo</th><th>Setor</th><th>Nivel</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
+            <h2 class="panel-title">Usuários cadastrados</h2>
+            <div class="table-wrap"><table><thead><tr><th>Registro</th><th>Nome</th><th>Cargo</th><th>Setor</th><th>Nível</th><th>Status</th><th>Ações</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
           </section>
           <section class="card panel">
-            <h2 class="panel-title">Historico de login</h2>
-            <div class="table-wrap"><table><thead><tr><th>Data</th><th>Usuario</th><th>Resultado</th></tr></thead><tbody id="loginTable"></tbody></table></div>
+            <h2 class="panel-title">Histórico de login</h2>
+            <div class="table-wrap"><table><thead><tr><th>Data</th><th>Usuário</th><th>Resultado</th></tr></thead><tbody id="loginTable"></tbody></table></div>
           </section>
           <section class="card panel" style="grid-column:1/-1">
             <h2 class="panel-title">Auditoria operacional</h2>
             <div class="filters">
               <div class="field"><label for="auditDateFilter">Data</label><input class="input" id="auditDateFilter" type="date"></div>
               <div class="field"><label for="auditUserFilter">Funcionário</label><input class="input" id="auditUserFilter" placeholder="Nome ou registro"></div>
-              <div class="field"><label for="auditProductFilter">Produto</label><input class="input" id="auditProductFilter" placeholder="Codigo ou item"></div>
-              <div class="field"><label for="auditTypeFilter">Tipo</label><select class="select" id="auditTypeFilter"><option value="">Todos</option><option value="moviment">Movimentacao</option><option value="item">Item</option><option value="usuario">Usuario</option><option value="login">Login</option><option value="compra">Compra</option></select></div>
+              <div class="field"><label for="auditProductFilter">Produto</label><input class="input" id="auditProductFilter" placeholder="Código ou item"></div>
+              <div class="field"><label for="auditTypeFilter">Tipo</label><select class="select" id="auditTypeFilter"><option value="">Todos</option><option value="moviment">Movimentação</option><option value="item">Item</option><option value="usuario">Usuário</option><option value="login">Login</option><option value="compra">Compra</option></select></div>
             </div>
             <div class="table-wrap"><table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Registro</th><th>Cargo</th><th>Ação</th><th>Produto</th><th>Qtd</th><th>Status</th><th>IP</th></tr></thead><tbody id="auditTable"></tbody></table></div>
           </section>
@@ -1638,17 +2004,29 @@
       <div id="qrBox" style="display:grid;place-items:center;background:#fff;padding:18px;border-radius:12px"></div>
     </div>
   </div>
+  <div id="labelModal" style="display:none;position:fixed;inset:0;z-index:1900;background:rgba(0,0,0,.55);place-items:center;padding:24px">
+    <div class="card panel" style="width:min(100%,600px)">
+      <div class="panel-head"><h2 class="panel-title">▣ Imprimir etiqueta</h2><button class="button" id="closeLabelButton">Fechar</button></div>
+      <div class="field"><label for="labelPcInput">Nº do pedido / PC (até 6 dígitos)</label><input class="input" id="labelPcInput" maxlength="6" inputmode="numeric" placeholder="Ex: 096547"></div>
+      <div class="label-preview" id="labelPreview"></div>
+      <div class="field" style="margin-top:14px"><label for="labelCopiesInput">Quantidade de cópias</label><input class="input" id="labelCopiesInput" type="number" min="1" max="50" value="1"></div>
+      <div class="label-actions">
+        <button class="button" id="cancelLabelButton">Fechar</button>
+        <button class="button primary" id="printLabelButton">Imprimir</button>
+      </div>
+    </div>
+  </div>
   <div id="scannerModal" style="display:none;position:fixed;inset:0;z-index:1900;background:rgba(0,0,0,.55);place-items:center;padding:24px">
     <div class="card panel" style="width:min(100%,520px)">
-      <div class="panel-head"><h2 class="panel-title">Leitor de codigo</h2><button class="button" id="closeScannerButton">Fechar</button></div>
+      <div class="panel-head"><h2 class="panel-title">Leitor de código</h2><button class="button" id="closeScannerButton">Fechar</button></div>
       <div id="barcodeReader"></div>
     </div>
   </div>
   <div id="confirmModal" style="display:none;position:fixed;inset:0;z-index:1950;background:rgba(0,0,0,.55);place-items:center;padding:24px">
     <div class="card panel" style="width:min(100%,460px)">
-      <div class="panel-head"><h2 class="panel-title" id="confirmTitle">Confirmar acao</h2><button class="button" id="confirmCloseButton">Fechar</button></div>
+      <div class="panel-head"><h2 class="panel-title" id="confirmTitle">Confirmar ação</h2><button class="button" id="confirmCloseButton">Fechar</button></div>
       <div class="summary-list">
-        <div class="summary-row"><div><strong id="confirmMessage">Confirme a acao.</strong><span id="confirmDetail">Esta operacao exige confirmacao dupla.</span></div></div>
+        <div class="summary-row"><div><strong id="confirmMessage">Confirme a ação.</strong><span id="confirmDetail">Esta operação exige confirmação dupla.</span></div></div>
       </div>
       <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:14px">
         <button class="button" id="confirmFirstButton">Estou ciente</button>
@@ -1700,7 +2078,7 @@
     const escapeAttr = escapeHtml;
     const safeJson = value => JSON.stringify(String(value ?? "")).replaceAll("<", "\\u003c").replaceAll(">", "\\u003e").replaceAll("&", "\\u0026");
     const nowIso = () => new Date().toISOString();
-    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "usuario";
+    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "usuário";
     const ALL_PERMISSIONS = ["dashboard", "estoque", "compras", "historico", "saude", "relatorios", "financeiro", "rastreabilidade", "ocs", "admin"];
     const ROLE_LABELS = {
       admin: "Administrador",
@@ -1719,13 +2097,13 @@
       dashboard: "Dashboard",
       estoque: "Estoque",
       compras: "Compras",
-      historico: "Historico",
-      saude: "Saude do estoque",
-      relatorios: "Relatorios",
+      historico: "Histórico",
+      saude: "Saúde do estoque",
+      relatorios: "Relatórios",
       financeiro: "Financeiro",
       rastreabilidade: "Rastreabilidade",
       ocs: "Ordens de compra",
-      admin: "Admin/usuarios"
+      admin: "Admin/usuários"
     };
     const formatNumber = value => Number(value || 0).toLocaleString("pt-BR");
     const statusMeta = {
@@ -1735,12 +2113,12 @@
       "SEM ESTOQUE": { label: "Sem Estoque", className: "empty", color: "var(--red)" }
     };
     const codeTypeLabels = {
-      "6_DIGITOS": "6 digitos",
-      "9_DIGITOS": "9 digitos",
-      "PENDENTE_CODIGO": "Abrir codigo"
+      "6_DIGITOS": "6 dígitos",
+      "9_DIGITOS": "9 dígitos",
+      "PENDENTE_CODIGO": "Abrir código"
     };
     const itemClassLabels = {
-      PECA: "Peca",
+      PECA: "Peça",
       CONSUMO: "Consumo DHAS",
       FERRAMENTA: "Ferramenta",
       OUTROS: "Outros"
@@ -1774,6 +2152,7 @@
     let syncTimer = null;
     let syncing = false;
     let appDataPersistTimer = null;
+    let activeLabelItem = null;
 
     // Persistencia centralizada em localStorage.
     function readStore(key, fallback) {
@@ -1813,8 +2192,8 @@
       audit = readStore(STORAGE.audit, []);
       loginHistory = readStore(STORAGE.login, []);
       employees = readStore(STORAGE.employees, [
-        { username: "admin", badge: "admin", display_name: "Administrador do Estoque", role: "admin", position: "Administrador", department: "Operacao", permissions: ALL_PERMISSIONS, active: true },
-        { username: "operador", badge: "operador", display_name: "Operador Estoque", role: "operator", position: "Operador", department: "Operacao", permissions: roleDefaults("operator"), active: true }
+        { username: "admin", badge: "admin", display_name: "Administrador do Estoque", role: "admin", position: "Administrador", department: "Operação", permissions: ALL_PERMISSIONS, active: true },
+        { username: "operador", badge: "operador", display_name: "Operador Estoque", role: "operator", position: "Operador", department: "Operação", permissions: roleDefaults("operator"), active: true }
       ]);
       orders = readStore(STORAGE.orders, {});
       suppliers = readStore(STORAGE.suppliers, []);
@@ -1961,7 +2340,7 @@
         }
       });
       const payload = await response.json().catch(() => ({}));
-      if (!response.ok) throw new Error(payload.error || "Falha na operacao.");
+      if (!response.ok) throw new Error(payload.error || "Falha na operação.");
       return payload;
     }
 
@@ -2118,9 +2497,10 @@
         if (!response.ok || !payload.user || !payload.csrf) return false;
         currentSession = payload;
         sessionStorage.setItem("superestoque.currentUser", payload.user.username || "usuario");
-        byId("userName").textContent = payload.user.display_name || payload.user.username || "Usuario";
+        byId("userName").textContent = payload.user.display_name || payload.user.username || "Usuário";
         byId("loginScreen").classList.add("hidden");
         applyPermissions();
+        switchPage("dashboard");
         clearUserForm();
         await syncFromServer(true);
         await loadAppDataFromServer();
@@ -2233,9 +2613,9 @@
       const lastMovement = opsMetrics?.lastMovement;
       const top = opsMetrics?.topOperators || [];
       const rows = [
-        { label: "Funcionarios Online", value: opsMetrics?.online || 0, note: "Sessoes ativas", color: "var(--blue)" },
-        { label: "Ultimo Login", value: lastLogin?.display_name || lastLogin?.username || "-", note: lastLogin ? formatAuditDate(lastLogin.created_at) : "Sem registro", color: "var(--green)" },
-        { label: "Ultima Movimentacao", value: lastMovement?.cod || "-", note: lastMovement ? `${lastMovement.movement_type} ${formatNumber(lastMovement.qty)} - ${lastMovement.display_name || lastMovement.username || ""}` : "Sem movimento", color: "var(--amber)" },
+        { label: "Funcionários online", value: opsMetrics?.online || 0, note: "Sessões ativas", color: "var(--blue)" },
+        { label: "Último login", value: lastLogin?.display_name || lastLogin?.username || "-", note: lastLogin ? formatAuditDate(lastLogin.created_at) : "Sem registro", color: "var(--green)" },
+        { label: "Última movimentação", value: lastMovement?.cod || "-", note: lastMovement ? `${lastMovement.movement_type} ${formatNumber(lastMovement.qty)} - ${lastMovement.display_name || lastMovement.username || ""}` : "Sem movimento", color: "var(--amber)" },
         { label: "Mov. por Operador", value: top.reduce((sum, row) => sum + Number(row.total || 0), 0), note: "Total do dia", color: "var(--blue)" },
         { label: "Top Operador do Dia", value: top[0]?.display_name || top[0]?.username || "-", note: top[0] ? `${formatNumber(top[0].total)} movimento(s)` : "Sem movimento hoje", color: "var(--green)" }
       ];
@@ -2416,21 +2796,12 @@
         dhas: items.filter(i => i.itemClass === "CONSUMO").length,
         addressReview: items.filter(i => !i.addressValidated || !i.end).length
       };
-      const monthNote = monthlyIndicator();
       const kpis = [
-        { label: "Total", value: counts.total, note: `Itens cadastrados · ${monthNote}`, color: "var(--blue)" },
-        { label: "Sem Estoque", value: counts.empty, note: `Ruptura imediata · ${monthNote}`, color: "var(--red)" },
-        { label: "Comprar", value: counts.buy, note: `Abaixo do minimo · ${monthNote}`, color: "var(--orange)" },
-        { label: "No Limite", value: counts.limit, note: `Saldo minimo exato · ${monthNote}`, color: "var(--yellow)" },
-        { label: "OK", value: counts.ok, note: `Disponibilidade adequada · ${monthNote}`, color: "var(--green)" },
-        { label: "Valor em estoque", value: formatCurrency(stockValue()), note: `Custo atual estimado · ${monthNote}`, color: "var(--blue)" }
+        { label: "Total", value: counts.total, note: "Itens cadastrados", color: "var(--blue)" },
+        { label: "Críticos", value: counts.empty + counts.buy, note: "Sem estoque ou abaixo do mínimo", color: counts.empty ? "var(--red)" : "var(--orange)" },
+        { label: "OK", value: counts.ok, note: "Disponibilidade adequada", color: "var(--green)" },
+        { label: "Valor em estoque", value: formatCurrency(stockValue()), note: "Custo atual estimado", color: "var(--amber)" }
       ];
-      kpis.splice(5, 0,
-        { label: "Saldo 6/9", value: counts.saldo69, note: "Pecas com codigo 6 ou 9 digitos e saldo", color: "var(--green)" },
-        { label: "Abrir codigo", value: counts.pendingCode, note: "Itens sem cadastro 6/9", color: "var(--orange)" },
-        { label: "DHAS consumo", value: counts.dhas, note: "Materiais de consumo separados", color: "var(--blue)" },
-        { label: "Enderecos", value: counts.addressReview, note: "Pendentes de revisao ou etiqueta", color: "var(--yellow)" }
-      );
       byId("kpiGrid").innerHTML = kpis.map(kpi => `
         <article class="card kpi-card" style="--status-color:${kpi.color};animation-delay:${Math.min(kpis.indexOf(kpi) * 28, 180)}ms">
           <div class="kpi-label">${kpi.label}</div>
@@ -2448,8 +2819,8 @@
       const expiring = lots.filter(lot => Number(lot.qty || 0) > 0 && lotStatus(lot).startsWith("Vence")).length;
       byId("zeroBanner").style.display = counts.empty || expiring ? "block" : "none";
       byId("zeroBanner").innerHTML = [
-        counts.empty ? `${counts.empty} item(ns) zerado(s) exigem reposicao imediata` : "",
-        expiring ? `${expiring} lote(s) vencem em ate 30 dias` : ""
+        counts.empty ? `${counts.empty} item(ns) zerado(s) exigem reposição imediata` : "",
+        expiring ? `${expiring} lote(s) vencem em até 30 dias` : ""
       ].filter(Boolean).join(" · ");
     }
 
@@ -2459,19 +2830,20 @@
           <td class="mono">${escapeHtml(item.cod)}</td>
           <td><button class="button" data-favorite="${escapeAttr(item.cod)}">${item.favorite ? "★" : "☆"}</button></td>
           <td><span class="item-name">${escapeHtml(item.desc)}</span></td>
-          <td>${escapeHtml(codeTypeLabels[item.codeType] || item.codeType || "Abrir codigo")}</td>
+          <td>${escapeHtml(codeTypeLabels[item.codeType] || item.codeType || "Abrir código")}</td>
           <td>${escapeHtml(itemClassLabels[item.itemClass] || item.itemClass || "Outros")}</td>
           <td>${escapeHtml(item.loc)}</td>
-          <td>${escapeHtml(item.end || "Sem endereco")}<br><span class="muted">${item.addressValidated ? "Validado" : "Revisar etiqueta"}</span></td>
+          <td>${escapeHtml(item.end || "Sem endereço")}<br><span class="muted">${item.addressValidated ? "Validado" : "Revisar etiqueta"}</span></td>
           <td class="mono">${formatNumber(item.qty)}</td>
           <td class="mono">${formatNumber(item.min)}</td>
           <td>${statusBadge(item.status)} <span class="muted">${escapeHtml(getTrend(item.cod))}</span></td>
           <td><select class="select" data-item-supplier="${escapeAttr(item.cod)}">${supplierOptions(item.supplierId)}</select></td>
           <td><input class="input" type="number" min="0" step="0.01" value="${itemCost(item)}" data-cost="${escapeAttr(item.cod)}::${escapeAttr(item.supplierId)}"></td>
           <td>${escapeHtml(nextLot(item)?.validity || "Sem lote")}<br><span class="muted">${escapeHtml(lotStatus(nextLot(item)))}</span></td>
-          <td><button class="button" data-exit="${escapeAttr(item.cod)}">Registrar saida</button></td>
+          <td><button class="button" data-exit="${escapeAttr(item.cod)}">Registrar saída</button></td>
           <td><button class="button" data-qr="${escapeAttr(item.cod)}">QR</button></td>
           <td>
+            <button class="button" data-label="${escapeAttr(item.cod)}">Etiqueta</button>
             <button class="button" data-duplicate="${escapeAttr(item.cod)}">Duplicar</button>
             <button class="button" data-edit-item="${escapeAttr(item.cod)}">Editar</button>
             <button class="button" data-validate-address="${escapeAttr(item.cod)}">${item.addressValidated ? "Revisado" : "Validar"}</button>
@@ -2626,7 +2998,7 @@
       });
       const total = periodOrders.reduce((sum, po) => sum + po.items.reduce((itemSum, line) => itemSum + (Number(line.qty || 0) * Number(costs[costKey(line.cod, po.supplierId)] || 0)), 0), 0);
       byId("purchaseCostSummary").innerHTML = `
-        <div class="summary-row"><div><strong>Custo total das compras</strong><span>${periodOrders.length} OC(s) no periodo</span></div><div class="mono">${formatCurrency(total)}</div></div>
+        <div class="summary-row"><div><strong>Custo total das compras</strong><span>${periodOrders.length} OC(s) no período</span></div><div class="mono">${formatCurrency(total)}</div></div>
       `;
 
       byId("priceCompareTable").innerHTML = items.map(item => {
@@ -2712,12 +3084,12 @@
       po.items.forEach(line => {
         const item = items.find(row => row.cod === line.cod);
         if (!item) return;
-        const obs = Number(line.qty || 0) > obsRequiredQty ? prompt(`Observacao obrigatoria para entrada acima de ${obsRequiredQty}:`) : "";
-        if (!requireMovementObservation(line.qty, obs)) throw new Error("Observacao obrigatoria para movimentacao acima do limite configurado.");
-        const lote = prompt(`Informe o numero do lote para entrada do item ${item.cod}:`);
-        if (!lote) throw new Error("Numero de lote obrigatorio para entrada.");
+        const obs = Number(line.qty || 0) > obsRequiredQty ? prompt(`Observação obrigatória para entrada acima de ${obsRequiredQty}:`) : "";
+        if (!requireMovementObservation(line.qty, obs)) throw new Error("Observação obrigatória para movimentação acima do limite configurado.");
+        const lote = prompt(`Informe o número do lote para entrada do item ${item.cod}:`);
+        if (!lote) throw new Error("Número de lote obrigatório para entrada.");
         const validity = prompt(`Informe a validade do lote ${lote} no formato AAAA-MM-DD:`);
-        if (!validity) throw new Error("Validade obrigatoria para entrada.");
+        if (!validity) throw new Error("Validade obrigatória para entrada.");
         item.qty = Number(item.qty || 0) + Number(line.qty || 0);
         item.status = item.qty <= 0 ? "SEM ESTOQUE" : item.qty < item.min ? "COMPRAR" : item.qty === item.min ? "NO LIMITE" : "OK";
         lots.push({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), cod: item.cod, lote, validity, qty: Number(line.qty || 0), initialQty: Number(line.qty || 0), source: po.number, exits: [] });
@@ -2734,17 +3106,17 @@
     async function registerMovement(cod, defaults = {}) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
-      const tipo = normalizeMovementPrompt(prompt(`Tipo de movimentacao para ${cod}:`, defaults.tipo || "SAIDA"));
-      if (!tipo) return toast("Tipo invalido. Use ENTRADA ou SAIDA.", "erro");
+      const tipo = normalizeMovementPrompt(prompt(`Tipo de movimentação para ${cod}:`, defaults.tipo || "SAIDA"));
+      if (!tipo) return toast("Tipo inválido. Use ENTRADA ou SAÍDA.", "erro");
       const qty = Number(prompt(`Quantidade para ${cod}:`, defaults.qty || "1") || 0);
       if (!qty || qty <= 0) return;
       if (tipo === "SAIDA" && qty > Number(item.qty || 0)) {
-        return toast(`Saida bloqueada: saldo disponivel de ${formatNumber(item.qty)} item(ns).`, "erro");
+        return toast(`Saída bloqueada: saldo disponível de ${formatNumber(item.qty)} item(ns).`, "erro");
       }
-      const resp = prompt("Responsavel:", defaults.resp || currentUser()) || currentUser();
-      const obs = prompt(Number(qty) > obsRequiredQty ? `Observacao obrigatoria acima de ${obsRequiredQty}:` : "Observacao:", defaults.obs || "") || "";
+      const resp = prompt("Responsável:", defaults.resp || currentUser()) || currentUser();
+      const obs = prompt(Number(qty) > obsRequiredQty ? `Observação obrigatória acima de ${obsRequiredQty}:` : "Observação:", defaults.obs || "") || "";
       if (!requireMovementObservation(qty, obs)) {
-        return toast(`Observacao obrigatoria para movimentacoes acima de ${obsRequiredQty}.`, "erro");
+        return toast(`Observação obrigatória para movimentações acima de ${obsRequiredQty}.`, "erro");
       }
 
       // Com login ativo, a movimentacao vai primeiro para o backend e sincroniza para todos.
@@ -2762,7 +3134,7 @@
           if (payload.movement) history.unshift(movementFromServer(payload.movement));
           saveAll();
           addAudit(`Registrou ${tipo.toLowerCase()} de ${qty} do item ${cod}`);
-          toast("Movimentacao registrada.");
+          toast("Movimentação registrada.");
           syncFromServer(true);
           loadOpsMetrics();
           return;
@@ -2794,7 +3166,7 @@
       history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo, qty, resp, obs, lote: consumed.map(row => `${row.lote}:${row.qty}`).join("; ") });
       saveAll();
       addAudit(`Registrou ${tipo.toLowerCase()} de ${qty} do item ${cod}`);
-      toast("Movimentacao registrada.");
+      toast("Movimentação registrada.");
       renderAll();
     }
 
@@ -2863,10 +3235,10 @@
       const desc = byId("itemDesc").value.trim();
       const qty = Number(byId("itemQty").value || 0);
       const min = Number(byId("itemMin").value || 0);
-      if (!cod || !desc) return toast("Codigo e descricao sao obrigatorios.", "erro");
-      if (qty < 0 || min < 0) return toast("Quantidade e minimo nao podem ser negativos.", "erro");
+      if (!cod || !desc) return toast("Código e descrição são obrigatórios.", "erro");
+      if (qty < 0 || min < 0) return toast("Quantidade e mínimo não podem ser negativos.", "erro");
       const duplicate = items.find(row => row.cod.toLowerCase() === cod.toLowerCase() && row.cod !== editingCod);
-      if (duplicate) return toast("Ja existe item com este codigo.", "erro");
+      if (duplicate) return toast("Já existe item com este código.", "erro");
 
       const previous = items.find(row => row.cod === editingCod);
       let item = {
@@ -2932,7 +3304,7 @@
     async function validateAddress(cod) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
-      if (!item.end) return toast("Informe o endereco antes de validar a etiqueta.", "aviso");
+      if (!item.end) return toast("Informe o endereço antes de validar a etiqueta.", "aviso");
       const next = { ...item, addressValidated: true };
       if (currentSession?.csrf && item.id) {
         try {
@@ -2946,20 +3318,20 @@
       }
       saveAll();
       renderAll();
-      addAudit(`Validou endereco do item ${cod}`);
-      toast("Endereco e etiqueta marcados como validados.");
+      addAudit(`Validou endereço do item ${cod}`);
+      toast("Endereço e etiqueta marcados como validados.");
     }
 
     // Copia um cadastro existente e pede um novo codigo para acelerar cadastros similares.
     async function duplicateItem(cod) {
       const item = items.find(row => row.cod === cod);
       if (!item) return;
-      const newCod = prompt(`Novo codigo para duplicar ${cod}:`, `${cod}-COPIA`);
+      const newCod = prompt(`Novo código para duplicar ${cod}:`, `${cod}-COPIA`);
       if (!newCod) return;
       if (items.some(row => row.cod.toLowerCase() === newCod.trim().toLowerCase())) {
-        return toast("Ja existe item com este codigo.", "erro");
+        return toast("Já existe item com este código.", "erro");
       }
-      const desc = prompt("Descricao do novo item:", item.desc) || item.desc;
+      const desc = prompt("Descrição do novo item:", item.desc) || item.desc;
       let copy = {
         ...item,
         id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()),
@@ -2991,7 +3363,7 @@
     // Reutiliza os dados da ultima movimentacao do item, permitindo confirmar ou ajustar.
     function repeatLastMovement(cod) {
       const last = history.find(row => row.cod === cod);
-      if (!last) return toast("Este item ainda nao tem movimentacao para repetir.", "aviso");
+      if (!last) return toast("Este item ainda não tem movimentação para repetir.", "aviso");
       registerMovement(cod, {
         tipo: last.tipo,
         qty: last.qty,
@@ -3006,12 +3378,12 @@
       requestDoubleConfirmation(
         "Zerar item",
         `Zerar saldo do item ${cod}?`,
-        "Esta acao grava uma movimentacao de ajuste e deixa a quantidade em zero.",
+        "Esta ação grava uma movimentação de ajuste e deixa a quantidade em zero.",
         () => {
           const previous = Number(item.qty || 0);
           item.qty = 0;
           refreshItemStatus(item);
-          history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "SAIDA", qty: previous, resp: currentUser(), obs: "Zerado manualmente com confirmacao dupla" });
+          history.unshift({ id: crypto.randomUUID ? crypto.randomUUID() : String(Date.now()), dt: nowIso(), cod: item.cod, desc: item.desc, tipo: "SAIDA", qty: previous, resp: currentUser(), obs: "Zerado manualmente com confirmação dupla" });
           saveAll();
           addAudit(`Zerou item ${cod}`);
           toast("Item zerado.");
@@ -3026,7 +3398,7 @@
       requestDoubleConfirmation(
         "Excluir item",
         `Excluir definitivamente o item ${cod}?`,
-        "Esta acao remove o cadastro da lista local, mas nao apaga historico ja registrado.",
+        "Esta ação remove o cadastro da lista local, mas não apaga histórico já registrado.",
         async () => {
           if (currentSession?.csrf && item.id) {
             try {
@@ -3064,8 +3436,8 @@
           <p><strong>CNPJ:</strong> ${escapeHtml(supplier?.cnpj || "")}</p>
           <p><strong>Data:</strong> ${new Date(po.date).toLocaleDateString("pt-BR")}</p>
           <p><strong>Status:</strong> ${escapeHtml(po.status)}</p>
-          <table border="1" cellspacing="0" cellpadding="8" width="100%"><thead><tr><th>Codigo</th><th>Item</th><th>Qtd</th></tr></thead><tbody>${lines}</tbody></table>
-          <p>Use a opcao Imprimir / Salvar como PDF do navegador para enviar ao responsavel.</p>
+          <table border="1" cellspacing="0" cellpadding="8" width="100%"><thead><tr><th>Código</th><th>Item</th><th>Qtd</th></tr></thead><tbody>${lines}</tbody></table>
+          <p>Use a opção Imprimir / Salvar como PDF do navegador para enviar ao responsável.</p>
         </body></html>
       `);
       win.document.close();
@@ -3142,20 +3514,20 @@
         groups[group].push(`${escapeHtml(row.item.cod)} (${formatNumber(row.total)})`);
       });
       byId("abcTable").innerHTML = [
-        ["A", groups.A.join(", ") || "Sem itens", "Alto giro ate 80% acumulado"],
-        ["B", groups.B.join(", ") || "Sem itens", "Medio giro ate 95% acumulado"],
+        ["A", groups.A.join(", ") || "Sem itens", "Alto giro até 80% acumulado"],
+        ["B", groups.B.join(", ") || "Sem itens", "Médio giro até 95% acumulado"],
         ["C", groups.C.join(", ") || "Sem itens", "Baixo giro restante"]
       ].map(row => `<tr><td class="mono">${row[0]}</td><td>${row[1]}</td><td>${escapeHtml(row[2])}</td></tr>`).join("");
     }
 
     function exportReportPdf() {
       if (!window.jspdf?.jsPDF) {
-        toast("jsPDF nao carregou.", "erro");
+        toast("jsPDF não carregou.", "erro");
         return;
       }
       const doc = new jspdf.jsPDF();
       doc.setFontSize(16);
-      doc.text("Relatorio SuperEstoque", 14, 18);
+      doc.text("Relatório SuperEstoque", 14, 18);
       doc.setFontSize(10);
       doc.text(`Valor em estoque: ${formatCurrency(stockValue())}`, 14, 28);
       doc.text(`Gerado em: ${new Date().toLocaleString("pt-BR")}`, 14, 35);
@@ -3169,13 +3541,13 @@
       doc.text("Quantidade por deposito", 14, 18);
       doc.addImage(depositCanvas.toDataURL("image/png"), "PNG", 14, 26, 180, 48);
       doc.save("relatorio-superestoque.pdf");
-      addAudit("Exportou relatorio em PDF");
+      addAudit("Exportou relatório em PDF");
       toast("PDF exportado.");
     }
 
     // Gera uma pagina unica e objetiva com os principais numeros do dashboard.
     function exportDashboardSummaryPdf() {
-      if (!window.jspdf?.jsPDF) return toast("jsPDF nao carregou.", "erro");
+      if (!window.jspdf?.jsPDF) return toast("jsPDF não carregou.", "erro");
       const counts = {
         total: items.length,
         empty: items.filter(i => i.status === "SEM ESTOQUE").length,
@@ -3199,7 +3571,7 @@
         `Valor em estoque: ${formatCurrency(stockValue())}`
       ].forEach((line, index) => doc.text(line, 14, 52 + (index * 9)));
       doc.setFontSize(11);
-      doc.text("Itens criticos", 14, 116);
+      doc.text("Itens críticos", 14, 116);
       items
         .filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR")
         .slice(0, 12)
@@ -3224,11 +3596,11 @@
         const exitButton = document.createElement("button");
         exitButton.className = "button primary";
         exitButton.id = "presentationExitButton";
-        exitButton.textContent = "Sair apresentacao";
+        exitButton.textContent = "Sair da apresentação";
         exitButton.addEventListener("click", exitPresentationMode);
         document.body.appendChild(exitButton);
       }
-      toast("Modo apresentacao ativado.");
+      toast("Modo apresentação ativado.");
     }
 
     function exitPresentationMode() {
@@ -3237,7 +3609,7 @@
       byId("presentationExitButton")?.remove();
       document.exitFullscreen?.().catch(() => {});
       switchPage("dashboard");
-      toast("Modo apresentacao encerrado.");
+      toast("Modo apresentação encerrado.");
     }
 
     function getTopMovedItems() {
@@ -3279,17 +3651,17 @@
       }
       if (q.includes("codigo") || q.includes("cadastro")) {
         const pending = items.filter(item => item.codeType === "PENDENTE_CODIGO");
-        return pending.slice(0, 10).map(item => `${item.cod} - ${item.desc}: revisar item e abrir codigo 6/9`).join("\n") || "Nenhum item pendente de abertura de codigo 6/9.";
+        return pending.slice(0, 10).map(item => `${item.cod} - ${item.desc}: revisar item e abrir código 6/9`).join("\n") || "Nenhum item pendente de abertura de código 6/9.";
       }
       if (q.includes("dhas") || q.includes("consumo")) {
         const dhas = items.filter(item => item.itemClass === "CONSUMO");
-        return dhas.slice(0, 10).map(item => `${item.cod} - ${item.desc}: saldo ${item.qty}, endereco ${item.end || "sem endereco"}`).join("\n") || "Nenhum material de consumo DHAS cadastrado.";
+        return dhas.slice(0, 10).map(item => `${item.cod} - ${item.desc}: saldo ${item.qty}, endereço ${item.end || "sem endereço"}`).join("\n") || "Nenhum material de consumo DHAS cadastrado.";
       }
       if (q.includes("endereco") || q.includes("etiqueta")) {
         const review = items.filter(item => !item.addressValidated || !item.end);
-        return review.slice(0, 10).map(item => `${item.cod} - ${item.desc}: ${item.end || "sem endereco"} / ${item.addressValidated ? "validado" : "revisar etiqueta"}`).join("\n") || "Todos os enderecos estao validados.";
+        return review.slice(0, 10).map(item => `${item.cod} - ${item.desc}: ${item.end || "sem endereço"} / ${item.addressValidated ? "validado" : "revisar etiqueta"}`).join("\n") || "Todos os endereços estão validados.";
       }
-      return `Resumo: ${items.length} itens, valor em estoque ${formatCurrency(stockValue())}, ${critical.length} item(ns) criticos e ${getTopMovedItems().length} itens com giro relevante.`;
+      return `Resumo: ${items.length} itens, valor em estoque ${formatCurrency(stockValue())}, ${critical.length} item(ns) críticos e ${getTopMovedItems().length} itens com giro relevante.`;
     }
 
     async function askAnthropic(question) {
@@ -3307,7 +3679,7 @@
 
     async function sendAiQuestion(question = byId("aiQuestion").value.trim()) {
       if (!question) return;
-      addAiMessage("Voce", question);
+      addAiMessage("Você", question);
       byId("aiQuestion").value = "";
       try {
         const answer = await askAnthropic(question);
@@ -3388,24 +3760,24 @@
     }
 
     function exportCsv() {
-      const rows = getFilteredItems().map(item => [item.cod, item.desc, codeTypeLabels[item.codeType] || item.codeType, itemClassLabels[item.itemClass] || item.itemClass, item.loc, item.end, item.addressValidated ? "Sim" : "Nao", item.qty, item.min, item.status, supplierName(item.supplierId), itemCost(item), nextLot(item)?.validity || ""]);
-      download("superestoque.csv", [["Codigo", "Descricao", "TipoCodigo", "Classe", "Local", "Endereco", "EnderecoValidado", "Qtd", "Minimo", "Status", "Origem", "Custo", "Validade"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
+      const rows = getFilteredItems().map(item => [item.cod, item.desc, codeTypeLabels[item.codeType] || item.codeType, itemClassLabels[item.itemClass] || item.itemClass, item.loc, item.end, item.addressValidated ? "Sim" : "Não", item.qty, item.min, item.status, supplierName(item.supplierId), itemCost(item), nextLot(item)?.validity || ""]);
+      download("superestoque.csv", [["Código", "Descrição", "TipoCódigo", "Classe", "Local", "Endereço", "EndereçoValidado", "Qtd", "Mínimo", "Status", "Origem", "Custo", "Validade"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
       addAudit("Exportou estoque em CSV");
       toast("CSV exportado.");
     }
 
     function exportExcel() {
-      if (!window.XLSX) return toast("SheetJS nao carregou.", "erro");
+      if (!window.XLSX) return toast("SheetJS não carregou.", "erro");
       const data = getFilteredItems().map(item => ({
-        Codigo: item.cod,
-        Descricao: item.desc,
-        TipoCodigo: codeTypeLabels[item.codeType] || item.codeType,
+        Código: item.cod,
+        Descrição: item.desc,
+        TipoCódigo: codeTypeLabels[item.codeType] || item.codeType,
         Classe: itemClassLabels[item.itemClass] || item.itemClass,
         Local: item.loc,
-        Endereco: item.end,
-        EnderecoValidado: item.addressValidated ? "Sim" : "Nao",
+        Endereço: item.end,
+        EndereçoValidado: item.addressValidated ? "Sim" : "Não",
         Qtd: item.qty,
-        Minimo: item.min,
+        Mínimo: item.min,
         Status: item.status,
         Origem: supplierName(item.supplierId),
         Custo: itemCost(item),
@@ -3459,7 +3831,7 @@
 
     function showQr(cod) {
       const item = items.find(i => i.cod === cod);
-      if (!item || !window.QRCode) return toast("QRCode.js nao carregou.", "erro");
+      if (!item || !window.QRCode) return toast("QRCode.js não carregou.", "erro");
       byId("qrTitle").textContent = `QR Code - ${cod}`;
       byId("qrBox").innerHTML = "";
       const payload = {
@@ -3475,6 +3847,87 @@
       byId("qrBox").insertAdjacentHTML("beforeend", `<div style="margin-top:12px;color:#111;text-align:center;font-weight:700">${escapeHtml(item.cod)}<br><span style="font-weight:500">${escapeHtml(item.desc)}</span><br><span style="font-weight:500">${escapeHtml(item.end || "Sem endereco")}</span></div>`);
       byId("qrModal").style.display = "grid";
       addAudit(`Gerou QR Code do item ${cod}`);
+    }
+
+    function labelDate() {
+      return new Date().toLocaleDateString("pt-BR").replaceAll("/", ".");
+    }
+
+    function labelHtml(item, pc = "") {
+      const pcValue = String(pc || "").trim() || "—";
+      const address = item.end || item.loc || "Sem endereço";
+      const application = [item.loc, item.arm].filter(Boolean).join(" / ") || item.loc || "Sem local";
+      return `
+        <div class="print-label primary">
+          <div class="label-code">${escapeHtml(item.cod)}</div>
+          <div class="label-desc">${escapeHtml(item.desc)}</div>
+          <div class="label-line">PC: ${escapeHtml(pcValue)}</div>
+          <div class="label-line">DATA: ${labelDate()}</div>
+          <div class="label-line">END: ${escapeHtml(address)}</div>
+          <div class="label-line">APLIC: ${escapeHtml(application)}</div>
+        </div>
+        <div class="print-label secondary">
+          <div class="label-line">PC: ${escapeHtml(pcValue)}</div>
+          <div class="label-line">DATA:</div>
+          <div class="label-date">${labelDate()}</div>
+        </div>
+      `;
+    }
+
+    function renderLabelPreview() {
+      if (!activeLabelItem) return;
+      byId("labelPreview").innerHTML = labelHtml(activeLabelItem, byId("labelPcInput").value);
+    }
+
+    function openLabelModal(cod) {
+      const item = items.find(i => i.cod === cod);
+      if (!item) return;
+      activeLabelItem = item;
+      byId("labelPcInput").value = "";
+      byId("labelCopiesInput").value = "1";
+      renderLabelPreview();
+      byId("labelModal").style.display = "grid";
+      byId("labelPcInput").focus();
+    }
+
+    function closeLabelModal() {
+      byId("labelModal").style.display = "none";
+      activeLabelItem = null;
+    }
+
+    function printActiveLabel() {
+      if (!activeLabelItem) return;
+      const copies = Math.max(1, Math.min(50, Number(byId("labelCopiesInput").value || 1)));
+      const pc = byId("labelPcInput").value;
+      const labels = Array.from({ length: copies }).map(() => `<div class="label-sheet">${labelHtml(activeLabelItem, pc)}</div>`).join("");
+      const win = window.open("", "_blank", "width=900,height=650");
+      if (!win) return toast("Não foi possível abrir a janela de impressão.", "erro");
+      win.document.write(`
+        <!doctype html>
+        <html lang="pt-BR">
+        <head>
+          <meta charset="utf-8">
+          <title>Etiqueta ${escapeHtml(activeLabelItem.cod)}</title>
+          <style>
+            * { box-sizing: border-box; }
+            body { margin: 0; padding: 16px; font-family: Arial, Helvetica, sans-serif; background: #fff; }
+            .label-sheet { display: grid; grid-template-columns: 1.05fr .8fr; gap: 10px; width: 148mm; margin: 0 0 10mm; break-inside: avoid; page-break-inside: avoid; }
+            .print-label { display: grid; align-content: center; min-height: 42mm; padding: 4mm; border: 1mm solid #111; color: #111; font-weight: 900; text-align: center; text-transform: uppercase; line-height: 1.12; }
+            .primary { font-size: 12pt; }
+            .secondary { font-size: 22pt; }
+            .label-code { margin-bottom: 2mm; font-size: 15pt; }
+            .label-desc, .label-line { font-size: 12pt; }
+            .secondary .label-line, .secondary .label-date { font-size: 22pt; }
+            @media print { body { padding: 0; } .label-sheet { page-break-after: always; } .label-sheet:last-child { page-break-after: auto; } }
+          </style>
+        </head>
+        <body>${labels}</body>
+        </html>
+      `);
+      win.document.close();
+      win.focus();
+      win.print();
+      addAudit(`Imprimiu etiqueta do item ${activeLabelItem.cod}`);
     }
 
     function extractScannedCode(raw) {
@@ -3498,9 +3951,9 @@
 
     function exportHistoryCsv() {
       const rows = getFilteredHistory().map(row => [row.dt, row.cod, row.desc, row.tipo, row.qty, row.resp]);
-      download("historico.csv", [["Data", "Codigo", "Descricao", "Tipo", "Qtd", "Responsavel"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
-      addAudit("Exportou historico filtrado em CSV");
-      toast("Historico exportado.");
+      download("historico.csv", [["Data", "Código", "Descrição", "Tipo", "Qtd", "Responsável"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
+      addAudit("Exportou histórico filtrado em CSV");
+      toast("Histórico exportado.");
     }
 
     function editUser(userId) {
@@ -3549,7 +4002,7 @@
           method: userId ? "PUT" : "POST",
           body: JSON.stringify(payload)
         });
-        toast("Usuario salvo.");
+        toast("Usuário salvo.");
         clearUserForm();
         await loadAdminUsers();
       } catch (err) {
@@ -3561,7 +4014,7 @@
       const user = employees.find(emp => String(emp.id) === String(userId));
       if (!user) return;
       if (currentSession?.user?.id === user.id && user.active) {
-        return toast("Voce nao pode desativar seu proprio acesso.", "erro");
+        return toast("Você não pode desativar seu próprio acesso.", "erro");
       }
       try {
         await api(`/api/admin/users/${user.id}`, {
@@ -3579,7 +4032,7 @@
             permissions: user.permissions || []
           })
         });
-        toast("Status do usuario atualizado.");
+        toast("Status do usuário atualizado.");
         await loadAdminUsers();
       } catch (err) {
         toast(err.message, "erro");
@@ -3587,7 +4040,7 @@
     }
 
     function startScanner() {
-      if (!window.Html5Qrcode) return toast("html5-qrcode nao carregou.", "erro");
+      if (!window.Html5Qrcode) return toast("html5-qrcode não carregou.", "erro");
       byId("scannerModal").style.display = "grid";
       scanner = new Html5Qrcode("barcodeReader");
       scanner.start({ facingMode: "environment" }, { fps: 10, qrbox: 220 }, rawCode => {
@@ -3595,8 +4048,8 @@
         updateFilters({ q: code });
         stopScanner();
         switchPage("estoque");
-        toast(`Codigo lido: ${code}`);
-      }).catch(() => toast("Nao foi possivel abrir a camera.", "erro"));
+        toast(`Código lido: ${code}`);
+      }).catch(() => toast("Não foi possível abrir a câmera.", "erro"));
     }
 
     function stopScanner() {
@@ -3606,21 +4059,21 @@
 
     async function enableNotifications() {
       if (!("Notification" in window)) {
-        toast("Este navegador nao suporta notificacoes.", "erro");
+        toast("Este navegador não suporta notificações.", "erro");
         return;
       }
       let permission = Notification.permission;
       try {
         permission = permission === "default" ? await Notification.requestPermission() : permission;
       } catch {
-        toast("Nao foi possivel solicitar notificacoes neste navegador.", "erro");
+        toast("Não foi possível solicitar notificações neste navegador.", "erro");
         return;
       }
       if (permission === "granted") {
-        toast("Notificacoes ativadas.");
+        toast("Notificações ativadas.");
         notifyCriticalItems(true);
       } else {
-        toast("Permissao de notificacao nao liberada.", "aviso");
+        toast("Permissão de notificação não liberada.", "aviso");
       }
     }
 
@@ -3634,18 +4087,18 @@
       if (!critical.length) return;
       const zeros = critical.filter(item => item.status === "SEM ESTOQUE").length;
       const message = zeros
-        ? `${zeros} item(ns) sem estoque e ${critical.length - zeros} abaixo do minimo.`
-        : `${critical.length} item(ns) abaixo do minimo.`;
+        ? `${zeros} item(ns) sem estoque e ${critical.length - zeros} abaixo do mínimo.`
+        : `${critical.length} item(ns) abaixo do mínimo.`;
       new Notification("SuperEstoque", { body: message });
     }
 
     // Permite configurar a quantidade que torna a observacao obrigatoria.
     function configureObservationLimit() {
-      const next = Number(prompt("Observacao obrigatoria acima de qual quantidade?", String(obsRequiredQty)) || obsRequiredQty);
-      if (!Number.isFinite(next) || next < 0) return toast("Limite invalido.", "erro");
+      const next = Number(prompt("Observação obrigatória acima de qual quantidade?", String(obsRequiredQty)) || obsRequiredQty);
+      if (!Number.isFinite(next) || next < 0) return toast("Limite inválido.", "erro");
       obsRequiredQty = next;
       localStorage.setItem(STORAGE.obsLimit, String(obsRequiredQty));
-      toast(`Observacao obrigatoria acima de ${formatNumber(obsRequiredQty)}.`);
+      toast(`Observação obrigatória acima de ${formatNumber(obsRequiredQty)}.`);
     }
 
     // Comportamento hamburguer em mobile.
@@ -3667,7 +4120,7 @@
     function initEvents() {
       document.querySelectorAll(".nav-button").forEach(button => button.addEventListener("click", () => {
         if (button.dataset.permission && !hasPermission(button.dataset.permission)) {
-          toast("Sem permissao para acessar esta area.", "erro");
+          toast("Sem permissão para acessar esta área.", "erro");
           return;
         }
         switchPage(button.dataset.page);
@@ -3695,6 +4148,14 @@
       byId("barcodeButton").addEventListener("click", startScanner);
       byId("closeScannerButton").addEventListener("click", stopScanner);
       byId("closeQrButton").addEventListener("click", () => byId("qrModal").style.display = "none");
+      byId("closeLabelButton").addEventListener("click", closeLabelModal);
+      byId("cancelLabelButton").addEventListener("click", closeLabelModal);
+      byId("labelPcInput").addEventListener("input", event => {
+        event.target.value = event.target.value.replace(/\D/g, "").slice(0, 6);
+        renderLabelPreview();
+      });
+      byId("labelCopiesInput").addEventListener("input", renderLabelPreview);
+      byId("printLabelButton").addEventListener("click", printActiveLabel);
       byId("confirmCloseButton").addEventListener("click", closeConfirmation);
       byId("confirmFirstButton").addEventListener("click", confirmFirstStep);
       byId("confirmFinalButton").addEventListener("click", confirmFinalStep);
@@ -3735,6 +4196,7 @@
       }));
       document.body.addEventListener("click", event => {
         const qr = event.target.closest("[data-qr]");
+        const label = event.target.closest("[data-label]");
         const favorite = event.target.closest("[data-favorite]");
         const duplicate = event.target.closest("[data-duplicate]");
         const editItemButton = event.target.closest("[data-edit-item]");
@@ -3749,6 +4211,7 @@
         const poPdf = event.target.closest("[data-po-pdf]");
         const exit = event.target.closest("[data-exit]");
         if (qr) showQr(qr.dataset.qr);
+        if (label) openLabelModal(label.dataset.label);
         if (favorite) toggleFavorite(favorite.dataset.favorite);
         if (duplicate) duplicateItem(duplicate.dataset.duplicate);
         if (editItemButton) editItem(editItemButton.dataset.editItem);
@@ -3847,6 +4310,7 @@
         syncTimer = null;
         appDataPersistTimer = null;
         byId("loginScreen").classList.remove("hidden");
+        switchPage("dashboard");
         addAudit("Saiu do sistema");
       });
       setupMobileMenu();
@@ -3882,13 +4346,13 @@
           displayName = payload.user?.display_name || displayName;
           success = true;
         } else {
-          serverError = payload.error || "Usuario ou senha invalidos.";
+          serverError = payload.error || "Usuário ou senha inválidos.";
         }
       } catch (err) {
         success = false;
         serverError = location.protocol === "file:"
-          ? "Abra pelo endereco http://127.0.0.1:8000/. Nao abra o HTML direto."
-          : "Nao foi possivel falar com o backend. Inicie o sistema pelo arquivo iniciar_superestoque.bat.";
+          ? "Abra pelo endereço http://127.0.0.1:8000/. Não abra o HTML direto."
+          : "Não foi possível falar com o backend. Inicie o sistema pelo arquivo iniciar_superestoque.bat.";
       }
       loginHistory.unshift({ dt: nowIso(), user, success });
       try {
@@ -3904,6 +4368,7 @@
         byId("loginScreen").classList.add("hidden");
         try {
           applyPermissions();
+          switchPage("dashboard");
           clearUserForm();
           await syncFromServer(true);
           await loadAppDataFromServer();
@@ -3929,7 +4394,7 @@
       submitButton.classList.remove("is-loading");
       submitButton.textContent = originalSubmitText;
       scanner?.classList.remove("is-active");
-      error.textContent = serverError || "Usuario ou senha invalidos.";
+      error.textContent = serverError || "Usuário ou senha inválidos.";
       error.style.display = "block";
       toast("Falha no login.", "erro");
       renderAdmin();
@@ -3949,7 +4414,7 @@
         await restoreSession();
       } catch (err) {
         console.error(err);
-        toast("O sistema iniciou com um aviso. O login continua disponivel.", "aviso");
+        toast("O sistema iniciou com um aviso. O login continua disponível.", "aviso");
       }
     })();
   </script>
