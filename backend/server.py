@@ -62,6 +62,8 @@ SESSION_TTL = 8 * 60 * 60
 COOKIE_NAME = "se_session"
 DEFAULT_ADMIN_BADGE = "000001"
 DEFAULT_OPERATOR_BADGE = "000002"
+LEGACY_ADMIN_PASSWORDS = ("chefe123", "chefe1234")
+LEGACY_EMPLOYEE_PASSWORDS = ("funcionario123",)
 DEFAULT_ADMIN_PASSWORD = "admin1234"
 DEFAULT_EMPLOYEE_PASSWORD = "operador123"
 MIN_PASSWORD_LENGTH = 8
@@ -312,6 +314,20 @@ def sync_user_password(conn, username, display, role, password):
         """,
         (username, display, role, "", permissions, salt, digest),
     )
+
+
+def upgrade_legacy_default_password(conn, username, legacy_passwords, new_password):
+    row = conn.execute("SELECT * FROM users WHERE username = ?", (username,)).fetchone()
+    if not row:
+        return
+    if verify_password(new_password, row["salt"], row["password_hash"]):
+        return
+    for legacy_password in legacy_passwords:
+        if verify_password(legacy_password, row["salt"], row["password_hash"]):
+            salt, digest = hash_password(new_password)
+            conn.execute("UPDATE users SET salt = ?, password_hash = ? WHERE id = ?", (salt, digest, row["id"]))
+            conn.execute("DELETE FROM sessions WHERE user_id = ?", (row["id"],))
+            return
 
 
 def item_to_dict(row):
@@ -599,6 +615,8 @@ def init_db():
                 sync_user_password(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", DEFAULT_ADMIN_PASSWORD)
                 sync_user_password(conn, DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", DEFAULT_EMPLOYEE_PASSWORD)
                 conn.execute("INSERT INTO app_state (key, value) VALUES ('default_passwords_applied', '1')")
+            upgrade_legacy_default_password(conn, DEFAULT_ADMIN_BADGE, LEGACY_ADMIN_PASSWORDS, DEFAULT_ADMIN_PASSWORD)
+            upgrade_legacy_default_password(conn, DEFAULT_OPERATOR_BADGE, LEGACY_EMPLOYEE_PASSWORDS, DEFAULT_EMPLOYEE_PASSWORD)
 
 
 class App(BaseHTTPRequestHandler):
