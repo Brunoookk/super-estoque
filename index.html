@@ -1776,6 +1776,10 @@
           <label for="loginPassword">Senha</label>
           <input class="input" id="loginPassword" type="password" autocomplete="current-password">
         </div>
+        <label style="display:flex;align-items:center;gap:8px;font-weight:700;color:var(--muted);font-size:12px">
+          <input id="saveLoginButton" type="checkbox">
+          Salvar login
+        </label>
         <div class="login-error" id="loginError"></div>
         <div class="technical-scanner" id="loginScanner" aria-hidden="true"></div>
         <button class="button primary" id="loginSubmitButton" type="submit">Entrar</button>
@@ -2307,7 +2311,8 @@
       purchaseOrders: "superestoque.purchaseOrders.company.v1",
       costs: "superestoque.costs.company.v1",
       lots: "superestoque.lots.company.v1",
-      obsLimit: "superestoque.obsRequiredQty.company.v1"
+      obsLimit: "superestoque.obsRequiredQty.company.v1",
+      savedLogin: "superestoque.savedLogin.v1"
     };
 
     const byId = id => document.getElementById(id);
@@ -2410,6 +2415,22 @@
 
     function writeStore(key, value) {
       localStorage.setItem(key, JSON.stringify(value));
+    }
+
+    function restoreSavedLogin() {
+      const saved = readStore(STORAGE.savedLogin, null);
+      if (!saved) return;
+      byId("loginUser").value = saved.user || "";
+      byId("loginPassword").value = saved.password || "";
+      byId("saveLoginButton").checked = true;
+    }
+
+    function persistSavedLogin(user, password) {
+      if (byId("saveLoginButton").checked) {
+        writeStore(STORAGE.savedLogin, { user, password });
+      } else {
+        localStorage.removeItem(STORAGE.savedLogin);
+      }
     }
 
     function saveAll() {
@@ -4563,6 +4584,7 @@
       }
       if (success) {
         error.style.display = "none";
+        persistSavedLogin(user, pass);
         sessionStorage.setItem("superestoque.currentUser", user);
         byId("userName").textContent = displayName;
         byId("loginScreen").classList.add("hidden");
@@ -4604,6 +4626,7 @@
     window.superEstoqueLogin = handleLoginSubmit;
 
     byId("loginForm").addEventListener("submit", handleLoginSubmit);
+    restoreSavedLogin();
     (async () => {
       try {
         initData();
