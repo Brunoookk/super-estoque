@@ -11,6 +11,7 @@ import re
 import secrets
 import socket
 import sqlite3
+import tempfile
 import time
 
 
@@ -18,27 +19,60 @@ ROOT = Path(__file__).resolve().parents[1]
 HTML_FILE = ROOT / "index.html"
 LEGACY_HTML_FILE = ROOT / "SuperEstoque (4).html"
 
-# Use volume mount on Render, or relative path as fallback
-_data_dir = os.environ.get("SUPERESTOQUE_DATA_DIR")
-if _data_dir:
-    DATA_DIR = Path(_data_dir)
-else:
-    # Use Render's discardable volume if available, otherwise use local backend/data
+def is_writable_dir(path):
+    try:
+        path.mkdir(parents=True, exist_ok=True)
+        probe = path / ".write-test"
+        probe.write_text("ok", encoding="utf-8")
+        probe.unlink(missing_ok=True)
+        return True
+    except OSError:
+        return False
+
+
+def resolve_data_dir():
+    candidates = []
+
+    configured = os.environ.get("SUPERESTOQUE_DATA_DIR")
+    if configured:
+        candidates.append(Path(configured))
+
     render_volume = os.environ.get("RENDER_DISCARDABLE_VOLUME_MOUNT_POINT")
     if render_volume:
-        DATA_DIR = Path(render_volume) / "super-estoque-data"
-    else:
-        DATA_DIR = ROOT / "backend" / "data"
+        candidates.append(Path(render_volume) / "super-estoque-data")
+
+    candidates.extend(
+        [
+            ROOT / "backend" / "data",
+            Path(tempfile.gettempdir()) / "super-estoque-data",
+        ]
+    )
+
+    for candidate in candidates:
+        if is_writable_dir(candidate):
+            return candidate
+
+    return candidates[-1]
+
+
+DATA_DIR = resolve_data_dir()
 
 DB_FILE = DATA_DIR / "superestoque.db"
 SESSION_TTL = 8 * 60 * 60
 COOKIE_NAME = "se_session"
+DEFAULT_ADMIN_BADGE = "000001"
+DEFAULT_OPERATOR_BADGE = "000002"
+DEFAULT_ADMIN_PASSWORD = "admin1234"
+DEFAULT_EMPLOYEE_PASSWORD = "operador123"
+MIN_PASSWORD_LENGTH = 8
+LOGIN_MAX_ATTEMPTS = 5
+LOGIN_BLOCK_SECONDS = 15 * 60
+LOGIN_ATTEMPTS = {}
 AVAILABLE_PERMISSIONS = (
     "dashboard",
     "estoque",
     "compras",
     "historico",
-    "fornecedores",
     "saude",
     "relatorios",
     "financeiro",
@@ -46,10 +80,30 @@ AVAILABLE_PERMISSIONS = (
     "ocs",
     "admin",
 )
+ROLE_PERMISSIONS = {
+    "admin": list(AVAILABLE_PERMISSIONS),
+    "supervisor": ["dashboard", "estoque", "compras", "historico", "saude", "relatorios", "rastreabilidade", "ocs"],
+    "operator": ["dashboard", "estoque", "historico", "rastreabilidade"],
+    "viewer": ["dashboard", "estoque", "historico", "saude", "relatorios", "rastreabilidade"],
+}
+ROLE_LABELS = {
+    "admin": "Administrador",
+    "supervisor": "Supervisor",
+    "operator": "Operador",
+    "viewer": "Consulta",
+    "employee": "Operador",
+}
 
 
 def now_ts():
     return int(time.time())
+
+
+def client_ip(handler):
+    forwarded = handler.headers.get("X-Forwarded-For", "")
+    if forwarded:
+        return forwarded.split(",", 1)[0].strip()
+    return handler.client_address[0] if handler.client_address else "unknown"
 
 
 def get_lan_ip():
@@ -116,6 +170,32 @@ def calc_status(qty, minimum):
     return "OK"
 
 
+def classify_code(cod):
+    cleaned = re.sub(r"\D", "", str(cod or ""))
+    if re.fullmatch(r"\d{6}", cleaned):
+        return "6_DIGITOS"
+    if re.fullmatch(r"\d{9}", cleaned):
+        return "9_DIGITOS"
+    return "PENDENTE_CODIGO"
+
+
+def normalize_item_class(value):
+    cleaned = str(value or "").strip().upper()
+    cleaned = cleaned.replace("Ã", "A").replace("Á", "A").replace("À", "A").replace("Â", "A")
+    cleaned = cleaned.replace("É", "E").replace("Ê", "E")
+    if cleaned in ("CONSUMO", "MATERIAL DE CONSUMO", "DHAS"):
+        return "CONSUMO"
+    if cleaned in ("PECAS", "PEÇAS", "PECA", "PEÇA"):
+        return "PECA"
+    if cleaned in ("FERRAMENTA", "FERRAMENTAS"):
+        return "FERRAMENTA"
+    return "OUTROS"
+
+
+def truthy(value):
+    return str(value).strip().lower() in ("1", "true", "sim", "s", "yes", "on")
+
+
 def normalize_movement_type(value):
     cleaned = str(value or "").strip().upper()
     cleaned = cleaned.replace("Í", "I").replace("Ì", "I")
@@ -126,7 +206,28 @@ def normalize_movement_type(value):
     return ""
 
 
-def normalize_permissions(value, role="employee"):
+def normalize_role(value):
+    cleaned = str(value or "operator").strip().lower()
+    aliases = {
+        "administrador": "admin",
+        "administrator": "admin",
+        "chefe": "admin",
+        "employee": "operator",
+        "funcionario": "operator",
+        "funcionário": "operator",
+        "operador": "operator",
+        "consulta": "viewer",
+        "visualizador": "viewer",
+    }
+    return aliases.get(cleaned, cleaned if cleaned in ROLE_PERMISSIONS else "operator")
+
+
+def normalize_permissions(value, role="operator"):
+    role = normalize_role(role)
+    if role in ROLE_PERMISSIONS:
+        defaults = ROLE_PERMISSIONS[role]
+    else:
+        defaults = ROLE_PERMISSIONS["operator"]
     if role == "admin":
         return list(AVAILABLE_PERMISSIONS)
     if isinstance(value, str):
@@ -135,26 +236,61 @@ def normalize_permissions(value, role="employee"):
         except json.JSONDecodeError:
             value = [part.strip() for part in value.split(",")]
     if not isinstance(value, list):
-        value = ["dashboard", "estoque"]
-    allowed = {name for name in value if name in AVAILABLE_PERMISSIONS and name != "admin"}
+        value = defaults
+    allowed = {name for name in value if name in AVAILABLE_PERMISSIONS and name in defaults and name != "admin"}
     if not allowed:
-        allowed = {"dashboard", "estoque"}
+        allowed = set(defaults)
     return sorted(allowed)
 
 
 def user_to_dict(row):
     data = dict(row)
+    data["role"] = normalize_role(data.get("role"))
+    data["badge"] = data.get("username") or ""
     data["department"] = data.get("department") or ""
+    data["position"] = data.get("position") or ""
+    data["cpf"] = data.get("cpf") or ""
+    data["phone"] = data.get("phone") or ""
+    data["email"] = data.get("email") or ""
+    data["photo"] = data.get("photo") or ""
     data["permissions"] = normalize_permissions(data.get("permissions"), data["role"])
     return data
 
 
 def sync_env_user(conn, username, display, role, env_name):
+    role = normalize_role(role)
     password = os.environ.get(env_name)
     if not password:
         return
-    if len(password) < 6:
-        raise ValueError(f"{env_name} deve ter pelo menos 6 caracteres.")
+    if len(password) < MIN_PASSWORD_LENGTH:
+        raise ValueError(f"{env_name} deve ter pelo menos {MIN_PASSWORD_LENGTH} caracteres.")
+    salt, digest = hash_password(password)
+    permissions = json.dumps(normalize_permissions([], role))
+    row = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
+    if row:
+        conn.execute(
+            """
+            UPDATE users
+            SET display_name = ?, role = ?, permissions = ?, salt = ?, password_hash = ?, active = 1
+            WHERE username = ?
+            """,
+            (display, role, permissions, salt, digest, username),
+        )
+        conn.execute("DELETE FROM sessions WHERE user_id = ?", (row["id"],))
+        return
+    conn.execute(
+        """
+        INSERT INTO users (username, display_name, role, department, permissions, salt, password_hash, active)
+        VALUES (?,?,?,?,?,?,?,1)
+        """,
+        (username, display, role, "", permissions, salt, digest),
+    )
+
+
+def sync_user_password(conn, username, display, role, password):
+    role = normalize_role(role)
+    if len(password) < MIN_PASSWORD_LENGTH:
+        raise ValueError(f"Senha inicial deve ter pelo menos {MIN_PASSWORD_LENGTH} caracteres.")
     salt, digest = hash_password(password)
     permissions = json.dumps(normalize_permissions([], role))
     row = conn.execute("SELECT id FROM users WHERE username = ?", (username,)).fetchone()
@@ -190,6 +326,9 @@ def item_to_dict(row):
         "status": row["status"],
         "obs": row["obs"] or "",
         "arm": row["warehouse"] or "",
+        "codeType": row["code_type"] or classify_code(row["cod"]),
+        "itemClass": row["item_class"] or "OUTROS",
+        "addressValidated": bool(row["address_validated"]),
     }
 
 
@@ -208,6 +347,24 @@ def movement_to_dict(row):
     }
 
 
+def audit_to_dict(row):
+    return {
+        "id": row["id"],
+        "dt": row["created_at"],
+        "user": row["username"] or "",
+        "display": row["display_name"] or row["username"] or "",
+        "badge": row["username"] or "",
+        "role": normalize_role(row["role"] or ""),
+        "position": row["position"] or "",
+        "ip": row["ip"] or "",
+        "action": row["action"],
+        "target": row["target"] or "",
+        "details": row["details"] or "",
+        "qty": row["qty"],
+        "status": row["status"] or "",
+    }
+
+
 def get_data_version(conn):
     row = conn.execute("SELECT value FROM app_state WHERE key = 'data_version'").fetchone()
     return int(row["value"]) if row else 0
@@ -223,6 +380,16 @@ def bump_data_version(conn):
     )
 
 
+def write_audit(conn, user, action, target="", details="", ip="", qty=None, status="OK"):
+    conn.execute(
+        """
+        INSERT INTO audit_events (user_id, action, target, details, ip, qty, status)
+        VALUES (?, ?, ?, ?, ?, ?, ?)
+        """,
+        (user["id"], action, str(target or ""), str(details or ""), str(ip or ""), qty, str(status or "OK")),
+    )
+
+
 def init_db():
     DATA_DIR.mkdir(parents=True, exist_ok=True)
     with db() as conn:
@@ -232,8 +399,13 @@ def init_db():
               id INTEGER PRIMARY KEY AUTOINCREMENT,
               username TEXT NOT NULL UNIQUE,
               display_name TEXT NOT NULL,
-              role TEXT NOT NULL CHECK (role IN ('admin','employee')),
+              role TEXT NOT NULL DEFAULT 'operator',
               department TEXT NOT NULL DEFAULT '',
+              position TEXT NOT NULL DEFAULT '',
+              cpf TEXT NOT NULL DEFAULT '',
+              phone TEXT NOT NULL DEFAULT '',
+              email TEXT NOT NULL DEFAULT '',
+              photo TEXT NOT NULL DEFAULT '',
               permissions TEXT NOT NULL DEFAULT '[]',
               salt TEXT NOT NULL,
               password_hash TEXT NOT NULL,
@@ -260,6 +432,9 @@ def init_db():
               status TEXT NOT NULL,
               obs TEXT,
               warehouse TEXT,
+              code_type TEXT NOT NULL DEFAULT 'PENDENTE_CODIGO',
+              item_class TEXT NOT NULL DEFAULT 'OUTROS',
+              address_validated INTEGER NOT NULL DEFAULT 0,
               updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
             );
 
@@ -287,19 +462,122 @@ def init_db():
               value TEXT NOT NULL,
               updated_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
             );
+
+            CREATE TABLE IF NOT EXISTS audit_events (
+              id INTEGER PRIMARY KEY AUTOINCREMENT,
+              user_id INTEGER REFERENCES users(id) ON DELETE SET NULL,
+              action TEXT NOT NULL,
+              target TEXT,
+              details TEXT,
+              ip TEXT NOT NULL DEFAULT '',
+              qty REAL,
+              status TEXT NOT NULL DEFAULT 'OK',
+              created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+            );
             """
         )
         conn.execute("INSERT OR IGNORE INTO app_state (key, value) VALUES ('data_version', '1')")
         user_columns = {row["name"] for row in conn.execute("PRAGMA table_info(users)").fetchall()}
         if "department" not in user_columns:
             conn.execute("ALTER TABLE users ADD COLUMN department TEXT NOT NULL DEFAULT ''")
+        if "position" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN position TEXT NOT NULL DEFAULT ''")
+        if "cpf" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN cpf TEXT NOT NULL DEFAULT ''")
+        if "phone" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN phone TEXT NOT NULL DEFAULT ''")
+        if "email" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN email TEXT NOT NULL DEFAULT ''")
+        if "photo" not in user_columns:
+            conn.execute("ALTER TABLE users ADD COLUMN photo TEXT NOT NULL DEFAULT ''")
         if "permissions" not in user_columns:
             conn.execute("ALTER TABLE users ADD COLUMN permissions TEXT NOT NULL DEFAULT '[]'")
+        user_schema = conn.execute("SELECT sql FROM sqlite_master WHERE type = 'table' AND name = 'users'").fetchone()
+        if user_schema and "role IN ('admin','employee')" in (user_schema["sql"] or ""):
+            conn.executescript(
+                """
+                CREATE TABLE users_migrated (
+                  id INTEGER PRIMARY KEY AUTOINCREMENT,
+                  username TEXT NOT NULL UNIQUE,
+                  display_name TEXT NOT NULL,
+                  role TEXT NOT NULL DEFAULT 'operator',
+                  department TEXT NOT NULL DEFAULT '',
+                  position TEXT NOT NULL DEFAULT '',
+                  cpf TEXT NOT NULL DEFAULT '',
+                  phone TEXT NOT NULL DEFAULT '',
+                  email TEXT NOT NULL DEFAULT '',
+                  photo TEXT NOT NULL DEFAULT '',
+                  permissions TEXT NOT NULL DEFAULT '[]',
+                  salt TEXT NOT NULL,
+                  password_hash TEXT NOT NULL,
+                  active INTEGER NOT NULL DEFAULT 1,
+                  created_at TEXT NOT NULL DEFAULT (datetime('now','localtime'))
+                );
+                INSERT INTO users_migrated (
+                  id, username, display_name, role, department, position, cpf, phone, email, photo,
+                  permissions, salt, password_hash, active, created_at
+                )
+                SELECT
+                  id, username, display_name,
+                  CASE WHEN role = 'employee' THEN 'operator' ELSE role END,
+                  department, position, cpf, phone, email, photo,
+                  permissions, salt, password_hash, active, created_at
+                FROM users;
+                DROP TABLE users;
+                ALTER TABLE users_migrated RENAME TO users;
+                """
+            )
+        conn.execute(
+            """
+            UPDATE users
+            SET username = ?
+            WHERE username = 'chefe'
+              AND NOT EXISTS (SELECT 1 FROM users WHERE username = ?)
+            """,
+            (DEFAULT_ADMIN_BADGE, DEFAULT_ADMIN_BADGE),
+        )
+        conn.execute(
+            """
+            UPDATE users
+            SET username = ?
+            WHERE username = 'funcionario'
+              AND NOT EXISTS (SELECT 1 FROM users WHERE username = ?)
+            """,
+            (DEFAULT_OPERATOR_BADGE, DEFAULT_OPERATOR_BADGE),
+        )
+        conn.execute("UPDATE users SET role = 'operator' WHERE role = 'employee'")
+        audit_columns = {row["name"] for row in conn.execute("PRAGMA table_info(audit_events)").fetchall()}
+        if "ip" not in audit_columns:
+            conn.execute("ALTER TABLE audit_events ADD COLUMN ip TEXT NOT NULL DEFAULT ''")
+        if "qty" not in audit_columns:
+            conn.execute("ALTER TABLE audit_events ADD COLUMN qty REAL")
+        if "status" not in audit_columns:
+            conn.execute("ALTER TABLE audit_events ADD COLUMN status TEXT NOT NULL DEFAULT 'OK'")
+        item_columns = {row["name"] for row in conn.execute("PRAGMA table_info(items)").fetchall()}
+        if "code_type" not in item_columns:
+            conn.execute("ALTER TABLE items ADD COLUMN code_type TEXT NOT NULL DEFAULT 'PENDENTE_CODIGO'")
+        if "item_class" not in item_columns:
+            conn.execute("ALTER TABLE items ADD COLUMN item_class TEXT NOT NULL DEFAULT 'OUTROS'")
+        if "address_validated" not in item_columns:
+            conn.execute("ALTER TABLE items ADD COLUMN address_validated INTEGER NOT NULL DEFAULT 0")
+        conn.execute(
+            """
+            UPDATE items
+            SET code_type = CASE
+                WHEN length(replace(replace(replace(cod, '-', ''), '.', ''), ' ', '')) = 6
+                     AND replace(replace(replace(cod, '-', ''), '.', ''), ' ', '') GLOB '[0-9][0-9][0-9][0-9][0-9][0-9]' THEN '6_DIGITOS'
+                WHEN length(replace(replace(replace(cod, '-', ''), '.', ''), ' ', '')) = 9
+                     AND replace(replace(replace(cod, '-', ''), '.', ''), ' ', '') GLOB '[0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9]' THEN '9_DIGITOS'
+                ELSE 'PENDENTE_CODIGO'
+            END
+            WHERE code_type IS NULL OR code_type = '' OR code_type = 'PENDENTE_CODIGO'
+            """
+        )
 
         if conn.execute("SELECT COUNT(*) FROM users").fetchone()[0] == 0:
             for username, display, role, password in (
-                ("chefe", "Chefe do Estoque", "admin", os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD", secrets.token_urlsafe(18))),
-                ("funcionario", "Funcionário Estoque", "employee", os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD", secrets.token_urlsafe(18))),
+                (DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD", DEFAULT_ADMIN_PASSWORD)),
+                (DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD", DEFAULT_EMPLOYEE_PASSWORD)),
             ):
                 salt, digest = hash_password(password)
                 conn.execute(
@@ -313,8 +591,14 @@ def init_db():
             "UPDATE users SET permissions = ? WHERE role = 'admin'",
             (json.dumps(normalize_permissions([], "admin")),),
         )
-        sync_env_user(conn, "chefe", "Chefe do Estoque", "admin", "SUPERESTOQUE_ADMIN_PASSWORD")
-        sync_env_user(conn, "funcionario", "Funcionário Estoque", "employee", "SUPERESTOQUE_EMPLOYEE_PASSWORD")
+        sync_env_user(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", "SUPERESTOQUE_ADMIN_PASSWORD")
+        sync_env_user(conn, DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", "SUPERESTOQUE_EMPLOYEE_PASSWORD")
+        if not os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD") and not os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD"):
+            applied = conn.execute("SELECT value FROM app_state WHERE key = 'default_passwords_applied'").fetchone()
+            if not applied:
+                sync_user_password(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", DEFAULT_ADMIN_PASSWORD)
+                sync_user_password(conn, DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", DEFAULT_EMPLOYEE_PASSWORD)
+                conn.execute("INSERT INTO app_state (key, value) VALUES ('default_passwords_applied', '1')")
 
 
 class App(BaseHTTPRequestHandler):
@@ -328,6 +612,19 @@ class App(BaseHTTPRequestHandler):
             "X-Frame-Options": "DENY",
             "Referrer-Policy": "same-origin",
             "Permissions-Policy": "geolocation=(), microphone=(), camera=()",
+            "Content-Security-Policy": (
+                "default-src 'self'; "
+                "script-src 'self' 'unsafe-inline' https://cdn.sheetjs.com https://cdn.jsdelivr.net https://unpkg.com; "
+                "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
+                "font-src 'self' https://fonts.gstatic.com; "
+                "img-src 'self' data: blob:; "
+                "connect-src 'self'; "
+                "media-src 'self' blob:; "
+                "object-src 'none'; "
+                "base-uri 'self'; "
+                "frame-ancestors 'none'"
+            ),
+            "Strict-Transport-Security": "max-age=31536000; includeSubDomains",
         }
 
     def read_json(self):
@@ -383,11 +680,26 @@ class App(BaseHTTPRequestHandler):
 
     def require_admin(self, user):
         if user["role"] != "admin":
-            json_response(self, HTTPStatus.FORBIDDEN, {"error": "Acesso restrito ao chefe/admin."}, self.security_headers())
+            json_response(self, HTTPStatus.FORBIDDEN, {"error": "Acesso restrito ao Administrador."}, self.security_headers())
+            return False
+        return True
+
+    def require_permission(self, user, permission):
+        if user["role"] == "admin":
+            return True
+        permissions = normalize_permissions(user["permissions"], user["role"])
+        if permission not in permissions:
+            json_response(self, HTTPStatus.FORBIDDEN, {"error": "Permissão insuficiente."}, self.security_headers())
             return False
         return True
 
     def do_GET(self):
+        try:
+            return self.handle_GET()
+        except (ValueError, json.JSONDecodeError) as exc:
+            return json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)}, self.security_headers())
+
+    def handle_GET(self):
         parsed = urlparse(self.path)
         path = parsed.path
         if path == "/":
@@ -410,7 +722,7 @@ class App(BaseHTTPRequestHandler):
             )
         if path == "/api/items":
             user = self.require_user()
-            if not user:
+            if not user or not self.require_permission(user, "estoque"):
                 return
             with db() as conn:
                 rows = conn.execute("SELECT * FROM items ORDER BY description COLLATE NOCASE").fetchall()
@@ -418,7 +730,7 @@ class App(BaseHTTPRequestHandler):
             return json_response(self, HTTPStatus.OK, {"items": [item_to_dict(r) for r in rows], "version": version}, self.security_headers())
         if path == "/api/movements":
             user = self.require_user()
-            if not user:
+            if not user or not self.require_permission(user, "historico"):
                 return
             limit = int(parse_qs(parsed.query).get("limit", ["200"])[0])
             limit = max(1, min(limit, 1000))
@@ -437,7 +749,7 @@ class App(BaseHTTPRequestHandler):
             return json_response(self, HTTPStatus.OK, {"movements": [movement_to_dict(r) for r in reversed(rows)], "version": version}, self.security_headers())
         if path == "/api/sync":
             user = self.require_user()
-            if not user:
+            if not user or not self.require_permission(user, "estoque"):
                 return
             since = int(parse_qs(parsed.query).get("since", ["0"])[0] or 0)
             with db() as conn:
@@ -467,12 +779,63 @@ class App(BaseHTTPRequestHandler):
             )
         if path == "/api/app-data":
             user = self.require_user()
-            if not user:
+            if not user or not self.require_permission(user, "dashboard"):
                 return
             with db() as conn:
                 row = conn.execute("SELECT value FROM app_data WHERE key = 'client_state'").fetchone()
             data = json.loads(row["value"]) if row else {}
+            if isinstance(data, dict):
+                data.pop("audit", None)
             return json_response(self, HTTPStatus.OK, {"data": data}, self.security_headers())
+        if path == "/api/ops-metrics":
+            user = self.require_user()
+            if not user or not self.require_permission(user, "dashboard"):
+                return
+            today = time.strftime("%Y-%m-%d")
+            with db() as conn:
+                online = conn.execute("SELECT COUNT(DISTINCT user_id) FROM sessions WHERE expires_at > ?", (now_ts(),)).fetchone()[0]
+                last_login = conn.execute(
+                    """
+                    SELECT a.created_at, u.display_name, u.username
+                    FROM audit_events a
+                    LEFT JOIN users u ON u.id = a.user_id
+                    WHERE a.action = 'Login realizado'
+                    ORDER BY a.id DESC
+                    LIMIT 1
+                    """
+                ).fetchone()
+                last_move = conn.execute(
+                    """
+                    SELECT m.created_at, m.cod, m.description, m.movement_type, m.qty, u.display_name, u.username
+                    FROM movements m
+                    LEFT JOIN users u ON u.id = m.user_id
+                    ORDER BY m.id DESC
+                    LIMIT 1
+                    """
+                ).fetchone()
+                by_operator = conn.execute(
+                    """
+                    SELECT u.display_name, u.username, COUNT(*) AS total
+                    FROM movements m
+                    LEFT JOIN users u ON u.id = m.user_id
+                    WHERE substr(m.created_at, 1, 10) = ?
+                    GROUP BY u.id, u.display_name, u.username
+                    ORDER BY total DESC
+                    LIMIT 5
+                    """,
+                    (today,),
+                ).fetchall()
+            return json_response(
+                self,
+                HTTPStatus.OK,
+                {
+                    "online": online,
+                    "lastLogin": dict(last_login) if last_login else None,
+                    "lastMovement": dict(last_move) if last_move else None,
+                    "topOperators": [dict(row) for row in by_operator],
+                },
+                self.security_headers(),
+            )
         if path == "/api/admin/users":
             user = self.require_user()
             if not user or not self.require_admin(user):
@@ -480,12 +843,27 @@ class App(BaseHTTPRequestHandler):
             with db() as conn:
                 rows = conn.execute(
                     """
-                    SELECT id, username, display_name, role, department, permissions, active, created_at
+                    SELECT id, username, display_name, role, department, position, cpf, phone, email, photo, permissions, active, created_at
                     FROM users
                     ORDER BY username
                     """
                 ).fetchall()
             return json_response(self, HTTPStatus.OK, {"users": [user_to_dict(r) for r in rows]}, self.security_headers())
+        if path == "/api/admin/audit":
+            user = self.require_user()
+            if not user or not self.require_admin(user):
+                return
+            with db() as conn:
+                rows = conn.execute(
+                    """
+                    SELECT a.*, u.username, u.display_name, u.role, u.position
+                    FROM audit_events a
+                    LEFT JOIN users u ON u.id = a.user_id
+                    ORDER BY a.id DESC
+                    LIMIT 250
+                    """
+                ).fetchall()
+            return json_response(self, HTTPStatus.OK, {"audit": [audit_to_dict(r) for r in rows]}, self.security_headers())
         return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Rota não encontrada."}, self.security_headers())
 
     def do_HEAD(self):
@@ -526,26 +904,40 @@ class App(BaseHTTPRequestHandler):
             if not user or not self.require_csrf(user):
                 return
             if path == "/api/items":
+                if not self.require_permission(user, "estoque"):
+                    return
                 return self.create_item(user)
             if path == "/api/movements":
+                if not self.require_permission(user, "estoque"):
+                    return
                 return self.create_movement(user)
             if path == "/api/admin/users":
                 if not self.require_admin(user):
                     return
-                return self.create_user()
+                return self.create_user(user)
         except (ValueError, json.JSONDecodeError) as exc:
             return json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)}, self.security_headers())
         return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Rota não encontrada."}, self.security_headers())
 
     def do_PUT(self):
+        try:
+            return self.handle_PUT()
+        except (ValueError, json.JSONDecodeError) as exc:
+            return json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)}, self.security_headers())
+
+    def handle_PUT(self):
         user = self.require_user()
         if not user or not self.require_csrf(user):
             return
         if urlparse(self.path).path == "/api/app-data":
+            if not self.require_permission(user, "dashboard"):
+                return
             return self.update_app_data()
         match = re.fullmatch(r"/api/items/(\d+)", urlparse(self.path).path)
         if match:
-            return self.update_item(int(match.group(1)))
+            if not self.require_permission(user, "estoque"):
+                return
+            return self.update_item(int(match.group(1)), user)
         match = re.fullmatch(r"/api/admin/users/(\d+)", urlparse(self.path).path)
         if match:
             if not self.require_admin(user):
@@ -558,6 +950,7 @@ class App(BaseHTTPRequestHandler):
         data = payload.get("data", payload)
         if not isinstance(data, dict):
             return json_response(self, HTTPStatus.BAD_REQUEST, {"error": "Dados inválidos."}, self.security_headers())
+        data.pop("audit", None)
         raw = json.dumps(data, ensure_ascii=False)
         if len(raw.encode("utf-8")) > 5_000_000:
             return json_response(self, HTTPStatus.BAD_REQUEST, {"error": "Dados muito grandes."}, self.security_headers())
@@ -573,15 +966,25 @@ class App(BaseHTTPRequestHandler):
         return json_response(self, HTTPStatus.OK, {"ok": True}, self.security_headers())
 
     def do_DELETE(self):
+        try:
+            return self.handle_DELETE()
+        except (ValueError, json.JSONDecodeError) as exc:
+            return json_response(self, HTTPStatus.BAD_REQUEST, {"error": str(exc)}, self.security_headers())
+
+    def handle_DELETE(self):
         user = self.require_user()
         if not user or not self.require_csrf(user):
             return
         match = re.fullmatch(r"/api/items/(\d+)", urlparse(self.path).path)
         if match:
-            if user["role"] != "admin":
-                return json_response(self, HTTPStatus.FORBIDDEN, {"error": "Apenas o chefe pode excluir itens."}, self.security_headers())
+            if not self.require_permission(user, "estoque"):
+                return
             with db() as conn:
-                conn.execute("DELETE FROM items WHERE id = ?", (int(match.group(1)),))
+                item_id = int(match.group(1))
+                row = conn.execute("SELECT cod, description FROM items WHERE id = ?", (item_id,)).fetchone()
+                conn.execute("DELETE FROM items WHERE id = ?", (item_id,))
+                if row:
+                    write_audit(conn, user, "Excluiu item", row["cod"], row["description"], client_ip(self), None, "CONCLUIDO")
                 bump_data_version(conn)
             return json_response(self, HTTPStatus.OK, {"ok": True}, self.security_headers())
         match = re.fullmatch(r"/api/admin/users/(\d+)", urlparse(self.path).path)
@@ -601,35 +1004,57 @@ class App(BaseHTTPRequestHandler):
         return {
             "id": row["id"],
             "username": row["username"],
+            "badge": row["username"],
             "display_name": row["display_name"],
-            "role": row["role"],
+            "role": normalize_role(row["role"]),
             "department": row["department"] or "",
+            "position": row["position"] or "",
             "permissions": normalize_permissions(row["permissions"], row["role"]),
         }
 
+    def secure_cookie_attr(self):
+        forced = os.environ.get("SUPERESTOQUE_COOKIE_SECURE", "").strip().lower()
+        if forced in ("1", "true", "sim", "yes", "on"):
+            return "; Secure"
+        if forced in ("0", "false", "nao", "não", "no", "off"):
+            return ""
+        proto = self.headers.get("X-Forwarded-Proto", "").split(",", 1)[0].strip().lower()
+        return "; Secure" if proto == "https" or os.environ.get("PORT") else ""
+
     def session_cookie(self, token):
-        return f"{COOKIE_NAME}={token}; Path=/; HttpOnly; SameSite=Strict; Max-Age={SESSION_TTL}"
+        return f"{COOKIE_NAME}={token}; Path=/; HttpOnly{self.secure_cookie_attr()}; SameSite=Strict; Max-Age={SESSION_TTL}"
 
     def expired_cookie(self):
-        return f"{COOKIE_NAME}=; Path=/; HttpOnly; SameSite=Strict; Max-Age=0"
+        return f"{COOKIE_NAME}=; Path=/; HttpOnly{self.secure_cookie_attr()}; SameSite=Strict; Max-Age=0"
 
     def login(self):
         payload = self.read_json()
-        username = str(payload.get("username", "")).strip().lower()
+        username = str(payload.get("badge", payload.get("username", ""))).strip().lower()
         password = str(payload.get("password", ""))
         if not username or not password:
-            raise ValueError("Informe usuário e senha.")
+            raise ValueError("Informe registro/crachá e senha.")
+        rate_key = (client_ip(self), username)
+        attempt = LOGIN_ATTEMPTS.get(rate_key, {"count": 0, "blocked_until": 0})
+        if attempt.get("blocked_until", 0) > now_ts():
+            retry = attempt["blocked_until"] - now_ts()
+            return json_response(self, HTTPStatus.TOO_MANY_REQUESTS, {"error": f"Muitas tentativas. Tente novamente em {retry} segundos."}, self.security_headers())
         with db() as conn:
             user = conn.execute("SELECT * FROM users WHERE username = ? AND active = 1", (username,)).fetchone()
             if not user or not verify_password(password, user["salt"], user["password_hash"]):
+                attempt["count"] = int(attempt.get("count", 0)) + 1
+                if attempt["count"] >= LOGIN_MAX_ATTEMPTS:
+                    attempt["blocked_until"] = now_ts() + LOGIN_BLOCK_SECONDS
+                LOGIN_ATTEMPTS[rate_key] = attempt
                 time.sleep(0.35)
                 return json_response(self, HTTPStatus.UNAUTHORIZED, {"error": "Usuário ou senha inválidos."}, self.security_headers())
+            LOGIN_ATTEMPTS.pop(rate_key, None)
             token = secrets.token_urlsafe(32)
             csrf = secrets.token_urlsafe(32)
             conn.execute(
                 "INSERT INTO sessions (token, user_id, csrf, expires_at) VALUES (?,?,?,?)",
                 (token, user["id"], csrf, now_ts() + SESSION_TTL),
             )
+            write_audit(conn, user, "Login realizado", username, "", client_ip(self), None, "CONCLUIDO")
         return json_response(
             self,
             HTTPStatus.OK,
@@ -657,6 +1082,9 @@ class App(BaseHTTPRequestHandler):
             "status": calc_status(qty, minimum),
             "obs": str(payload.get("obs", "")).strip(),
             "warehouse": str(payload.get("arm", "")).strip(),
+            "code_type": classify_code(cod),
+            "item_class": normalize_item_class(payload.get("itemClass", payload.get("class", ""))),
+            "address_validated": 1 if truthy(payload.get("addressValidated", False)) else 0,
         }
 
     def create_item(self, user):
@@ -665,8 +1093,8 @@ class App(BaseHTTPRequestHandler):
             try:
                 cur = conn.execute(
                     """
-                    INSERT INTO items (cod, description, qty, minimum, loc, address, status, obs, warehouse)
-                    VALUES (:cod,:description,:qty,:minimum,:loc,:address,:status,:obs,:warehouse)
+                    INSERT INTO items (cod, description, qty, minimum, loc, address, status, obs, warehouse, code_type, item_class, address_validated)
+                    VALUES (:cod,:description,:qty,:minimum,:loc,:address,:status,:obs,:warehouse,:code_type,:item_class,:address_validated)
                     """,
                     item,
                 )
@@ -674,9 +1102,10 @@ class App(BaseHTTPRequestHandler):
                 return json_response(self, HTTPStatus.CONFLICT, {"error": "Já existe item com este código."}, self.security_headers())
             bump_data_version(conn)
             row = conn.execute("SELECT * FROM items WHERE id = ?", (cur.lastrowid,)).fetchone()
+            write_audit(conn, user, "Criou item", row["cod"], row["description"], client_ip(self), row["qty"], "CONCLUIDO")
         return json_response(self, HTTPStatus.CREATED, {"item": item_to_dict(row)}, self.security_headers())
 
-    def update_item(self, item_id):
+    def update_item(self, item_id, user):
         item = self.clean_item_payload()
         item["id"] = item_id
         with db() as conn:
@@ -686,6 +1115,7 @@ class App(BaseHTTPRequestHandler):
                     UPDATE items
                     SET cod=:cod, description=:description, qty=:qty, minimum=:minimum, loc=:loc,
                         address=:address, status=:status, obs=:obs, warehouse=:warehouse,
+                        code_type=:code_type, item_class=:item_class, address_validated=:address_validated,
                         updated_at=datetime('now','localtime')
                     WHERE id=:id
                     """,
@@ -697,6 +1127,7 @@ class App(BaseHTTPRequestHandler):
                 return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Item não encontrado."}, self.security_headers())
             bump_data_version(conn)
             row = conn.execute("SELECT * FROM items WHERE id = ?", (item_id,)).fetchone()
+            write_audit(conn, user, "Editou item", row["cod"], row["description"], client_ip(self), row["qty"], "CONCLUIDO")
         return json_response(self, HTTPStatus.OK, {"item": item_to_dict(row)}, self.security_headers())
 
     def create_movement(self, user):
@@ -733,85 +1164,100 @@ class App(BaseHTTPRequestHandler):
                 (cur.lastrowid,),
             ).fetchone()
             bump_data_version(conn)
+            write_audit(conn, user, "Registrou movimentação", item["cod"], f"{movement_type} {qty}", client_ip(self), qty, "CONCLUIDO")
         return json_response(self, HTTPStatus.CREATED, {"item": item_to_dict(updated), "movement": movement_to_dict(movement)}, self.security_headers())
 
-    def create_user(self):
+    def create_user(self, current_user):
         payload = self.read_json()
-        username = str(payload.get("username", "")).strip().lower()
+        username = str(payload.get("badge", payload.get("username", ""))).strip().lower()
         display = str(payload.get("display_name", "")).strip() or username
-        role = str(payload.get("role", "employee")).strip()
+        role = normalize_role(payload.get("role", "operator"))
         department = str(payload.get("department", "")).strip()
+        position = str(payload.get("position", "")).strip()
+        cpf = str(payload.get("cpf", "")).strip()
+        phone = str(payload.get("phone", "")).strip()
+        email = str(payload.get("email", "")).strip()
+        photo = str(payload.get("photo", "")).strip()
         permissions = normalize_permissions(payload.get("permissions", []), role)
         password = str(payload.get("password", ""))
         if not re.fullmatch(r"[a-z0-9_.-]{3,32}", username):
-            raise ValueError("Usuário deve ter 3 a 32 caracteres e usar letras, números, ponto, hífen ou underline.")
-        if role not in ("admin", "employee"):
+            raise ValueError("Registro/crachá deve ter 3 a 32 caracteres e usar letras, números, ponto, hífen ou underline.")
+        if role not in ROLE_PERMISSIONS:
             raise ValueError("Perfil inválido.")
-        if len(password) < 6:
-            raise ValueError("Senha deve ter pelo menos 6 caracteres.")
+        if len(password) < MIN_PASSWORD_LENGTH:
+            raise ValueError(f"Senha deve ter pelo menos {MIN_PASSWORD_LENGTH} caracteres.")
         salt, digest = hash_password(password)
         with db() as conn:
             try:
                 cur = conn.execute(
                     """
-                    INSERT INTO users (username, display_name, role, department, permissions, salt, password_hash)
-                    VALUES (?,?,?,?,?,?,?)
+                    INSERT INTO users (username, display_name, role, department, position, cpf, phone, email, photo, permissions, salt, password_hash)
+                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?)
                     """,
-                    (username, display, role, department, json.dumps(permissions), salt, digest),
+                    (username, display, role, department, position, cpf, phone, email, photo, json.dumps(permissions), salt, digest),
                 )
             except sqlite3.IntegrityError:
-                return json_response(self, HTTPStatus.CONFLICT, {"error": "Usuário já existe."}, self.security_headers())
+                return json_response(self, HTTPStatus.CONFLICT, {"error": "Registro/crachá já existe."}, self.security_headers())
             row = conn.execute(
                 """
-                SELECT id, username, display_name, role, department, permissions, active, created_at
+                SELECT id, username, display_name, role, department, position, cpf, phone, email, photo, permissions, active, created_at
                 FROM users
                 WHERE id = ?
                 """,
                 (cur.lastrowid,),
             ).fetchone()
+            write_audit(conn, current_user, "Criou usuário", username, display, client_ip(self), None, "CONCLUIDO")
         return json_response(self, HTTPStatus.CREATED, {"user": user_to_dict(row)}, self.security_headers())
 
     def update_user(self, user_id, current_user):
         payload = self.read_json()
         display = str(payload.get("display_name", "")).strip()
-        role = str(payload.get("role", "employee")).strip()
+        role = normalize_role(payload.get("role", "operator"))
         department = str(payload.get("department", "")).strip()
+        position = str(payload.get("position", "")).strip()
+        cpf = str(payload.get("cpf", "")).strip()
+        phone = str(payload.get("phone", "")).strip()
+        email = str(payload.get("email", "")).strip()
+        photo = str(payload.get("photo", "")).strip()
         permissions = normalize_permissions(payload.get("permissions", []), role)
         active = 1 if payload.get("active", True) else 0
         password = str(payload.get("password", ""))
-        if role not in ("admin", "employee"):
+        if role not in ROLE_PERMISSIONS:
             raise ValueError("Perfil inválido.")
         if user_id == current_user["id"] and (role != "admin" or not active):
-            raise ValueError("Você não pode remover seu próprio acesso de chefe.")
+            raise ValueError("Você não pode remover seu próprio acesso de Administrador.")
         with db() as conn:
             row = conn.execute("SELECT * FROM users WHERE id = ?", (user_id,)).fetchone()
             if not row:
                 return json_response(self, HTTPStatus.NOT_FOUND, {"error": "Usuário não encontrado."}, self.security_headers())
             display = display or row["display_name"]
             department = department or row["department"] or ""
+            position = position or row["position"] or ""
             conn.execute(
                 """
                 UPDATE users
-                SET display_name = ?, role = ?, department = ?, permissions = ?, active = ?
+                SET display_name = ?, role = ?, department = ?, position = ?, cpf = ?, phone = ?, email = ?, photo = ?, permissions = ?, active = ?
                 WHERE id = ?
                 """,
-                (display, role, department, json.dumps(permissions), active, user_id),
+                (display, role, department, position, cpf, phone, email, photo, json.dumps(permissions), active, user_id),
             )
             if password:
-                if len(password) < 6:
-                    raise ValueError("Senha deve ter pelo menos 6 caracteres.")
+                if len(password) < MIN_PASSWORD_LENGTH:
+                    raise ValueError(f"Senha deve ter pelo menos {MIN_PASSWORD_LENGTH} caracteres.")
                 salt, digest = hash_password(password)
                 conn.execute("UPDATE users SET salt = ?, password_hash = ? WHERE id = ?", (salt, digest, user_id))
+                conn.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
             if not active:
                 conn.execute("DELETE FROM sessions WHERE user_id = ?", (user_id,))
             updated = conn.execute(
                 """
-                SELECT id, username, display_name, role, department, permissions, active, created_at
+                SELECT id, username, display_name, role, department, position, cpf, phone, email, photo, permissions, active, created_at
                 FROM users
                 WHERE id = ?
                 """,
                 (user_id,),
             ).fetchone()
+            write_audit(conn, current_user, "Editou usuário", row["username"], "senha alterada" if password else "", client_ip(self), None, "CONCLUIDO")
         return json_response(self, HTTPStatus.OK, {"user": user_to_dict(updated)}, self.security_headers())
 
 
@@ -830,4 +1276,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

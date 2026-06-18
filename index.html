@@ -3,37 +3,43 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SuperEstoque | Superterminais</title>
+  <title>Nexaro | Super Estoque</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
-  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
-  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Source+Sans+3:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.sheetjs.com/xlsx-0.20.3/package/dist/xlsx.full.min.js" integrity="sha384-pqL3fQw2a7lDeuWCu1k+Lu7DSdfyBO5Zo/dm+zv05hfHKd9pbd7YXax+ZGo0a2BL" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js" integrity="sha384-3zSEDfvllQohrq0PHL1fOXJuC/jSOO34H46t6UQfobFOmxE5BpjjaIJY5F2/bMnU" crossorigin="anonymous"></script>
+  <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js" integrity="sha384-c9d8RFSL+u3exBOJ4Yp3HUJXS4znl9f+z66d1y54ig+ea249SpqR+w1wyvXz/lk+" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/jspdf@2.5.1/dist/jspdf.umd.min.js" integrity="sha384-JcnsjUPPylna1s1fvi1u12X5qjY5OL56iySh75FdtrwhO/SWXgMjoVqcKyIIWOLk" crossorigin="anonymous"></script>
   <style>
     :root {
-      --bg: #0f1117;
-      --surface: #161b27;
-      --surface-2: #1d2433;
-      --surface-3: #222b3c;
-      --border: #2b3447;
-      --border-soft: rgba(226, 232, 240, .08);
-      --text: #e2e8f0;
-      --muted: #94a3b8;
-      --muted-2: #64748b;
-      --blue: #3b82f6;
-      --blue-soft: rgba(59, 130, 246, .16);
-      --green: #22c55e;
-      --green-soft: rgba(34, 197, 94, .14);
-      --yellow: #eab308;
-      --yellow-soft: rgba(234, 179, 8, .16);
-      --orange: #f97316;
-      --orange-soft: rgba(249, 115, 22, .15);
-      --red: #ef4444;
-      --red-soft: rgba(239, 68, 68, .15);
-      --shadow: 0 18px 60px rgba(0, 0, 0, .26);
-      --radius: 12px;
+      --bg: #eaf4fb;
+      --surface: #fcfeff;
+      --surface-2: #f4f9fd;
+      --surface-3: #e1edf6;
+      --navy: #071826;
+      --navy-2: #0d2435;
+      --text: #22384a;
+      --muted: #5f7284;
+      --muted-2: #7c8c9c;
+      --border: #b8c9d7;
+      --border-soft: #d6e2eb;
+      --blue: #0b5cad;
+      --blue-deep: #08457f;
+      --blue-soft: #d7ecfb;
+      --amber: #c7831a;
+      --amber-soft: #fff1d2;
+      --yellow: var(--amber);
+      --orange: var(--amber);
+      --green: #1d7f5f;
+      --green-soft: #dff4ec;
+      --red: #b83a24;
+      --red-soft: #fde7df;
+      --shadow: 0 8px 20px rgba(7, 24, 38, .08);
+      --radius: 4px;
+      --font-display: "Space Grotesk", "Arial Narrow", sans-serif;
+      --font-body: "Source Sans 3", "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", Consolas, monospace;
     }
 
     * {
@@ -41,15 +47,16 @@
     }
 
     html {
-      color-scheme: dark;
+      color-scheme: light;
     }
 
     body {
       margin: 0;
       min-height: 100vh;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='96' viewBox='0 0 96 96'%3E%3Cg fill='none' stroke='%23071826' stroke-opacity='.055' stroke-width='1'%3E%3Cpath d='M0 24H96M0 48H96M0 72H96M24 0V96M48 0V96M72 0V96'/%3E%3Cpath d='M8 8H32V16H8zM64 56H88V64H64z'/%3E%3C/g%3E%3C/svg%3E");
       color: var(--text);
-      font: 400 14px/1.5 Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      font: 400 14px/1.45 var(--font-body);
       letter-spacing: 0;
     }
 
@@ -61,6 +68,11 @@
 
     button {
       cursor: pointer;
+    }
+
+    :focus-visible {
+      outline: 3px solid #0b5cad;
+      outline-offset: 2px;
     }
 
     svg {
@@ -87,17 +99,18 @@
       display: flex;
       flex-direction: column;
       gap: 18px;
-      padding: 20px 16px;
-      background: var(--surface);
-      border-right: 1px solid var(--border-soft);
+      padding: 18px 14px;
+      background-color: var(--navy);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='56' height='56' viewBox='0 0 56 56'%3E%3Cg fill='none' stroke='%23d6e2eb' stroke-opacity='.07' stroke-width='1'%3E%3Cpath d='M0 28H56M28 0V56'/%3E%3Cpath d='M6 6H22V12H6zM34 34H50V40H34z'/%3E%3C/g%3E%3C/svg%3E");
+      border-right: 1px solid #0f334a;
     }
 
     .brand {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 4px 6px 18px;
-      border-bottom: 1px solid var(--border-soft);
+      padding: 4px 6px 16px;
+      border-bottom: 1px solid rgba(214, 226, 235, .18);
     }
 
     .brand-mark {
@@ -105,21 +118,25 @@
       place-items: center;
       width: 40px;
       height: 40px;
-      border-radius: 10px;
-      background: var(--blue-soft);
+      border-radius: 3px;
+      background: #fcfeff;
       color: var(--blue);
     }
 
     .brand-title {
       margin: 0;
-      font-size: 16px;
-      font-weight: 800;
+      font-size: 15px;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: .01em;
+      color: #fff;
       line-height: 1.1;
+      overflow-wrap: anywhere;
     }
 
     .brand-subtitle {
       margin-top: 3px;
-      color: var(--muted);
+      color: #a8bdce;
       font-size: 11px;
       font-weight: 600;
       letter-spacing: .08em;
@@ -133,7 +150,7 @@
 
     .section-label {
       padding: 0 10px;
-      color: var(--muted-2);
+      color: #7fa2ba;
       font-size: 11px;
       font-weight: 800;
       letter-spacing: .08em;
@@ -141,6 +158,7 @@
     }
 
     .nav-button {
+      position: relative;
       display: flex;
       align-items: center;
       gap: 10px;
@@ -148,31 +166,50 @@
       min-height: 42px;
       padding: 0 12px;
       border: 1px solid transparent;
-      border-radius: 10px;
+      border-radius: 3px;
       background: transparent;
-      color: var(--muted);
+      color: #bfd0de;
       font-weight: 600;
       transition: background .16s ease, color .16s ease, border-color .16s ease;
     }
 
+    .nav-button::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 9px;
+      bottom: 9px;
+      width: 3px;
+      background: #6eb5e8;
+      transform: scaleY(0);
+      transform-origin: center;
+      transition: transform .18s ease;
+    }
+
     .nav-button:hover {
-      color: var(--text);
-      background: rgba(226, 232, 240, .05);
-      border-color: var(--border-soft);
+      color: #fff;
+      background: rgba(255, 255, 255, .07);
+      border-color: rgba(214, 226, 235, .2);
     }
 
     .nav-button.active {
       color: #fff;
-      background: var(--blue-soft);
-      border-color: rgba(59, 130, 246, .35);
+      background: rgba(11, 92, 173, .28);
+      border-color: rgba(110, 181, 232, .7);
+      box-shadow: inset 3px 0 0 #6eb5e8;
+    }
+
+    .nav-button.active::before {
+      transform: scaleY(1);
     }
 
     .user-panel {
       margin-top: auto;
       padding: 14px;
-      border: 1px solid var(--border-soft);
-      border-radius: 12px;
-      background: rgba(255, 255, 255, .03);
+      border: 1px solid rgba(214, 226, 235, .2);
+      border-radius: 3px;
+      background: rgba(255, 255, 255, .05);
+      color: #fff;
     }
 
     .user-name {
@@ -181,7 +218,7 @@
 
     .user-role {
       margin-top: 2px;
-      color: var(--muted);
+      color: #a8bdce;
       font-size: 12px;
     }
 
@@ -194,25 +231,29 @@
       min-height: 38px;
       margin-top: 12px;
       border: 1px solid var(--border);
-      border-radius: 9px;
+      border-radius: 3px;
       background: transparent;
-      color: var(--text);
+      color: #fff;
       font-weight: 700;
     }
 
     .main {
       min-width: 0;
-      padding: 24px;
+      padding: 22px;
+      background: transparent;
     }
 
     .page {
       display: none;
       max-width: 1480px;
       margin: 0 auto;
+      opacity: 0;
+      transform: translateY(4px);
     }
 
     .page.active {
       display: block;
+      animation: pageIn .16s ease-out both;
     }
 
     .topbar {
@@ -225,7 +266,7 @@
 
     .eyebrow {
       margin: 0 0 4px;
-      color: var(--blue);
+      color: var(--blue-deep);
       font-size: 12px;
       font-weight: 800;
       letter-spacing: .09em;
@@ -236,7 +277,9 @@
       margin: 0;
       font-size: 24px;
       line-height: 1.18;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-weight: 700;
+      letter-spacing: .005em;
     }
 
     .lead {
@@ -253,16 +296,29 @@
       min-height: 40px;
       padding: 0 14px;
       border: 1px solid var(--border);
-      border-radius: 10px;
-      background: var(--surface-2);
+      border-radius: 3px;
+      background: var(--surface);
       color: var(--text);
       font-weight: 700;
-      transition: border-color .16s ease, background .16s ease, transform .16s ease;
+      transition: border-color .16s ease, background .16s ease, color .16s ease;
+    }
+
+    .button.is-loading {
+      pointer-events: none;
+    }
+
+    .button.is-loading::after {
+      content: "";
+      width: 28px;
+      height: 2px;
+      margin-left: 8px;
+      background: currentColor;
+      animation: scannerLine .72s linear infinite;
     }
 
     .button:hover {
-      transform: translateY(-1px);
-      border-color: rgba(59, 130, 246, .45);
+      border-color: var(--blue);
+      color: var(--blue-deep);
     }
 
     .button.primary {
@@ -285,7 +341,7 @@
       border: 1px solid var(--border-soft);
       border-radius: var(--radius);
       background: var(--surface);
-      box-shadow: var(--shadow);
+      box-shadow: none;
     }
 
     .kpi-card {
@@ -293,6 +349,7 @@
       min-height: 130px;
       padding: 16px;
       overflow: hidden;
+      animation: cardIn .22s ease-out both;
     }
 
     .kpi-card::before {
@@ -313,7 +370,8 @@
 
     .kpi-value {
       margin-top: 12px;
-      font: 700 34px/1 "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font: 700 34px/1 var(--font-display);
+      letter-spacing: .01em;
     }
 
     .kpi-note {
@@ -339,15 +397,15 @@
     }
 
     .health-value {
-      font: 700 18px/1 "IBM Plex Mono", ui-monospace, monospace;
+      font: 700 18px/1 var(--font-display);
       color: var(--blue);
     }
 
     .progress {
       height: 12px;
       overflow: hidden;
-      border-radius: 999px;
-      background: #0b0d12;
+      border-radius: 2px;
+      background: var(--surface-3);
       border: 1px solid var(--border-soft);
     }
 
@@ -365,7 +423,22 @@
     }
 
     .panel {
+      position: relative;
       padding: 16px;
+      overflow: hidden;
+    }
+
+    .panel::after {
+      content: "";
+      position: absolute;
+      right: 12px;
+      top: 12px;
+      width: 72px;
+      height: 18px;
+      pointer-events: none;
+      opacity: .13;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='72' height='18' viewBox='0 0 72 18'%3E%3Cg fill='%23071826'%3E%3Crect x='0' y='0' width='3' height='18'/%3E%3Crect x='6' y='0' width='1' height='18'/%3E%3Crect x='10' y='0' width='4' height='18'/%3E%3Crect x='18' y='0' width='2' height='18'/%3E%3Crect x='24' y='0' width='5' height='18'/%3E%3Crect x='34' y='0' width='1' height='18'/%3E%3Crect x='39' y='0' width='3' height='18'/%3E%3Crect x='47' y='0' width='2' height='18'/%3E%3Crect x='54' y='0' width='6' height='18'/%3E%3Crect x='65' y='0' width='2' height='18'/%3E%3C/g%3E%3C/svg%3E");
+      background-repeat: no-repeat;
     }
 
     .panel-head {
@@ -379,7 +452,8 @@
     .panel-title {
       margin: 0;
       font-size: 16px;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-weight: 700;
     }
 
     .filters {
@@ -406,9 +480,9 @@
       min-height: 40px;
       padding: 0 12px;
       border: 1px solid var(--border);
-      border-radius: 9px;
+      border-radius: 3px;
       outline: none;
-      background: #0f1117;
+      background: #fff;
       color: var(--text);
       transition: border-color .16s ease, box-shadow .16s ease;
     }
@@ -416,13 +490,13 @@
     .input:focus,
     .select:focus {
       border-color: var(--blue);
-      box-shadow: 0 0 0 3px var(--blue-soft);
+      box-shadow: 0 0 0 3px #b7ddf6;
     }
 
     .table-wrap {
       overflow: auto;
       border: 1px solid var(--border-soft);
-      border-radius: 12px;
+      border-radius: 3px;
     }
 
     table {
@@ -434,7 +508,7 @@
 
     th,
     td {
-      padding: 12px;
+      padding: 10px 12px;
       text-align: left;
       vertical-align: middle;
       border-bottom: 1px solid var(--border-soft);
@@ -444,11 +518,11 @@
       position: sticky;
       top: 0;
       z-index: 1;
-      background: #111520;
+      background: #eef6fb;
       color: var(--muted);
       font-size: 12px;
       font-weight: 800;
-      letter-spacing: .06em;
+      letter-spacing: .055em;
       text-transform: uppercase;
     }
 
@@ -466,11 +540,11 @@
     }
 
     tbody tr:nth-child(even) {
-      background: rgba(255, 255, 255, .018);
+      background: #f7fbfe;
     }
 
     tbody tr:hover {
-      background: rgba(59, 130, 246, .08);
+      background: #e9f3fb;
     }
 
     tbody tr:last-child td {
@@ -478,7 +552,7 @@
     }
 
     .mono {
-      font-family: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-family: var(--font-mono);
       font-weight: 600;
     }
 
@@ -495,7 +569,7 @@
       align-items: center;
       min-height: 26px;
       padding: 0 9px;
-      border-radius: 999px;
+      border-radius: 2px;
       font-size: 12px;
       font-weight: 800;
       white-space: nowrap;
@@ -503,22 +577,22 @@
 
     .badge.ok {
       background: var(--green-soft);
-      color: #86efac;
+      color: #0d5d42;
     }
 
     .badge.limit {
-      background: var(--yellow-soft);
-      color: #fde68a;
+      background: var(--amber-soft);
+      color: #8b570c;
     }
 
     .badge.buy {
-      background: var(--orange-soft);
-      color: #fdba74;
+      background: var(--amber-soft);
+      color: #8b570c;
     }
 
     .badge.empty {
       background: var(--red-soft);
-      color: #fca5a5;
+      color: #8f2817;
     }
 
     .status-dot {
@@ -528,7 +602,7 @@
       margin-right: 8px;
       border-radius: 999px;
       background: currentColor;
-      box-shadow: 0 0 0 4px color-mix(in srgb, currentColor 16%, transparent);
+      box-shadow: none;
     }
 
     .summary-list {
@@ -542,8 +616,28 @@
       gap: 12px;
       padding: 12px;
       border: 1px solid var(--border-soft);
-      border-radius: 10px;
-      background: rgba(255, 255, 255, .025);
+      border-radius: 3px;
+      background: #f8fbfd;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *,
+      *::before,
+      *::after {
+        scroll-behavior: auto !important;
+        transition-duration: .01ms !important;
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+      }
+
+      .page.active,
+      .kpi-card,
+      .login-card,
+      .login-error {
+        animation: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+      }
     }
 
     .summary-row strong {
@@ -567,7 +661,8 @@
       display: grid;
       place-items: center;
       padding: 24px;
-      background: var(--bg);
+      background-color: var(--bg);
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='88' height='88' viewBox='0 0 88 88'%3E%3Cg fill='none' stroke='%23071826' stroke-opacity='.06' stroke-width='1'%3E%3Cpath d='M0 22H88M0 44H88M0 66H88M22 0V88M44 0V88M66 0V88'/%3E%3Cpath d='M10 10H30V17H10zM58 58H78V65H58z'/%3E%3C/g%3E%3C/svg%3E");
     }
 
     .login-screen.hidden {
@@ -578,9 +673,10 @@
       width: min(100%, 420px);
       padding: 24px;
       border: 1px solid var(--border-soft);
-      border-radius: 16px;
+      border-radius: 4px;
       background: var(--surface);
       box-shadow: var(--shadow);
+      animation: loginPanelIn .24s ease-out both;
     }
 
     .login-brand {
@@ -593,7 +689,8 @@
     .login-title {
       margin: 0;
       font-size: 24px;
-      font-weight: 800;
+      font-family: var(--font-display);
+      font-weight: 700;
     }
 
     .login-subtitle {
@@ -610,17 +707,152 @@
     .login-error {
       display: none;
       padding: 10px 12px;
-      border: 1px solid rgba(239, 68, 68, .28);
-      border-radius: 10px;
+      border: 1px solid #e0a897;
+      border-radius: 3px;
       background: var(--red-soft);
-      color: #fecaca;
+      color: #8f2817;
       font-weight: 700;
+      animation: alertIn .18s ease-out both;
+    }
+
+    .technical-scanner {
+      display: none;
+      position: relative;
+      height: 26px;
+      overflow: hidden;
+      border: 1px solid var(--border-soft);
+      background: #f7fbfe;
+    }
+
+    .technical-scanner.is-active {
+      display: block;
+    }
+
+    .technical-scanner::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      right: 10px;
+      top: 7px;
+      bottom: 7px;
+      border-top: 1px solid #b8c9d7;
+      border-bottom: 1px solid #b8c9d7;
+    }
+
+    .technical-scanner::after {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 0;
+      width: 22%;
+      background: var(--blue);
+      opacity: .85;
+      animation: scanPass .9s linear infinite;
+    }
+
+    tr.skeleton-row td {
+      height: 42px;
+    }
+
+    .skeleton-line {
+      display: block;
+      height: 10px;
+      width: 100%;
+      overflow: hidden;
+      background: #dbe9f3;
+    }
+
+    .skeleton-line::after {
+      content: "";
+      display: block;
+      width: 34%;
+      height: 100%;
+      background: #b8d7ed;
+      animation: skeletonScan .9s linear infinite;
+    }
+
+    @keyframes loginPanelIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes pageIn {
+      from { opacity: 0; transform: translateY(4px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(6px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes alertIn {
+      from { opacity: 0; transform: translateY(-3px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @keyframes scanPass {
+      from { transform: translateX(-100%); }
+      to { transform: translateX(470%); }
+    }
+
+    @keyframes scannerLine {
+      from { transform: translateX(-6px); }
+      to { transform: translateX(6px); }
+    }
+
+    @keyframes skeletonScan {
+      from { transform: translateX(-110%); }
+      to { transform: translateX(330%); }
     }
 
     .login-hint {
       margin-top: 14px;
       color: var(--muted-2);
       font-size: 12px;
+    }
+
+    #zeroBanner {
+      border-color: #e3c37d;
+      background: var(--amber-soft);
+      color: #6e4409;
+      animation: alertIn .18s ease-out both;
+    }
+
+    body.presentation-mode {
+      overflow: hidden;
+    }
+
+    body.presentation-mode .sidebar,
+    body.presentation-mode .topbar button,
+    body.presentation-mode form,
+    body.presentation-mode .filters,
+    body.presentation-mode .table-wrap,
+    body.presentation-mode #aiOpenButton,
+    body.presentation-mode .mobile-menu-button {
+      display: none !important;
+    }
+
+    body.presentation-mode .app {
+      grid-template-columns: 1fr;
+    }
+
+    body.presentation-mode .main {
+      padding: 20px;
+    }
+
+    body.presentation-mode .page {
+      max-width: none;
+    }
+
+    body.presentation-mode #page-relatorios .table-wrap {
+      display: block !important;
+    }
+
+    #presentationExitButton {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 2200;
     }
 
     .mobile-menu-button {
@@ -901,21 +1133,23 @@
       <div class="login-brand">
         <div class="brand-mark"><svg><use href="#icon-lock"></use></svg></div>
         <div>
-          <h1 class="login-title">SuperEstoque</h1>
-          <p class="login-subtitle">Acesso operacional da Superterminais</p>
+          <h1 class="login-title">Nexaro</h1>
+          <p class="login-subtitle">Console operacional de estoque portuario</p>
         </div>
       </div>
       <div class="login-form">
         <div class="field">
-          <label for="loginUser">Usuario</label>
-          <input class="input" id="loginUser" autocomplete="username" value="chefe">
+          <label for="loginUser">Registro/Crachá</label>
+          <input class="input" id="loginUser" autocomplete="username" inputmode="text">
         </div>
         <div class="field">
           <label for="loginPassword">Senha</label>
           <input class="input" id="loginPassword" type="password" autocomplete="current-password">
         </div>
         <div class="login-error" id="loginError"></div>
-        <button class="button primary" id="loginSubmitButton" type="submit">Entrar no sistema</button>
+        <div class="technical-scanner" id="loginScanner" aria-hidden="true"></div>
+        <button class="button primary" id="loginSubmitButton" type="submit">Entrar</button>
+        <button class="button" id="forgotPasswordButton" type="button">Esqueci minha senha</button>
       </div>
         <div class="login-hint">Use seu usuário autorizado do sistema.</div>
     </form>
@@ -926,8 +1160,8 @@
       <div class="brand">
         <div class="brand-mark"><svg><use href="#icon-box"></use></svg></div>
         <div>
-          <p class="brand-title">SuperEstoque</p>
-          <div class="brand-subtitle">Superterminais</div>
+          <p class="brand-title">Nexaro</p>
+          <div class="brand-subtitle">Super Estoque</div>
         </div>
       </div>
 
@@ -937,7 +1171,6 @@
         <button class="nav-button" data-page="estoque" data-permission="estoque"><svg><use href="#icon-table"></use></svg><span>Estoque</span></button>
         <button class="nav-button" data-page="compras" data-permission="compras"><svg><use href="#icon-cart"></use></svg><span>Lista de Compras</span></button>
         <button class="nav-button" data-page="historico" data-permission="historico"><svg><use href="#icon-table"></use></svg><span>Historico</span></button>
-        <button class="nav-button" data-page="fornecedores" data-permission="fornecedores"><svg><use href="#icon-box"></use></svg><span>Fornecedores</span></button>
       </nav>
 
       <nav class="nav-section" aria-label="Acompanhamento">
@@ -990,6 +1223,14 @@
           </div>
         </div>
 
+        <section class="card panel" style="margin-bottom:16px">
+          <div class="panel-head">
+            <h2 class="panel-title">Operacao de usuarios</h2>
+            <span class="muted">Sessao, login e movimentacoes</span>
+          </div>
+          <div class="grid kpi-grid" id="opsKpiGrid"></div>
+        </section>
+
         <div class="grid content-grid">
           <section class="card panel">
             <div class="panel-head">
@@ -1017,6 +1258,14 @@
                   <option value="">Todos</option>
                 </select>
               </div>
+              <div class="field">
+                <label for="codeFilter">Codigo</label>
+                <select class="select" id="codeFilter"></select>
+              </div>
+              <div class="field">
+                <label for="classFilter">Classe</label>
+                <select class="select" id="classFilter"></select>
+              </div>
             </div>
             <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:14px">
               <button class="button" id="excelButton">Exportar Excel</button>
@@ -1031,11 +1280,14 @@
                     <th data-sort="cod">Codigo</th>
                     <th>Fav</th>
                     <th data-sort="desc">Descricao</th>
+                    <th data-sort="codeType">Tipo</th>
+                    <th data-sort="itemClass">Classe</th>
                     <th data-sort="loc">Local</th>
+                    <th data-sort="end">Endereco</th>
                     <th data-sort="qty">Qtd</th>
                     <th data-sort="min">Minimo</th>
                     <th data-sort="status">Status</th>
-                    <th>Fornecedor</th>
+                    <th>Origem</th>
                     <th>Custo</th>
                     <th>Validade</th>
                     <th>Saida</th>
@@ -1077,11 +1329,13 @@
             <input id="itemEditCod" type="hidden">
             <div class="field"><label for="itemCod">Codigo</label><input class="input" id="itemCod" required placeholder="ex: ABC-001"></div>
             <div class="field"><label for="itemDesc">Descricao</label><input class="input" id="itemDesc" required placeholder="Nome do item"></div>
+            <div class="field"><label for="itemClass">Classe</label><select class="select" id="itemClass"><option value="PECA">Peca</option><option value="CONSUMO">Consumo DHAS</option><option value="FERRAMENTA">Ferramenta</option><option value="OUTROS">Outros</option></select></div>
             <div class="field"><label for="itemLoc">Local</label><input class="input" id="itemLoc" placeholder="Almoxarifado"></div>
             <div class="field"><label for="itemQty">Quantidade</label><input class="input" id="itemQty" type="number" min="0" step="0.01" value="0"></div>
             <div class="field"><label for="itemMin">Minimo</label><input class="input" id="itemMin" type="number" min="0" step="0.01" value="1"></div>
             <div class="field"><label for="itemEnd">Endereco</label><input class="input" id="itemEnd" placeholder="Rua, prateleira, posicao"></div>
             <div class="field"><label for="itemArm">Armazem</label><input class="input" id="itemArm" placeholder="Deposito"></div>
+            <label style="display:flex;gap:8px;align-items:center"><input id="itemAddressValidated" type="checkbox"> Endereco validado</label>
             <div class="field"><label for="itemObs">Observacao</label><input class="input" id="itemObs" placeholder="Detalhes internos"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
               <button class="button primary" type="submit">Salvar item</button>
@@ -1103,6 +1357,14 @@
               <label for="localFilter2">Local</label>
               <select class="select mirror-local" id="localFilter2"></select>
             </div>
+            <div class="field">
+              <label for="codeFilter2">Codigo</label>
+              <select class="select" id="codeFilter2"></select>
+            </div>
+            <div class="field">
+              <label for="classFilter2">Classe</label>
+              <select class="select" id="classFilter2"></select>
+            </div>
           </div>
           <div class="table-wrap">
             <table>
@@ -1111,11 +1373,14 @@
                   <th data-sort="cod">Codigo</th>
                   <th>Fav</th>
                   <th data-sort="desc">Descricao</th>
+                  <th data-sort="codeType">Tipo</th>
+                  <th data-sort="itemClass">Classe</th>
                   <th data-sort="loc">Local</th>
+                  <th data-sort="end">Endereco</th>
                   <th data-sort="qty">Qtd</th>
                   <th data-sort="min">Minimo</th>
                   <th data-sort="status">Status</th>
-                  <th>Fornecedor</th>
+                  <th>Origem</th>
                   <th>Custo</th>
                   <th>Validade</th>
                   <th>Saida</th>
@@ -1236,55 +1501,19 @@
         </div>
       </section>
 
-      <section class="page" id="page-fornecedores">
-        <div class="topbar">
-          <div>
-            <p class="eyebrow">Fornecedores</p>
-            <h1>Cadastro e avaliacao</h1>
-            <p class="lead">Gerencie fornecedores, vincule itens e acompanhe historico de compras por parceiro.</p>
-          </div>
-        </div>
-        <div class="grid content-grid">
-          <section class="card panel">
-            <h2 class="panel-title">Novo fornecedor</h2>
-            <form id="supplierForm" class="grid">
-              <div class="field"><label for="supName">Razao social</label><input class="input" id="supName" required></div>
-              <div class="field"><label for="supCnpj">CNPJ</label><input class="input" id="supCnpj" required></div>
-              <div class="field"><label for="supContact">Contato</label><input class="input" id="supContact"></div>
-              <div class="field"><label for="supEmail">E-mail</label><input class="input" id="supEmail" type="email"></div>
-              <div class="field"><label for="supLead">Prazo medio de entrega (dias)</label><input class="input" id="supLead" type="number" min="1" value="7"></div>
-              <div class="filters">
-                <div class="field"><label for="supPrice">Preco</label><select class="select" id="supPrice"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></div>
-                <div class="field"><label for="supDeadline">Prazo</label><select class="select" id="supDeadline"><option>1</option><option>2</option><option>3</option><option selected>4</option><option>5</option></select></div>
-                <div class="field"><label for="supQuality">Qualidade</label><select class="select" id="supQuality"><option>1</option><option>2</option><option>3</option><option>4</option><option selected>5</option></select></div>
-              </div>
-              <button class="button primary" type="submit">Cadastrar fornecedor</button>
-            </form>
-          </section>
-          <section class="card panel">
-            <h2 class="panel-title">Fornecedores cadastrados</h2>
-            <div class="table-wrap"><table><thead><tr><th>Razao social</th><th>CNPJ</th><th>Contato</th><th>Prazo</th><th>Avaliacao</th></tr></thead><tbody id="supplierTable"></tbody></table></div>
-          </section>
-          <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Historico de compras por fornecedor</h2>
-            <div class="table-wrap"><table><thead><tr><th>Fornecedor</th><th>OC</th><th>Data</th><th>Status</th><th>Total de itens</th></tr></thead><tbody id="supplierHistoryTable"></tbody></table></div>
-          </section>
-        </div>
-      </section>
-
       <section class="page" id="page-ocs">
         <div class="topbar">
           <div>
             <p class="eyebrow">Ordens de Compra</p>
             <h1>Fluxo de compra</h1>
-            <p class="lead">Crie OCs, aprove como Admin, envie ao fornecedor e receba itens com entrada automatica no estoque.</p>
+            <p class="lead">Crie OCs, aprove como Admin, envie ao responsavel e receba itens com entrada automatica no estoque.</p>
           </div>
         </div>
         <div class="grid content-grid">
           <section class="card panel">
             <h2 class="panel-title">Nova OC</h2>
             <form id="poForm" class="grid">
-              <div class="field"><label for="poSupplier">Fornecedor</label><select class="select" id="poSupplier"></select></div>
+              <div class="field"><label for="poSupplier">Origem</label><select class="select" id="poSupplier"></select></div>
               <div class="field"><label for="poItem">Item</label><select class="select" id="poItem"></select></div>
               <div class="field"><label for="poQty">Quantidade</label><input class="input" id="poQty" type="number" min="1" value="1"></div>
               <button class="button primary" type="submit">Criar OC</button>
@@ -1292,7 +1521,7 @@
           </section>
           <section class="card panel">
             <h2 class="panel-title">Ordens de compra</h2>
-            <div class="table-wrap"><table><thead><tr><th>Numero</th><th>Data</th><th>Fornecedor</th><th>Itens</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="poTable"></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Numero</th><th>Data</th><th>Origem</th><th>Itens</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="poTable"></tbody></table></div>
           </section>
         </div>
       </section>
@@ -1302,13 +1531,13 @@
           <div>
             <p class="eyebrow">Financeiro</p>
             <h1>Custos e comparativos</h1>
-            <p class="lead">Controle preco de custo por item/fornecedor, valor em estoque e custo de compras por periodo.</p>
+            <p class="lead">Controle preco de custo por item, valor em estoque e custo de compras por periodo.</p>
           </div>
         </div>
         <div class="grid content-grid">
           <section class="card panel">
-            <h2 class="panel-title">Custo por item e fornecedor</h2>
-            <div class="table-wrap"><table><thead><tr><th>Item</th><th>Fornecedor</th><th>Custo unitario</th><th>Valor em estoque</th></tr></thead><tbody id="costTable"></tbody></table></div>
+            <h2 class="panel-title">Custo por item</h2>
+            <div class="table-wrap"><table><thead><tr><th>Item</th><th>Origem</th><th>Custo unitario</th><th>Valor em estoque</th></tr></thead><tbody id="costTable"></tbody></table></div>
           </section>
           <section class="card panel">
             <h2 class="panel-title">Compras por periodo</h2>
@@ -1319,7 +1548,7 @@
             <div class="summary-list" id="purchaseCostSummary"></div>
           </section>
           <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Comparativo de preco entre fornecedores</h2>
+            <h2 class="panel-title">Comparativo de preco por origem</h2>
             <div class="table-wrap"><table><thead><tr><th>Item</th><th>Comparativo</th></tr></thead><tbody id="priceCompareTable"></tbody></table></div>
           </section>
         </div>
@@ -1350,7 +1579,7 @@
           <div>
             <p class="eyebrow">Admin</p>
             <h1>Usuarios e permissoes</h1>
-            <p class="lead">Acesso total do chefe para liberar areas por setor, incluindo RH, compras, financeiro e operacao.</p>
+            <p class="lead">Acesso administrativo para liberar areas por setor, incluindo RH, compras, financeiro e operacao.</p>
           </div>
         </div>
         <div class="grid content-grid">
@@ -1358,11 +1587,16 @@
             <h2 class="panel-title">Criar ou editar usuario</h2>
             <form id="userAdminForm" class="grid">
               <input id="adminUserId" type="hidden">
-              <div class="field"><label for="adminUsername">Usuario</label><input class="input" id="adminUsername" autocomplete="off" placeholder="ex: rh"></div>
-              <div class="field"><label for="adminDisplayName">Nome</label><input class="input" id="adminDisplayName" placeholder="ex: RH"></div>
-              <div class="field"><label for="adminDepartment">Setor</label><input class="input" id="adminDepartment" placeholder="ex: RH, Compras, Financeiro"></div>
-              <div class="field"><label for="adminRole">Perfil</label><select class="select" id="adminRole"><option value="employee">Usuario</option><option value="admin">Chefe/Admin total</option></select></div>
-              <div class="field"><label for="adminPassword">Senha</label><input class="input" id="adminPassword" type="password" placeholder="minimo 6 caracteres"></div>
+              <div class="field"><label for="adminDisplayName">Nome completo</label><input class="input" id="adminDisplayName" placeholder="ex: Bruno Trindade"></div>
+              <div class="field"><label for="adminUsername">Registro/Crachá</label><input class="input" id="adminUsername" autocomplete="off" placeholder="ex: 102938"></div>
+              <div class="field"><label for="adminCpf">CPF opcional</label><input class="input" id="adminCpf" placeholder="000.000.000-00"></div>
+              <div class="field"><label for="adminPosition">Cargo</label><input class="input" id="adminPosition" placeholder="ex: Operador de Almoxarifado"></div>
+              <div class="field"><label for="adminDepartment">Setor</label><input class="input" id="adminDepartment" placeholder="ex: Manutencao, Compras, Operacao"></div>
+              <div class="field"><label for="adminPhone">Telefone</label><input class="input" id="adminPhone" placeholder="ex: (92) 99999-0000"></div>
+              <div class="field"><label for="adminEmail">E-mail</label><input class="input" id="adminEmail" type="email" placeholder="nome@empresa.com"></div>
+              <div class="field"><label for="adminPhoto">Foto do colaborador opcional</label><input class="input" id="adminPhoto" placeholder="URL ou base64"></div>
+              <div class="field"><label for="adminRole">Nivel de acesso</label><select class="select" id="adminRole"><option value="operator">Operador</option><option value="supervisor">Supervisor</option><option value="viewer">Consulta</option><option value="admin">Administrador</option></select></div>
+              <div class="field"><label for="adminPassword">Senha</label><input class="input" id="adminPassword" type="password" placeholder="minimo 8 caracteres"></div>
               <label style="display:flex;gap:8px;align-items:center"><input id="adminActive" type="checkbox" checked> Ativo</label>
               <div class="field" style="grid-column:1/-1">
                 <label>Permissoes</label>
@@ -1376,15 +1610,21 @@
           </section>
           <section class="card panel">
             <h2 class="panel-title">Usuarios cadastrados</h2>
-            <div class="table-wrap"><table><thead><tr><th>Usuario</th><th>Nome</th><th>Setor</th><th>Perfil</th><th>Permissoes</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
+            <div class="table-wrap"><table><thead><tr><th>Registro</th><th>Nome</th><th>Cargo</th><th>Setor</th><th>Nivel</th><th>Status</th><th>Acoes</th></tr></thead><tbody id="employeeTable"></tbody></table></div>
           </section>
           <section class="card panel">
             <h2 class="panel-title">Historico de login</h2>
             <div class="table-wrap"><table><thead><tr><th>Data</th><th>Usuario</th><th>Resultado</th></tr></thead><tbody id="loginTable"></tbody></table></div>
           </section>
           <section class="card panel" style="grid-column:1/-1">
-            <h2 class="panel-title">Log de auditoria</h2>
-            <div class="table-wrap"><table><thead><tr><th>Quando</th><th>Quem</th><th>Acao</th></tr></thead><tbody id="auditTable"></tbody></table></div>
+            <h2 class="panel-title">Auditoria operacional</h2>
+            <div class="filters">
+              <div class="field"><label for="auditDateFilter">Data</label><input class="input" id="auditDateFilter" type="date"></div>
+              <div class="field"><label for="auditUserFilter">Funcionário</label><input class="input" id="auditUserFilter" placeholder="Nome ou registro"></div>
+              <div class="field"><label for="auditProductFilter">Produto</label><input class="input" id="auditProductFilter" placeholder="Codigo ou item"></div>
+              <div class="field"><label for="auditTypeFilter">Tipo</label><select class="select" id="auditTypeFilter"><option value="">Todos</option><option value="moviment">Movimentacao</option><option value="item">Item</option><option value="usuario">Usuario</option><option value="login">Login</option><option value="compra">Compra</option></select></div>
+            </div>
+            <div class="table-wrap"><table><thead><tr><th>Data/Hora</th><th>Usuário</th><th>Registro</th><th>Cargo</th><th>Ação</th><th>Produto</th><th>Qtd</th><th>Status</th><th>IP</th></tr></thead><tbody id="auditTable"></tbody></table></div>
           </section>
         </div>
       </section>
@@ -1449,15 +1689,37 @@
     };
 
     const byId = id => document.getElementById(id);
+    function escapeHtml(value) {
+      return String(value ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+    const escapeAttr = escapeHtml;
+    const safeJson = value => JSON.stringify(String(value ?? "")).replaceAll("<", "\\u003c").replaceAll(">", "\\u003e").replaceAll("&", "\\u0026");
     const nowIso = () => new Date().toISOString();
-    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "chefe";
-    const ALL_PERMISSIONS = ["dashboard", "estoque", "compras", "historico", "fornecedores", "saude", "relatorios", "financeiro", "rastreabilidade", "ocs", "admin"];
+    const currentUser = () => sessionStorage.getItem("superestoque.currentUser") || "usuario";
+    const ALL_PERMISSIONS = ["dashboard", "estoque", "compras", "historico", "saude", "relatorios", "financeiro", "rastreabilidade", "ocs", "admin"];
+    const ROLE_LABELS = {
+      admin: "Administrador",
+      supervisor: "Supervisor",
+      operator: "Operador",
+      viewer: "Consulta",
+      employee: "Operador"
+    };
+    const ROLE_DEFAULT_PERMISSIONS = {
+      admin: ALL_PERMISSIONS,
+      supervisor: ["dashboard", "estoque", "compras", "historico", "saude", "relatorios", "rastreabilidade", "ocs"],
+      operator: ["dashboard", "estoque", "historico", "rastreabilidade"],
+      viewer: ["dashboard", "estoque", "historico", "saude", "relatorios", "rastreabilidade"]
+    };
     const PERMISSION_LABELS = {
       dashboard: "Dashboard",
       estoque: "Estoque",
       compras: "Compras",
       historico: "Historico",
-      fornecedores: "Fornecedores",
       saude: "Saude do estoque",
       relatorios: "Relatorios",
       financeiro: "Financeiro",
@@ -1472,6 +1734,17 @@
       "COMPRAR": { label: "Comprar", className: "buy", color: "var(--orange)" },
       "SEM ESTOQUE": { label: "Sem Estoque", className: "empty", color: "var(--red)" }
     };
+    const codeTypeLabels = {
+      "6_DIGITOS": "6 digitos",
+      "9_DIGITOS": "9 digitos",
+      "PENDENTE_CODIGO": "Abrir codigo"
+    };
+    const itemClassLabels = {
+      PECA: "Peca",
+      CONSUMO: "Consumo DHAS",
+      FERRAMENTA: "Ferramenta",
+      OUTROS: "Outros"
+    };
 
     let items = [];
     let history = [];
@@ -1484,9 +1757,11 @@
     let purchaseOrders = [];
     let costs = {};
     let lots = [];
-    let filters = { q: "", status: "", local: "" };
+    let filters = { q: "", status: "", local: "", codeType: "", itemClass: "" };
     let historyFilters = { start: "", end: "", type: "" };
     let financeFilters = { start: "", end: "" };
+    let auditFilters = { date: "", user: "", product: "", type: "" };
+    let opsMetrics = null;
     let sortState = { key: "cod", dir: "asc" };
     let historySortState = { key: "dt", dir: "desc" };
     let purchaseSortState = { key: "status", dir: "asc" };
@@ -1538,8 +1813,8 @@
       audit = readStore(STORAGE.audit, []);
       loginHistory = readStore(STORAGE.login, []);
       employees = readStore(STORAGE.employees, [
-        { username: "chefe", name: "Chefe do Estoque", active: true },
-        { username: "funcionario", name: "Funcionario Estoque", active: true }
+        { username: "admin", badge: "admin", display_name: "Administrador do Estoque", role: "admin", position: "Administrador", department: "Operacao", permissions: ALL_PERMISSIONS, active: true },
+        { username: "operador", badge: "operador", display_name: "Operador Estoque", role: "operator", position: "Operador", department: "Operacao", permissions: roleDefaults("operator"), active: true }
       ]);
       orders = readStore(STORAGE.orders, {});
       suppliers = readStore(STORAGE.suppliers, []);
@@ -1549,7 +1824,10 @@
       items = items.map(item => ({
         ...item,
         favorite: !!item.favorite,
-        supplierId: item.supplierId || ""
+        supplierId: item.supplierId || "",
+        codeType: item.codeType || classifyItemCode(item.cod),
+        itemClass: item.itemClass || "OUTROS",
+        addressValidated: !!item.addressValidated
       }));
       items.forEach(item => {
         suppliers.forEach(supplier => {
@@ -1561,6 +1839,21 @@
         ? { ...row, lote: lots.find(lot => lot.cod === row.cod)?.lote || "MIGRADO" }
         : row);
       saveAll();
+    }
+
+    function classifyItemCode(cod) {
+      const digits = String(cod || "").replace(/\D/g, "");
+      if (/^\d{6}$/.test(digits)) return "6_DIGITOS";
+      if (/^\d{9}$/.test(digits)) return "9_DIGITOS";
+      return "PENDENTE_CODIGO";
+    }
+
+    function normalizeImportedClass(value) {
+      const cleaned = String(value || "").trim().toUpperCase();
+      if (cleaned.includes("CONSUMO") || cleaned.includes("DHAS")) return "CONSUMO";
+      if (cleaned.includes("FERRAMENTA")) return "FERRAMENTA";
+      if (cleaned.includes("PECA") || cleaned.includes("PEÇA")) return "PECA";
+      return itemClassLabels[cleaned] ? cleaned : "OUTROS";
     }
 
     // Notificacao toast para feedback de todas as acoes relevantes.
@@ -1680,7 +1973,6 @@
         purchaseOrders,
         costs,
         lots,
-        audit,
         loginHistory,
         obsRequiredQty
       };
@@ -1692,7 +1984,6 @@
       purchaseOrders = Array.isArray(data.purchaseOrders) ? data.purchaseOrders : purchaseOrders;
       costs = data.costs && typeof data.costs === "object" ? data.costs : costs;
       lots = Array.isArray(data.lots) ? data.lots : lots;
-      audit = Array.isArray(data.audit) ? data.audit : audit;
       loginHistory = Array.isArray(data.loginHistory) ? data.loginHistory : loginHistory;
       if (Number.isFinite(Number(data.obsRequiredQty))) {
         obsRequiredQty = Number(data.obsRequiredQty);
@@ -1749,6 +2040,9 @@
         end: row.end || "",
         obs: row.obs || "",
         arm: row.arm || "",
+        codeType: row.codeType || classifyItemCode(row.cod),
+        itemClass: row.itemClass || "OUTROS",
+        addressValidated: !!row.addressValidated,
         status: row.status || calcItemStatus(row.qty, row.min),
         favorite: !!current.favorite,
         supplierId: current.supplierId || ""
@@ -1792,6 +2086,9 @@
       syncing = true;
       try {
         if (force || !dataVersion) {
+          renderTableSkeleton("stockTable", 13, 5);
+          renderTableSkeleton("stockTableFull", 13, 6);
+          renderTableSkeleton("historyTable", 6, 5);
           const [itemsPayload, movementsPayload] = await Promise.all([
             api("/api/items"),
             api("/api/movements?limit=300")
@@ -1814,11 +2111,44 @@
       syncTimer = setInterval(() => syncFromServer(false), 4000);
     }
 
-    function renderPermissionGrid(selected = [], role = "employee") {
-      const chosen = new Set(role === "admin" ? ALL_PERMISSIONS : selected);
+    async function restoreSession() {
+      try {
+        const response = await fetch("/api/me", { credentials: "same-origin" });
+        const payload = await response.json().catch(() => ({}));
+        if (!response.ok || !payload.user || !payload.csrf) return false;
+        currentSession = payload;
+        sessionStorage.setItem("superestoque.currentUser", payload.user.username || "usuario");
+        byId("userName").textContent = payload.user.display_name || payload.user.username || "Usuario";
+        byId("loginScreen").classList.add("hidden");
+        applyPermissions();
+        clearUserForm();
+        await syncFromServer(true);
+        await loadAppDataFromServer();
+        await loadOpsMetrics();
+        startAutoSync();
+        if (hasPermission("admin")) {
+          await loadAdminUsers();
+          await loadAdminAudit();
+        }
+        renderAdmin();
+        return true;
+      } catch (err) {
+        console.warn(err);
+        return false;
+      }
+    }
+
+    function roleDefaults(role) {
+      return ROLE_DEFAULT_PERMISSIONS[role] || ROLE_DEFAULT_PERMISSIONS.operator;
+    }
+
+    function renderPermissionGrid(selected = [], role = "operator") {
+      const normalizedRole = role === "employee" ? "operator" : role;
+      const base = selected.length ? selected : roleDefaults(normalizedRole);
+      const chosen = new Set(normalizedRole === "admin" ? ALL_PERMISSIONS : base);
       byId("permissionGrid").innerHTML = ALL_PERMISSIONS.map(permission => `
         <label style="display:flex;gap:8px;align-items:center">
-          <input type="checkbox" data-permission-option="${permission}" ${chosen.has(permission) ? "checked" : ""} ${role === "admin" ? "disabled" : ""}>
+          <input type="checkbox" data-permission-option="${permission}" ${chosen.has(permission) ? "checked" : ""} ${normalizedRole === "admin" ? "disabled" : ""}>
           ${PERMISSION_LABELS[permission]}
         </label>
       `).join("");
@@ -1833,11 +2163,16 @@
       byId("adminUsername").value = "";
       byId("adminUsername").disabled = false;
       byId("adminDisplayName").value = "";
+      byId("adminCpf").value = "";
+      byId("adminPosition").value = "";
       byId("adminDepartment").value = "";
-      byId("adminRole").value = "employee";
+      byId("adminPhone").value = "";
+      byId("adminEmail").value = "";
+      byId("adminPhoto").value = "";
+      byId("adminRole").value = "operator";
       byId("adminPassword").value = "";
       byId("adminActive").checked = true;
-      renderPermissionGrid(["dashboard", "estoque"], "employee");
+      renderPermissionGrid(roleDefaults("operator"), "operator");
     }
 
     async function loadAdminUsers() {
@@ -1852,19 +2187,80 @@
       }
     }
 
+    async function loadAdminAudit() {
+      if (!hasPermission("admin")) return;
+      try {
+        const payload = await api("/api/admin/audit");
+        audit = payload.audit || [];
+        writeStore(STORAGE.audit, audit);
+        renderAdmin();
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    async function loadOpsMetrics() {
+      if (!currentSession?.csrf || !hasPermission("dashboard")) return;
+      try {
+        opsMetrics = await api("/api/ops-metrics");
+        renderOpsMetrics();
+      } catch (err) {
+        console.warn(err);
+      }
+    }
+
+    function formatAuditDate(value) {
+      return value ? new Date(String(value).replace(" ", "T")).toLocaleString("pt-BR") : "";
+    }
+
+    function getFilteredAudit() {
+      const normalizeSearch = value => String(value || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+      return audit.filter(row => {
+        const created = String(row.created_at || row.dt || "");
+        const who = normalizeSearch(`${row.display || ""} ${row.user || ""} ${row.username || ""} ${row.badge || ""}`);
+        const product = normalizeSearch(`${row.target || ""} ${row.product || ""} ${row.details || ""}`);
+        const action = normalizeSearch(row.action);
+        const dateOk = !auditFilters.date || created.slice(0, 10) === auditFilters.date;
+        const userOk = !auditFilters.user || who.includes(normalizeSearch(auditFilters.user));
+        const productOk = !auditFilters.product || product.includes(normalizeSearch(auditFilters.product));
+        const typeOk = !auditFilters.type || action.includes(normalizeSearch(auditFilters.type));
+        return dateOk && userOk && productOk && typeOk;
+      });
+    }
+
+    function renderOpsMetrics() {
+      const lastLogin = opsMetrics?.lastLogin;
+      const lastMovement = opsMetrics?.lastMovement;
+      const top = opsMetrics?.topOperators || [];
+      const rows = [
+        { label: "Funcionarios Online", value: opsMetrics?.online || 0, note: "Sessoes ativas", color: "var(--blue)" },
+        { label: "Ultimo Login", value: lastLogin?.display_name || lastLogin?.username || "-", note: lastLogin ? formatAuditDate(lastLogin.created_at) : "Sem registro", color: "var(--green)" },
+        { label: "Ultima Movimentacao", value: lastMovement?.cod || "-", note: lastMovement ? `${lastMovement.movement_type} ${formatNumber(lastMovement.qty)} - ${lastMovement.display_name || lastMovement.username || ""}` : "Sem movimento", color: "var(--amber)" },
+        { label: "Mov. por Operador", value: top.reduce((sum, row) => sum + Number(row.total || 0), 0), note: "Total do dia", color: "var(--blue)" },
+        { label: "Top Operador do Dia", value: top[0]?.display_name || top[0]?.username || "-", note: top[0] ? `${formatNumber(top[0].total)} movimento(s)` : "Sem movimento hoje", color: "var(--green)" }
+      ];
+      byId("opsKpiGrid").innerHTML = rows.map(row => `
+        <article class="card kpi-card" style="--status-color:${row.color}">
+          <div class="kpi-label">${escapeHtml(row.label)}</div>
+          <div class="kpi-value">${typeof row.value === "number" ? formatNumber(row.value) : escapeHtml(row.value)}</div>
+          <div class="kpi-note">${escapeHtml(row.note)}</div>
+        </article>
+      `).join("");
+    }
+
     function statusBadge(status) {
       const meta = statusMeta[status] || statusMeta.OK;
       return `<span class="badge ${meta.className}"><span class="status-dot"></span>${meta.label}</span>`;
     }
 
     function supplierName(id) {
-      return suppliers.find(supplier => supplier.id === id)?.name || "Sem fornecedor";
+      return suppliers.find(supplier => supplier.id === id)?.name || "Sem origem";
     }
 
     function supplierOptions(selected = "") {
       return suppliers.length
-        ? suppliers.map(supplier => `<option value="${supplier.id}" ${supplier.id === selected ? "selected" : ""}>${supplier.name}</option>`).join("")
-        : `<option value="">Cadastre um fornecedor</option>`;
+        ? suppliers.map(supplier => `<option value="${escapeAttr(supplier.id)}" ${supplier.id === selected ? "selected" : ""}>${escapeHtml(supplier.name)}</option>`).join("")
+        : `<option value="">Cadastre uma origem</option>`;
     }
 
     function stars(value) {
@@ -1932,10 +2328,12 @@
     function getFilteredItems() {
       const query = filters.q.trim().toLowerCase();
       const list = items.filter(item => {
-        const text = `${item.cod} ${item.desc} ${item.loc}`.toLowerCase();
+        const text = `${item.cod} ${item.desc} ${item.loc} ${item.end} ${item.arm}`.toLowerCase();
         return (!query || text.includes(query)) &&
           (!filters.status || item.status === filters.status) &&
-          (!filters.local || item.loc === filters.local);
+          (!filters.local || item.loc === filters.local) &&
+          (!filters.codeType || item.codeType === filters.codeType) &&
+          (!filters.itemClass || item.itemClass === filters.itemClass);
       });
       return sortByState(list, sortState).sort((a, b) => Number(!!b.favorite) - Number(!!a.favorite));
     }
@@ -1978,13 +2376,45 @@
       return Math.max(Math.ceil(item.min - item.qty + avg), 1);
     }
 
+    function prefersReducedMotion() {
+      return window.matchMedia?.("(prefers-reduced-motion: reduce)").matches;
+    }
+
+    function animateCount(el, value) {
+      if (!el || typeof value !== "number" || !Number.isFinite(value) || prefersReducedMotion()) {
+        if (el) el.textContent = typeof value === "number" ? formatNumber(value) : value;
+        return;
+      }
+      const end = Math.round(value);
+      const start = 0;
+      const duration = 220;
+      const initial = performance.now();
+      const step = now => {
+        const progress = Math.min((now - initial) / duration, 1);
+        const current = Math.round(start + ((end - start) * progress));
+        el.textContent = formatNumber(current);
+        if (progress < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }
+
+    function renderTableSkeleton(targetId, columns = 7, rows = 5) {
+      byId(targetId).innerHTML = Array.from({ length: rows }).map(() => `
+        <tr class="skeleton-row">${Array.from({ length: columns }).map(() => `<td><span class="skeleton-line"></span></td>`).join("")}</tr>
+      `).join("");
+    }
+
     function renderKpis() {
       const counts = {
         total: items.length,
         empty: items.filter(i => i.status === "SEM ESTOQUE").length,
         buy: items.filter(i => i.status === "COMPRAR").length,
         limit: items.filter(i => i.status === "NO LIMITE").length,
-        ok: items.filter(i => i.status === "OK").length
+        ok: items.filter(i => i.status === "OK").length,
+        saldo69: items.filter(i => (i.codeType === "6_DIGITOS" || i.codeType === "9_DIGITOS") && Number(i.qty || 0) > 0).length,
+        pendingCode: items.filter(i => i.codeType === "PENDENTE_CODIGO").length,
+        dhas: items.filter(i => i.itemClass === "CONSUMO").length,
+        addressReview: items.filter(i => !i.addressValidated || !i.end).length
       };
       const monthNote = monthlyIndicator();
       const kpis = [
@@ -1995,13 +2425,23 @@
         { label: "OK", value: counts.ok, note: `Disponibilidade adequada · ${monthNote}`, color: "var(--green)" },
         { label: "Valor em estoque", value: formatCurrency(stockValue()), note: `Custo atual estimado · ${monthNote}`, color: "var(--blue)" }
       ];
+      kpis.splice(5, 0,
+        { label: "Saldo 6/9", value: counts.saldo69, note: "Pecas com codigo 6 ou 9 digitos e saldo", color: "var(--green)" },
+        { label: "Abrir codigo", value: counts.pendingCode, note: "Itens sem cadastro 6/9", color: "var(--orange)" },
+        { label: "DHAS consumo", value: counts.dhas, note: "Materiais de consumo separados", color: "var(--blue)" },
+        { label: "Enderecos", value: counts.addressReview, note: "Pendentes de revisao ou etiqueta", color: "var(--yellow)" }
+      );
       byId("kpiGrid").innerHTML = kpis.map(kpi => `
-        <article class="card kpi-card" style="--status-color:${kpi.color}">
+        <article class="card kpi-card" style="--status-color:${kpi.color};animation-delay:${Math.min(kpis.indexOf(kpi) * 28, 180)}ms">
           <div class="kpi-label">${kpi.label}</div>
-          <div class="kpi-value">${typeof kpi.value === "number" ? formatNumber(kpi.value) : kpi.value}</div>
+          <div class="kpi-value" data-count-value="${typeof kpi.value === "number" ? kpi.value : ""}">${typeof kpi.value === "number" ? "0" : kpi.value}</div>
           <div class="kpi-note">${kpi.note}</div>
         </article>
       `).join("");
+      byId("kpiGrid").querySelectorAll("[data-count-value]").forEach(el => {
+        const value = Number(el.dataset.countValue);
+        if (Number.isFinite(value)) animateCount(el, value);
+      });
       const health = counts.total ? Math.round((counts.ok / counts.total) * 100) : 0;
       byId("healthValue").textContent = `${health}%`;
       byId("healthFill").style.width = `${health}%`;
@@ -2016,24 +2456,28 @@
     function renderTable(targetId, data) {
       byId(targetId).innerHTML = data.map(item => `
         <tr>
-          <td class="mono">${item.cod}</td>
-          <td><button class="button" data-favorite="${item.cod}">${item.favorite ? "★" : "☆"}</button></td>
-          <td><span class="item-name">${item.desc}</span></td>
-          <td>${item.loc}</td>
+          <td class="mono">${escapeHtml(item.cod)}</td>
+          <td><button class="button" data-favorite="${escapeAttr(item.cod)}">${item.favorite ? "★" : "☆"}</button></td>
+          <td><span class="item-name">${escapeHtml(item.desc)}</span></td>
+          <td>${escapeHtml(codeTypeLabels[item.codeType] || item.codeType || "Abrir codigo")}</td>
+          <td>${escapeHtml(itemClassLabels[item.itemClass] || item.itemClass || "Outros")}</td>
+          <td>${escapeHtml(item.loc)}</td>
+          <td>${escapeHtml(item.end || "Sem endereco")}<br><span class="muted">${item.addressValidated ? "Validado" : "Revisar etiqueta"}</span></td>
           <td class="mono">${formatNumber(item.qty)}</td>
           <td class="mono">${formatNumber(item.min)}</td>
-          <td>${statusBadge(item.status)} <span class="muted">${getTrend(item.cod)}</span></td>
-          <td><select class="select" data-item-supplier="${item.cod}">${supplierOptions(item.supplierId)}</select></td>
-          <td><input class="input" type="number" min="0" step="0.01" value="${itemCost(item)}" data-cost="${item.cod}::${item.supplierId}"></td>
-          <td>${nextLot(item)?.validity || "Sem lote"}<br><span class="muted">${lotStatus(nextLot(item))}</span></td>
-          <td><button class="button" data-exit="${item.cod}">Registrar saida</button></td>
-          <td><button class="button" data-qr="${item.cod}">QR</button></td>
+          <td>${statusBadge(item.status)} <span class="muted">${escapeHtml(getTrend(item.cod))}</span></td>
+          <td><select class="select" data-item-supplier="${escapeAttr(item.cod)}">${supplierOptions(item.supplierId)}</select></td>
+          <td><input class="input" type="number" min="0" step="0.01" value="${itemCost(item)}" data-cost="${escapeAttr(item.cod)}::${escapeAttr(item.supplierId)}"></td>
+          <td>${escapeHtml(nextLot(item)?.validity || "Sem lote")}<br><span class="muted">${escapeHtml(lotStatus(nextLot(item)))}</span></td>
+          <td><button class="button" data-exit="${escapeAttr(item.cod)}">Registrar saida</button></td>
+          <td><button class="button" data-qr="${escapeAttr(item.cod)}">QR</button></td>
           <td>
-            <button class="button" data-duplicate="${item.cod}">Duplicar</button>
-            <button class="button" data-edit-item="${item.cod}">Editar</button>
-            <button class="button" data-repeat-movement="${item.cod}">Repetir</button>
-            <button class="button" data-zero="${item.cod}">Zerar</button>
-            <button class="button" data-delete="${item.cod}">Excluir</button>
+            <button class="button" data-duplicate="${escapeAttr(item.cod)}">Duplicar</button>
+            <button class="button" data-edit-item="${escapeAttr(item.cod)}">Editar</button>
+            <button class="button" data-validate-address="${escapeAttr(item.cod)}">${item.addressValidated ? "Revisado" : "Validar"}</button>
+            <button class="button" data-repeat-movement="${escapeAttr(item.cod)}">Repetir</button>
+            <button class="button" data-zero="${escapeAttr(item.cod)}">Zerar</button>
+            <button class="button" data-delete="${escapeAttr(item.cod)}">Excluir</button>
           </td>
         </tr>
       `).join("");
@@ -2045,15 +2489,15 @@
         const order = orders[item.cod];
         return `
           <tr>
-            <td class="mono">${item.cod}</td>
-            <td><span class="item-name">${item.desc}</span></td>
-            <td>${item.loc}</td>
+            <td class="mono">${escapeHtml(item.cod)}</td>
+            <td><span class="item-name">${escapeHtml(item.desc)}</span></td>
+            <td>${escapeHtml(item.loc)}</td>
             <td class="mono">${formatNumber(item.qty)}</td>
             <td class="mono">${formatNumber(item.min)}</td>
             <td class="mono">${formatNumber(item.suggested)}</td>
             <td>${statusBadge(item.status)}</td>
-            <td>${item.trend}</td>
-            <td>${order ? `${order.date} - ${order.resp}` : `<button class="button" data-order="${item.cod}">Marcar pedido</button>`}</td>
+            <td>${escapeHtml(item.trend)}</td>
+            <td>${order ? `${escapeHtml(order.date)} - ${escapeHtml(order.resp)}` : `<button class="button" data-order="${escapeAttr(item.cod)}">Marcar pedido</button>`}</td>
           </tr>
         `;
       }).join("");
@@ -2062,7 +2506,7 @@
     function renderSummaries() {
       const statusRows = Object.entries(statusMeta).map(([status, meta]) => {
         const list = items.filter(item => item.status === status);
-        return `<div class="summary-row"><div><strong>${meta.label}</strong><span>${list.length ? list.slice(0, 2).map(item => item.cod).join(", ") : "Nenhum item"}</span></div><div class="mono">${list.length}</div></div>`;
+        return `<div class="summary-row"><div><strong>${meta.label}</strong><span>${list.length ? list.slice(0, 2).map(item => escapeHtml(item.cod)).join(", ") : "Nenhum item"}</span></div><div class="mono">${list.length}</div></div>`;
       }).join("");
       byId("summaryList").innerHTML = statusRows;
       byId("healthSummary").innerHTML = statusRows;
@@ -2072,18 +2516,18 @@
         critical: items.filter(item => item.loc === loc && item.status !== "OK").length,
         total: items.filter(item => item.loc === loc).length
       })).sort((a, b) => b.critical - a.critical);
-      byId("locationSummary").innerHTML = locations.map(row => `<div class="summary-row"><div><strong>${row.loc}</strong><span>${row.total} itens monitorados</span></div><div class="mono">${row.critical}</div></div>`).join("");
+      byId("locationSummary").innerHTML = locations.map(row => `<div class="summary-row"><div><strong>${escapeHtml(row.loc)}</strong><span>${row.total} itens monitorados</span></div><div class="mono">${row.critical}</div></div>`).join("");
     }
 
     function renderHistory() {
       byId("historyTable").innerHTML = getFilteredHistory().map(row => `
-        <tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td class="mono">${row.cod}</td><td>${row.desc}</td><td>${row.tipo}</td><td class="mono">${row.qty}</td><td>${row.resp}</td></tr>
+        <tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td class="mono">${escapeHtml(row.cod)}</td><td>${escapeHtml(row.desc)}</td><td>${escapeHtml(row.tipo)}</td><td class="mono">${formatNumber(row.qty)}</td><td>${escapeHtml(row.resp)}</td></tr>
       `).join("");
     }
 
     function renderReports() {
       byId("topMoved").innerHTML = getTopMovedItems().map(row => {
-        return `<div class="summary-row"><div><strong>${row.cod}</strong><span>${row.desc}</span></div><div class="mono">${row.qty}</div></div>`;
+        return `<div class="summary-row"><div><strong>${escapeHtml(row.cod)}</strong><span>${escapeHtml(row.desc)}</span></div><div class="mono">${formatNumber(row.qty)}</div></div>`;
       }).join("");
       drawMovementChart();
       drawDepositChart();
@@ -2095,29 +2539,43 @@
       byId("employeeTable").innerHTML = hasPermission("admin")
         ? employees.map(emp => `
           <tr>
-            <td class="mono">${emp.username}</td>
-            <td>${emp.display_name || emp.name || ""}</td>
-            <td>${emp.department || ""}</td>
-            <td>${emp.role === "admin" ? "Chefe/Admin total" : "Usuario"}</td>
-            <td>${(emp.permissions || []).map(permission => PERMISSION_LABELS[permission] || permission).join(", ")}</td>
+            <td class="mono">${escapeHtml(emp.badge || emp.username)}</td>
+            <td>${escapeHtml(emp.display_name || emp.name || "")}</td>
+            <td>${escapeHtml(emp.position || "")}</td>
+            <td>${escapeHtml(emp.department || "")}</td>
+            <td>${escapeHtml(ROLE_LABELS[emp.role] || emp.role || "Operador")}</td>
             <td>${emp.active ? "Ativo" : "Inativo"}</td>
             <td>
-              <button class="button" data-user-edit="${emp.id}">Editar</button>
-              <button class="button" data-user-toggle="${emp.id}">${emp.active ? "Desativar" : "Ativar"}</button>
+              <button class="button" data-user-edit="${escapeAttr(emp.id)}">Editar</button>
+              <button class="button" data-user-toggle="${escapeAttr(emp.id)}">${emp.active ? "Desativar" : "Ativar"}</button>
             </td>
           </tr>
         `).join("")
-        : `<tr><td colspan="7">Acesso restrito ao chefe/admin.</td></tr>`;
-      byId("loginTable").innerHTML = loginHistory.slice(0, 60).map(row => `<tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td>${row.user}</td><td>${row.success ? "Sucesso" : "Falha"}</td></tr>`).join("");
-      byId("auditTable").innerHTML = audit.slice(0, 100).map(row => `<tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td>${row.user}</td><td>${row.action}</td></tr>`).join("");
+        : `<tr><td colspan="7">Acesso restrito ao Administrador.</td></tr>`;
+      byId("loginTable").innerHTML = loginHistory.slice(0, 60).map(row => `<tr><td>${new Date(row.dt).toLocaleString("pt-BR")}</td><td>${escapeHtml(row.user)}</td><td>${row.success ? "Sucesso" : "Falha"}</td></tr>`).join("");
+      const auditRows = getFilteredAudit().slice(0, 150);
+      byId("auditTable").innerHTML = auditRows.map(row => `
+        <tr>
+          <td>${formatAuditDate(row.created_at || row.dt)}</td>
+          <td>${escapeHtml(row.display || row.user || row.username || "")}</td>
+          <td class="mono">${escapeHtml(row.badge || row.username || "")}</td>
+          <td>${escapeHtml(row.position || row.role || "")}</td>
+          <td>${escapeHtml(row.action || "")}</td>
+          <td>${escapeHtml(row.target || row.product || "")}</td>
+          <td class="mono">${row.qty == null || row.qty === "" ? "" : formatNumber(row.qty)}</td>
+          <td>${escapeHtml(row.status || "")}</td>
+          <td class="mono">${escapeHtml(row.ip || "")}</td>
+        </tr>
+      `).join("") || `<tr><td colspan="9">Nenhum registro encontrado.</td></tr>`;
     }
 
     function renderSuppliers() {
+      if (!byId("supplierTable") || !byId("supplierHistoryTable")) return;
       byId("supplierTable").innerHTML = suppliers.map(supplier => `
         <tr>
-          <td>${supplier.name}</td>
-          <td class="mono">${supplier.cnpj}</td>
-          <td>${supplier.contact}<br><span class="muted">${supplier.email}</span></td>
+          <td>${escapeHtml(supplier.name)}</td>
+          <td class="mono">${escapeHtml(supplier.cnpj)}</td>
+          <td>${escapeHtml(supplier.contact)}<br><span class="muted">${escapeHtml(supplier.email)}</span></td>
           <td class="mono">${supplier.leadTime} dias</td>
           <td>Preço ${stars(supplier.rating.price)}<br>Prazo ${stars(supplier.rating.deadline)}<br>Qualidade ${stars(supplier.rating.quality)}</td>
         </tr>
@@ -2125,25 +2583,25 @@
 
       byId("supplierHistoryTable").innerHTML = purchaseOrders.map(po => {
         const total = po.items.reduce((sum, item) => sum + Number(item.qty || 0), 0);
-        return `<tr><td>${supplierName(po.supplierId)}</td><td class="mono">${po.number}</td><td>${new Date(po.date).toLocaleDateString("pt-BR")}</td><td>${po.status}</td><td class="mono">${total}</td></tr>`;
+        return `<tr><td>${escapeHtml(supplierName(po.supplierId))}</td><td class="mono">${escapeHtml(po.number)}</td><td>${new Date(po.date).toLocaleDateString("pt-BR")}</td><td>${escapeHtml(po.status)}</td><td class="mono">${total}</td></tr>`;
       }).join("");
     }
 
     function renderPurchaseOrders() {
       byId("poSupplier").innerHTML = supplierOptions();
-      byId("poItem").innerHTML = items.map(item => `<option value="${item.cod}">${item.cod} - ${item.desc}</option>`).join("");
+      byId("poItem").innerHTML = items.map(item => `<option value="${escapeAttr(item.cod)}">${escapeHtml(item.cod)} - ${escapeHtml(item.desc)}</option>`).join("");
       byId("poTable").innerHTML = purchaseOrders.map(po => {
-        const lines = po.items.map(line => `${line.cod} x ${line.qty}`).join("<br>");
+        const lines = po.items.map(line => `${escapeHtml(line.cod)} x ${formatNumber(line.qty)}`).join("<br>");
         return `
           <tr>
-            <td class="mono">${po.number}</td>
+            <td class="mono">${escapeHtml(po.number)}</td>
             <td>${new Date(po.date).toLocaleDateString("pt-BR")}</td>
-            <td>${supplierName(po.supplierId)}</td>
+            <td>${escapeHtml(supplierName(po.supplierId))}</td>
             <td>${lines}</td>
-            <td>${po.status}</td>
+            <td>${escapeHtml(po.status)}</td>
             <td>
-              <button class="button" data-po-next="${po.number}">${nextPoLabel(po)}</button>
-              <button class="button" data-po-pdf="${po.number}">PDF</button>
+              <button class="button" data-po-next="${escapeAttr(po.number)}">${escapeHtml(nextPoLabel(po))}</button>
+              <button class="button" data-po-pdf="${escapeAttr(po.number)}">PDF</button>
             </td>
           </tr>
         `;
@@ -2153,8 +2611,8 @@
     function renderFinance() {
       byId("costTable").innerHTML = items.map(item => `
         <tr>
-          <td><span class="mono">${item.cod}</span><br>${item.desc}</td>
-          <td>${supplierName(item.supplierId)}</td>
+          <td><span class="mono">${escapeHtml(item.cod)}</span><br>${escapeHtml(item.desc)}</td>
+          <td>${escapeHtml(supplierName(item.supplierId))}</td>
           <td>${formatCurrency(itemCost(item))}</td>
           <td>${formatCurrency(itemCost(item) * Number(item.qty || 0))}</td>
         </tr>
@@ -2172,19 +2630,19 @@
       `;
 
       byId("priceCompareTable").innerHTML = items.map(item => {
-        const comparisons = suppliers.map(supplier => `${supplier.name}: ${formatCurrency(costs[costKey(item.cod, supplier.id)] || 0)}`).join("<br>");
-        return `<tr><td><span class="mono">${item.cod}</span><br>${item.desc}</td><td>${comparisons}</td></tr>`;
+        const comparisons = suppliers.map(supplier => `${escapeHtml(supplier.name)}: ${formatCurrency(costs[costKey(item.cod, supplier.id)] || 0)}`).join("<br>");
+        return `<tr><td><span class="mono">${escapeHtml(item.cod)}</span><br>${escapeHtml(item.desc)}</td><td>${comparisons}</td></tr>`;
       }).join("");
     }
 
     function renderTraceability() {
       byId("lotTable").innerHTML = lots.map(lot => {
         const item = items.find(row => row.cod === lot.cod);
-        return `<tr><td><span class="mono">${lot.cod}</span><br>${item?.desc || ""}</td><td class="mono">${lot.lote}</td><td>${lot.validity}</td><td class="mono">${lot.qty}</td><td>${lotStatus(lot)}</td></tr>`;
+        return `<tr><td><span class="mono">${escapeHtml(lot.cod)}</span><br>${escapeHtml(item?.desc || "")}</td><td class="mono">${escapeHtml(lot.lote)}</td><td>${escapeHtml(lot.validity)}</td><td class="mono">${formatNumber(lot.qty)}</td><td>${escapeHtml(lotStatus(lot))}</td></tr>`;
       }).join("");
       byId("lotConsumptionTable").innerHTML = lots.flatMap(lot => (lot.exits || []).map(exit => {
         const item = items.find(row => row.cod === lot.cod);
-        return `<tr><td>${new Date(exit.dt).toLocaleString("pt-BR")}</td><td><span class="mono">${lot.cod}</span><br>${item?.desc || ""}</td><td class="mono">${lot.lote}</td><td class="mono">${exit.qty}</td><td>${exit.resp}</td></tr>`;
+        return `<tr><td>${new Date(exit.dt).toLocaleString("pt-BR")}</td><td><span class="mono">${escapeHtml(lot.cod)}</span><br>${escapeHtml(item?.desc || "")}</td><td class="mono">${escapeHtml(lot.lote)}</td><td class="mono">${formatNumber(exit.qty)}</td><td>${escapeHtml(exit.resp)}</td></tr>`;
       })).join("");
     }
 
@@ -2204,7 +2662,7 @@
 
     function createPurchaseOrder(supplierId, cod, qty) {
       if (!supplierId || !cod) {
-        toast("Cadastre fornecedor e item antes de criar uma OC.", "erro");
+        toast("Cadastre origem e item antes de criar uma OC.", "erro");
         return;
       }
       const year = new Date().getFullYear();
@@ -2306,6 +2764,7 @@
           addAudit(`Registrou ${tipo.toLowerCase()} de ${qty} do item ${cod}`);
           toast("Movimentacao registrada.");
           syncFromServer(true);
+          loadOpsMetrics();
           return;
         } catch (err) {
           return toast(err.message, "erro");
@@ -2366,11 +2825,13 @@
       byId("itemCod").value = "";
       byId("itemCod").disabled = false;
       byId("itemDesc").value = "";
+      byId("itemClass").value = "PECA";
       byId("itemLoc").value = "";
       byId("itemQty").value = "0";
       byId("itemMin").value = "1";
       byId("itemEnd").value = "";
       byId("itemArm").value = "";
+      byId("itemAddressValidated").checked = false;
       byId("itemObs").value = "";
     }
 
@@ -2382,11 +2843,13 @@
       byId("itemCod").value = item.cod;
       byId("itemCod").disabled = true;
       byId("itemDesc").value = item.desc || "";
+      byId("itemClass").value = item.itemClass || "OUTROS";
       byId("itemLoc").value = item.loc || "";
       byId("itemQty").value = Number(item.qty || 0);
       byId("itemMin").value = Number(item.min || 1);
       byId("itemEnd").value = item.end || "";
       byId("itemArm").value = item.arm || "";
+      byId("itemAddressValidated").checked = !!item.addressValidated;
       byId("itemObs").value = item.obs || "";
       switchPage("estoque");
       byId("itemDesc").focus();
@@ -2417,6 +2880,9 @@
         end: byId("itemEnd").value.trim(),
         arm: byId("itemArm").value.trim(),
         obs: byId("itemObs").value.trim(),
+        codeType: classifyItemCode(cod),
+        itemClass: byId("itemClass").value,
+        addressValidated: byId("itemAddressValidated").checked,
         status: calcItemStatus(qty, min),
         favorite: !!previous?.favorite,
         supplierId: previous?.supplierId || ""
@@ -2463,6 +2929,27 @@
       renderAll();
     }
 
+    async function validateAddress(cod) {
+      const item = items.find(row => row.cod === cod);
+      if (!item) return;
+      if (!item.end) return toast("Informe o endereco antes de validar a etiqueta.", "aviso");
+      const next = { ...item, addressValidated: true };
+      if (currentSession?.csrf && item.id) {
+        try {
+          const payload = await api(`/api/items/${item.id}`, { method: "PUT", body: JSON.stringify(next) });
+          Object.assign(item, itemFromServer(payload.item));
+        } catch (err) {
+          return toast(err.message, "erro");
+        }
+      } else {
+        item.addressValidated = true;
+      }
+      saveAll();
+      renderAll();
+      addAudit(`Validou endereco do item ${cod}`);
+      toast("Endereco e etiqueta marcados como validados.");
+    }
+
     // Copia um cadastro existente e pede um novo codigo para acelerar cadastros similares.
     async function duplicateItem(cod) {
       const item = items.find(row => row.cod === cod);
@@ -2479,6 +2966,8 @@
         cod: newCod.trim(),
         desc,
         qty: 0,
+        codeType: classifyItemCode(newCod),
+        addressValidated: false,
         favorite: false,
         status: "SEM ESTOQUE"
       };
@@ -2565,18 +3054,18 @@
       const supplier = suppliers.find(row => row.id === po.supplierId);
       const lines = po.items.map(line => {
         const item = items.find(row => row.cod === line.cod);
-        return `<tr><td>${line.cod}</td><td>${item?.desc || ""}</td><td>${line.qty}</td></tr>`;
+        return `<tr><td>${escapeHtml(line.cod)}</td><td>${escapeHtml(item?.desc || "")}</td><td>${formatNumber(line.qty)}</td></tr>`;
       }).join("");
       const win = window.open("", "_blank");
       win.document.write(`
-        <html><head><title>${po.number}</title></head><body style="font-family:Arial;padding:24px;color:#111">
-          <h1>Ordem de Compra ${po.number}</h1>
-          <p><strong>Fornecedor:</strong> ${supplier?.name || ""}</p>
-          <p><strong>CNPJ:</strong> ${supplier?.cnpj || ""}</p>
+        <html><head><title>${escapeHtml(po.number)}</title></head><body style="font-family:Arial;padding:24px;color:#111">
+          <h1>Ordem de Compra ${escapeHtml(po.number)}</h1>
+          <p><strong>Origem:</strong> ${escapeHtml(supplier?.name || "")}</p>
+          <p><strong>CNPJ:</strong> ${escapeHtml(supplier?.cnpj || "")}</p>
           <p><strong>Data:</strong> ${new Date(po.date).toLocaleDateString("pt-BR")}</p>
-          <p><strong>Status:</strong> ${po.status}</p>
+          <p><strong>Status:</strong> ${escapeHtml(po.status)}</p>
           <table border="1" cellspacing="0" cellpadding="8" width="100%"><thead><tr><th>Codigo</th><th>Item</th><th>Qtd</th></tr></thead><tbody>${lines}</tbody></table>
-          <p>Use a opcao Imprimir / Salvar como PDF do navegador para enviar ao fornecedor.</p>
+          <p>Use a opcao Imprimir / Salvar como PDF do navegador para enviar ao responsavel.</p>
         </body></html>
       `);
       win.document.close();
@@ -2622,7 +3111,7 @@
       const max = Math.max(...rows.map(row => row[1]), 1);
       const barWidth = Math.max(36, (canvas.width - 80) / Math.max(rows.length, 1) - 12);
       ctx.fillStyle = "#3b82f6";
-      ctx.font = "14px Inter";
+      ctx.font = "14px Source Sans 3";
       rows.forEach(([loc, qty], index) => {
         const x = 40 + index * (barWidth + 12);
         const h = (qty / max) * (canvas.height - 80);
@@ -2650,13 +3139,13 @@
       movementByItem.forEach(row => {
         cumulative += row.total / totalMovement;
         const group = cumulative <= .8 ? "A" : cumulative <= .95 ? "B" : "C";
-        groups[group].push(`${row.item.cod} (${row.total})`);
+        groups[group].push(`${escapeHtml(row.item.cod)} (${formatNumber(row.total)})`);
       });
       byId("abcTable").innerHTML = [
         ["A", groups.A.join(", ") || "Sem itens", "Alto giro ate 80% acumulado"],
         ["B", groups.B.join(", ") || "Sem itens", "Medio giro ate 95% acumulado"],
         ["C", groups.C.join(", ") || "Sem itens", "Baixo giro restante"]
-      ].map(row => `<tr><td class="mono">${row[0]}</td><td>${row[1]}</td><td>${row[2]}</td></tr>`).join("");
+      ].map(row => `<tr><td class="mono">${row[0]}</td><td>${row[1]}</td><td>${escapeHtml(row[2])}</td></tr>`).join("");
     }
 
     function exportReportPdf() {
@@ -2729,27 +3218,22 @@
       presentationMode = true;
       switchPage("relatorios");
       renderReports();
+      document.body.classList.add("presentation-mode");
       document.documentElement.requestFullscreen?.().catch(() => {});
-      document.querySelectorAll(".sidebar, .topbar button, form, .filters, .table-wrap, #aiOpenButton").forEach(el => {
-        el.dataset.presentationDisplay = el.style.display || "";
-        el.style.display = "none";
-      });
-      const exitButton = document.createElement("button");
-      exitButton.className = "button primary";
-      exitButton.id = "presentationExitButton";
-      exitButton.textContent = "Sair apresentacao";
-      exitButton.style.cssText = "position:fixed;right:16px;bottom:16px;z-index:2200";
-      exitButton.addEventListener("click", exitPresentationMode);
-      document.body.appendChild(exitButton);
+      if (!byId("presentationExitButton")) {
+        const exitButton = document.createElement("button");
+        exitButton.className = "button primary";
+        exitButton.id = "presentationExitButton";
+        exitButton.textContent = "Sair apresentacao";
+        exitButton.addEventListener("click", exitPresentationMode);
+        document.body.appendChild(exitButton);
+      }
       toast("Modo apresentacao ativado.");
     }
 
     function exitPresentationMode() {
       presentationMode = false;
-      document.querySelectorAll("[data-presentation-display]").forEach(el => {
-        el.style.display = el.dataset.presentationDisplay;
-        delete el.dataset.presentationDisplay;
-      });
+      document.body.classList.remove("presentation-mode");
       byId("presentationExitButton")?.remove();
       document.exitFullscreen?.().catch(() => {});
       switchPage("dashboard");
@@ -2772,9 +3256,13 @@
           valorEstoque: stockValue(),
           semEstoque: items.filter(item => item.status === "SEM ESTOQUE").map(item => item.cod),
           comprar: items.filter(item => item.status === "COMPRAR").map(item => item.cod),
+          saldo6ou9: items.filter(item => (item.codeType === "6_DIGITOS" || item.codeType === "9_DIGITOS") && Number(item.qty || 0) > 0).map(item => item.cod),
+          abrirCodigo: items.filter(item => item.codeType === "PENDENTE_CODIGO").map(item => item.cod),
+          dhasConsumo: items.filter(item => item.itemClass === "CONSUMO").map(item => item.cod),
+          enderecosRevisar: items.filter(item => !item.addressValidated || !item.end).map(item => item.cod),
           lotesVencendo: lots.filter(lot => lotStatus(lot).startsWith("Vence")).map(lot => ({ cod: lot.cod, lote: lot.lote, validade: lot.validity, saldo: lot.qty }))
         },
-        itens: items.map(item => ({ codigo: item.cod, descricao: item.desc, local: item.loc, quantidade: item.qty, minimo: item.min, status: item.status, fornecedor: supplierName(item.supplierId), custo: itemCost(item), tendencia: getTrend(item.cod) })),
+        itens: items.map(item => ({ codigo: item.cod, descricao: item.desc, tipoCodigo: item.codeType, classe: item.itemClass, local: item.loc, endereco: item.end, enderecoValidado: item.addressValidated, quantidade: item.qty, minimo: item.min, status: item.status, origem: supplierName(item.supplierId), custo: itemCost(item), tendencia: getTrend(item.cod) })),
         topMovimentados: getTopMovedItems()
       };
     }
@@ -2787,7 +3275,19 @@
         return critical.slice(0, 6).map(item => `${item.cod} - ${item.desc}: ${item.status}, saldo ${item.qty}`).join("\n") || "Nenhum item critico no momento.";
       }
       if (q.includes("comprar")) {
-        return critical.slice(0, 6).map(item => `${item.cod}: comprar ${suggestedPurchase(item)} un. Fornecedor: ${supplierName(item.supplierId)}`).join("\n") || "Sem compras urgentes.";
+        return critical.slice(0, 6).map(item => `${item.cod}: comprar ${suggestedPurchase(item)} un. Origem: ${supplierName(item.supplierId)}`).join("\n") || "Sem compras urgentes.";
+      }
+      if (q.includes("codigo") || q.includes("cadastro")) {
+        const pending = items.filter(item => item.codeType === "PENDENTE_CODIGO");
+        return pending.slice(0, 10).map(item => `${item.cod} - ${item.desc}: revisar item e abrir codigo 6/9`).join("\n") || "Nenhum item pendente de abertura de codigo 6/9.";
+      }
+      if (q.includes("dhas") || q.includes("consumo")) {
+        const dhas = items.filter(item => item.itemClass === "CONSUMO");
+        return dhas.slice(0, 10).map(item => `${item.cod} - ${item.desc}: saldo ${item.qty}, endereco ${item.end || "sem endereco"}`).join("\n") || "Nenhum material de consumo DHAS cadastrado.";
+      }
+      if (q.includes("endereco") || q.includes("etiqueta")) {
+        const review = items.filter(item => !item.addressValidated || !item.end);
+        return review.slice(0, 10).map(item => `${item.cod} - ${item.desc}: ${item.end || "sem endereco"} / ${item.addressValidated ? "validado" : "revisar etiqueta"}`).join("\n") || "Todos os enderecos estao validados.";
       }
       return `Resumo: ${items.length} itens, valor em estoque ${formatCurrency(stockValue())}, ${critical.length} item(ns) criticos e ${getTopMovedItems().length} itens com giro relevante.`;
     }
@@ -2801,7 +3301,7 @@
     function addAiMessage(role, text) {
       const box = document.createElement("div");
       box.className = "summary-row";
-      box.innerHTML = `<div><strong>${role}</strong><span style="white-space:pre-wrap">${text}</span></div>`;
+      box.innerHTML = `<div><strong>${escapeHtml(role)}</strong><span style="white-space:pre-wrap">${escapeHtml(text)}</span></div>`;
       byId("aiMessages").appendChild(box);
     }
 
@@ -2821,16 +3321,23 @@
     function populateFilters() {
       const locations = [...new Set(items.map(item => item.loc))].sort();
       const statusOptions = `<option value="">Todos</option><option value="OK">OK</option><option value="NO LIMITE">No Limite</option><option value="COMPRAR">Comprar</option><option value="SEM ESTOQUE">Sem Estoque</option>`;
-      const localOptions = `<option value="">Todos</option>${locations.map(loc => `<option value="${loc}">${loc}</option>`).join("")}`;
+      const localOptions = `<option value="">Todos</option>${locations.map(loc => `<option value="${escapeAttr(loc)}">${escapeHtml(loc)}</option>`).join("")}`;
+      const codeOptions = `<option value="">Todos</option>${Object.entries(codeTypeLabels).map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}`;
+      const classOptions = `<option value="">Todas</option>${Object.entries(itemClassLabels).map(([value, label]) => `<option value="${value}">${label}</option>`).join("")}`;
       byId("statusFilter2").innerHTML = statusOptions;
       byId("localFilter").innerHTML = localOptions;
       byId("localFilter2").innerHTML = localOptions;
+      byId("codeFilter").innerHTML = codeOptions;
+      byId("codeFilter2").innerHTML = codeOptions;
+      byId("classFilter").innerHTML = classOptions;
+      byId("classFilter2").innerHTML = classOptions;
     }
 
     function renderAll() {
       const filtered = getFilteredItems();
       byId("tableCount").textContent = `${filtered.length} itens`;
       renderKpis();
+      renderOpsMetrics();
       renderTable("stockTable", filtered);
       renderTable("stockTableFull", filtered);
       renderPurchases();
@@ -2863,6 +3370,10 @@
       byId("statusFilter2").value = filters.status;
       byId("localFilter").value = filters.local;
       byId("localFilter2").value = filters.local;
+      byId("codeFilter").value = filters.codeType;
+      byId("codeFilter2").value = filters.codeType;
+      byId("classFilter").value = filters.itemClass;
+      byId("classFilter2").value = filters.itemClass;
     }
 
     function updateFilters(next) {
@@ -2877,8 +3388,8 @@
     }
 
     function exportCsv() {
-      const rows = getFilteredItems().map(item => [item.cod, item.desc, item.loc, item.qty, item.min, item.status, supplierName(item.supplierId), itemCost(item), nextLot(item)?.validity || ""]);
-      download("superestoque.csv", [["Codigo", "Descricao", "Local", "Qtd", "Minimo", "Status", "Fornecedor", "Custo", "Validade"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
+      const rows = getFilteredItems().map(item => [item.cod, item.desc, codeTypeLabels[item.codeType] || item.codeType, itemClassLabels[item.itemClass] || item.itemClass, item.loc, item.end, item.addressValidated ? "Sim" : "Nao", item.qty, item.min, item.status, supplierName(item.supplierId), itemCost(item), nextLot(item)?.validity || ""]);
+      download("superestoque.csv", [["Codigo", "Descricao", "TipoCodigo", "Classe", "Local", "Endereco", "EnderecoValidado", "Qtd", "Minimo", "Status", "Origem", "Custo", "Validade"], ...rows].map(row => row.map(csvEscape).join(",")).join("\n"));
       addAudit("Exportou estoque em CSV");
       toast("CSV exportado.");
     }
@@ -2888,11 +3399,15 @@
       const data = getFilteredItems().map(item => ({
         Codigo: item.cod,
         Descricao: item.desc,
+        TipoCodigo: codeTypeLabels[item.codeType] || item.codeType,
+        Classe: itemClassLabels[item.itemClass] || item.itemClass,
         Local: item.loc,
+        Endereco: item.end,
+        EnderecoValidado: item.addressValidated ? "Sim" : "Nao",
         Qtd: item.qty,
         Minimo: item.min,
         Status: item.status,
-        Fornecedor: supplierName(item.supplierId),
+        Origem: supplierName(item.supplierId),
         Custo: itemCost(item),
         Validade: nextLot(item)?.validity || ""
       }));
@@ -2909,7 +3424,10 @@
         const lines = String(reader.result).split(/\r?\n/).filter(Boolean);
         const imported = lines.slice(1).map(line => {
           const cols = line.split(",").map(v => v.replace(/^"|"$/g, "").trim());
-          return { cod: cols[0], desc: cols[1], loc: cols[2], qty: Number(cols[3] || 0), min: Number(cols[4] || 1), status: cols[5] || "OK", favorite: false, supplierId: "" };
+          const modern = cols.length >= 10;
+          return modern
+            ? { cod: cols[0], desc: cols[1], codeType: classifyItemCode(cols[0]), itemClass: normalizeImportedClass(cols[3]), loc: cols[4], end: cols[5], addressValidated: /^sim$/i.test(cols[6]), qty: Number(cols[7] || 0), min: Number(cols[8] || 1), status: cols[9] || "OK", favorite: false, supplierId: "" }
+            : { cod: cols[0], desc: cols[1], loc: cols[2], qty: Number(cols[3] || 0), min: Number(cols[4] || 1), status: cols[5] || "OK", codeType: classifyItemCode(cols[0]), itemClass: "OUTROS", addressValidated: false, favorite: false, supplierId: "" };
         }).filter(item => item.cod && item.desc);
         for (const item of imported) {
           if (currentSession?.csrf) {
@@ -2948,10 +3466,13 @@
         type: "superestoque-item",
         cod: item.cod,
         desc: item.desc,
-        loc: item.loc
+        loc: item.loc,
+        end: item.end,
+        classe: item.itemClass,
+        tipoCodigo: item.codeType
       };
       new QRCode(byId("qrBox"), JSON.stringify(payload));
-      byId("qrBox").insertAdjacentHTML("beforeend", `<div style="margin-top:12px;color:#111;text-align:center;font-weight:700">${item.cod}<br><span style="font-weight:500">${item.desc}</span></div>`);
+      byId("qrBox").insertAdjacentHTML("beforeend", `<div style="margin-top:12px;color:#111;text-align:center;font-weight:700">${escapeHtml(item.cod)}<br><span style="font-weight:500">${escapeHtml(item.desc)}</span><br><span style="font-weight:500">${escapeHtml(item.end || "Sem endereco")}</span></div>`);
       byId("qrModal").style.display = "grid";
       addAudit(`Gerou QR Code do item ${cod}`);
     }
@@ -2986,27 +3507,39 @@
       const user = employees.find(emp => String(emp.id) === String(userId));
       if (!user) return;
       byId("adminUserId").value = user.id;
-      byId("adminUsername").value = user.username;
+      byId("adminUsername").value = user.badge || user.username || "";
       byId("adminUsername").disabled = true;
       byId("adminDisplayName").value = user.display_name || user.name || "";
+      byId("adminCpf").value = user.cpf || "";
+      byId("adminPosition").value = user.position || "";
       byId("adminDepartment").value = user.department || "";
-      byId("adminRole").value = user.role || "employee";
+      byId("adminPhone").value = user.phone || "";
+      byId("adminEmail").value = user.email || "";
+      byId("adminPhoto").value = user.photo || "";
+      byId("adminRole").value = user.role === "employee" ? "operator" : user.role || "operator";
       byId("adminPassword").value = "";
       byId("adminActive").checked = !!user.active;
-      renderPermissionGrid(user.permissions || [], user.role || "employee");
+      renderPermissionGrid(user.permissions || [], user.role || "operator");
     }
 
     async function saveAdminUser(event) {
       event.preventDefault();
-      if (!hasPermission("admin")) return toast("Acesso restrito ao chefe/admin.", "erro");
+      if (!hasPermission("admin")) return toast("Acesso restrito ao Administrador.", "erro");
       const userId = byId("adminUserId").value;
+      const role = byId("adminRole").value;
       const payload = {
+        badge: byId("adminUsername").value.trim(),
         username: byId("adminUsername").value.trim(),
         display_name: byId("adminDisplayName").value.trim(),
+        cpf: byId("adminCpf").value.trim(),
+        position: byId("adminPosition").value.trim(),
         department: byId("adminDepartment").value.trim(),
-        role: byId("adminRole").value,
+        phone: byId("adminPhone").value.trim(),
+        email: byId("adminEmail").value.trim(),
+        photo: byId("adminPhoto").value.trim(),
+        role,
         active: byId("adminActive").checked,
-        permissions: selectedPermissions()
+        permissions: role === "admin" ? ALL_PERMISSIONS : selectedPermissions()
       };
       const password = byId("adminPassword").value;
       if (password) payload.password = password;
@@ -3035,7 +3568,12 @@
           method: "PUT",
           body: JSON.stringify({
             display_name: user.display_name,
+            cpf: user.cpf || "",
+            position: user.position || "",
             department: user.department,
+            phone: user.phone || "",
+            email: user.email || "",
+            photo: user.photo || "",
             role: user.role,
             active: !user.active,
             permissions: user.permissions || []
@@ -3140,6 +3678,10 @@
       byId("statusFilter2").addEventListener("change", event => updateFilters({ status: event.target.value }));
       byId("localFilter").addEventListener("change", event => updateFilters({ local: event.target.value }));
       byId("localFilter2").addEventListener("change", event => updateFilters({ local: event.target.value }));
+      byId("codeFilter").addEventListener("change", event => updateFilters({ codeType: event.target.value }));
+      byId("codeFilter2").addEventListener("change", event => updateFilters({ codeType: event.target.value }));
+      byId("classFilter").addEventListener("change", event => updateFilters({ itemClass: event.target.value }));
+      byId("classFilter2").addEventListener("change", event => updateFilters({ itemClass: event.target.value }));
       byId("exportButton").addEventListener("click", exportCsv);
       byId("stockCsvButton").addEventListener("click", exportCsv);
       byId("excelButton").addEventListener("click", exportExcel);
@@ -3196,6 +3738,7 @@
         const favorite = event.target.closest("[data-favorite]");
         const duplicate = event.target.closest("[data-duplicate]");
         const editItemButton = event.target.closest("[data-edit-item]");
+        const validateAddressButton = event.target.closest("[data-validate-address]");
         const repeatMovement = event.target.closest("[data-repeat-movement]");
         const zero = event.target.closest("[data-zero]");
         const deleteButton = event.target.closest("[data-delete]");
@@ -3209,6 +3752,7 @@
         if (favorite) toggleFavorite(favorite.dataset.favorite);
         if (duplicate) duplicateItem(duplicate.dataset.duplicate);
         if (editItemButton) editItem(editItemButton.dataset.editItem);
+        if (validateAddressButton) validateAddress(validateAddressButton.dataset.validateAddress);
         if (repeatMovement) repeatLastMovement(repeatMovement.dataset.repeatMovement);
         if (zero) zeroItem(zero.dataset.zero);
         if (deleteButton) deleteItem(deleteButton.dataset.delete);
@@ -3227,8 +3771,8 @@
           if (item) {
             item.supplierId = supplierLink.value;
             saveAll();
-            addAudit(`Vinculou fornecedor ao item ${item.cod}`);
-            toast("Fornecedor vinculado ao item.");
+            addAudit(`Vinculou origem ao item ${item.cod}`);
+            toast("Origem vinculada ao item.");
             renderAll();
           }
         }
@@ -3242,24 +3786,26 @@
       });
       byId("itemForm").addEventListener("submit", saveItemForm);
       byId("clearItemFormButton").addEventListener("click", clearItemForm);
-      byId("supplierForm").addEventListener("submit", event => {
-        event.preventDefault();
-        const supplier = {
-          id: `SUP-${String(Date.now()).slice(-6)}`,
-          name: byId("supName").value.trim(),
-          cnpj: byId("supCnpj").value.trim(),
-          contact: byId("supContact").value.trim(),
-          email: byId("supEmail").value.trim(),
-          leadTime: Number(byId("supLead").value || 1),
-          rating: { price: Number(byId("supPrice").value), deadline: Number(byId("supDeadline").value), quality: Number(byId("supQuality").value) }
-        };
-        suppliers.push(supplier);
-        event.target.reset();
-        saveAll();
-        addAudit(`Cadastrou fornecedor ${supplier.name}`);
-        toast("Fornecedor cadastrado.");
-        renderAll();
-      });
+      if (byId("supplierForm")) {
+        byId("supplierForm").addEventListener("submit", event => {
+          event.preventDefault();
+          const supplier = {
+            id: `SUP-${String(Date.now()).slice(-6)}`,
+            name: byId("supName").value.trim(),
+            cnpj: byId("supCnpj").value.trim(),
+            contact: byId("supContact").value.trim(),
+            email: byId("supEmail").value.trim(),
+            leadTime: Number(byId("supLead").value || 1),
+            rating: { price: Number(byId("supPrice").value), deadline: Number(byId("supDeadline").value), quality: Number(byId("supQuality").value) }
+          };
+          suppliers.push(supplier);
+          event.target.reset();
+          saveAll();
+          addAudit(`Cadastrou origem ${supplier.name}`);
+          toast("Origem cadastrada.");
+          renderAll();
+        });
+      }
       byId("poForm").addEventListener("submit", event => {
         event.preventDefault();
         createPurchaseOrder(byId("poSupplier").value, byId("poItem").value, byId("poQty").value);
@@ -3267,7 +3813,12 @@
       });
       byId("userAdminForm").addEventListener("submit", saveAdminUser);
       byId("clearUserFormButton").addEventListener("click", clearUserForm);
-      byId("adminRole").addEventListener("change", event => renderPermissionGrid(selectedPermissions(), event.target.value));
+      byId("adminRole").addEventListener("change", event => renderPermissionGrid(roleDefaults(event.target.value), event.target.value));
+      byId("forgotPasswordButton").addEventListener("click", () => toast("Solicite ao Administrador ou Supervisor a redefinicao da sua senha.", "aviso"));
+      byId("auditDateFilter").addEventListener("input", event => { auditFilters.date = event.target.value; renderAdmin(); });
+      byId("auditUserFilter").addEventListener("input", event => { auditFilters.user = event.target.value.trim(); renderAdmin(); });
+      byId("auditProductFilter").addEventListener("input", event => { auditFilters.product = event.target.value.trim(); renderAdmin(); });
+      byId("auditTypeFilter").addEventListener("change", event => { auditFilters.type = event.target.value; renderAdmin(); });
       addEventListener("keydown", event => {
         const target = event.target;
         const typing = target && ["INPUT", "TEXTAREA", "SELECT"].includes(target.tagName);
@@ -3281,6 +3832,13 @@
       addEventListener("focus", () => syncFromServer(false));
       document.addEventListener("visibilitychange", () => {
         if (!document.hidden) syncFromServer(false);
+      });
+      document.addEventListener("fullscreenchange", () => {
+        if (presentationMode && !document.fullscreenElement) {
+          presentationMode = false;
+          document.body.classList.remove("presentation-mode");
+          byId("presentationExitButton")?.remove();
+        }
       });
       byId("logoutButton").addEventListener("click", () => {
         currentSession = null;
@@ -3301,20 +3859,22 @@
       const pass = byId("loginPassword").value;
       const error = byId("loginError");
       const submitButton = byId("loginSubmitButton");
-      const names = {
-        chefe: "Chefe do Estoque",
-        funcionario: "Funcionario Estoque"
-      };
+      const scanner = byId("loginScanner");
+      const originalSubmitText = submitButton.textContent;
       let success = false;
-      let displayName = names[user] || user;
+      let displayName = user;
       let serverError = "";
       submitButton.disabled = true;
+      submitButton.classList.add("is-loading");
+      submitButton.textContent = "Conectando ao terminal...";
+      scanner?.classList.add("is-active");
+      error.style.display = "none";
       try {
         const response = await fetch("/api/login", {
           method: "POST",
           credentials: "same-origin",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ username: user, password: pass })
+          body: JSON.stringify({ badge: user, password: pass })
         });
         const payload = await response.json().catch(() => ({}));
         if (response.ok) {
@@ -3347,8 +3907,12 @@
           clearUserForm();
           await syncFromServer(true);
           await loadAppDataFromServer();
+          await loadOpsMetrics();
           startAutoSync();
-          if (hasPermission("admin")) await loadAdminUsers();
+          if (hasPermission("admin")) {
+            await loadAdminUsers();
+            await loadAdminAudit();
+          }
           addAudit("Entrou no sistema");
           toast("Login realizado.");
           renderAdmin();
@@ -3356,9 +3920,15 @@
           console.warn(err);
         }
         submitButton.disabled = false;
+        submitButton.classList.remove("is-loading");
+        submitButton.textContent = originalSubmitText;
+        scanner?.classList.remove("is-active");
         return false;
       }
       submitButton.disabled = false;
+      submitButton.classList.remove("is-loading");
+      submitButton.textContent = originalSubmitText;
+      scanner?.classList.remove("is-active");
       error.textContent = serverError || "Usuario ou senha invalidos.";
       error.style.display = "block";
       toast("Falha no login.", "erro");
@@ -3369,16 +3939,19 @@
     window.superEstoqueLogin = handleLoginSubmit;
 
     byId("loginForm").addEventListener("submit", handleLoginSubmit);
-    try {
-      initData();
-      populateFilters();
-      syncFilterControls();
-      renderAll();
-      initEvents();
-    } catch (err) {
-      console.error(err);
-      toast("O sistema iniciou com um aviso. O login continua disponivel.", "aviso");
-    }
+    (async () => {
+      try {
+        initData();
+        populateFilters();
+        syncFilterControls();
+        renderAll();
+        initEvents();
+        await restoreSession();
+      } catch (err) {
+        console.error(err);
+        toast("O sistema iniciou com um aviso. O login continua disponivel.", "aviso");
+      }
+    })();
   </script>
 </body>
 </html>
