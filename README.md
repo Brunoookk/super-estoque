@@ -124,32 +124,30 @@ Resposta esperada:
 Usuarios iniciais:
 
 ```text
-Usuario: chefe
+Usuario: 000001
 Perfil: admin
 
-Usuario: funcionario
-Perfil: usuario comum
+Usuario: 000002
+Perfil: operador
 ```
 
-As senhas podem ser configuradas por variaveis de ambiente antes da primeira criacao do banco:
+Senhas iniciais padrao:
+
+```text
+000001 / admin1234
+000002 / operador123
+```
+
+As senhas podem ser configuradas por variaveis de ambiente:
 
 ```text
 SUPERESTOQUE_ADMIN_PASSWORD=sua_senha_forte
-SUPERESTOQUE_EMPLOYEE_PASSWORD=sua_senha_forte
+SUPERESTOQUE_EMPLOYEE_PASSWORD=sua_senha_funcionario
 ```
 
-Se as variaveis nao forem configuradas antes da criacao do banco, o backend gera senhas automaticamente. Guarde as credenciais com seguranca.
+Em deploys como Render, se essas variaveis existirem, o sistema ativa os usuarios iniciais e sincroniza as senhas com os valores configurados. Se nao existirem, aplica as senhas padrao uma vez para evitar login perdido em banco novo/efemero.
 
-Em deploys como Render, se o banco persistente ja existir e o login falhar, defina ou atualize `SUPERESTOQUE_ADMIN_PASSWORD` e reinicie o servico. Na inicializacao, o sistema ativa o usuario `chefe` e redefine a senha dele para o valor dessa variavel.
-
-No banco local usado durante a preparacao deste projeto, as senhas foram redefinidas para acesso inicial operacional:
-
-```text
-chefe / chefe123
-funcionario / funcionario123
-```
-
-Recomendacao: apos entrar como `chefe`, troque as senhas pela area Admin.
+Recomendacao: apos entrar como `000001`, troque as senhas pela area Admin.
 
 ## Primeiro uso
 

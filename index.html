@@ -838,7 +838,6 @@
     body.presentation-mode form,
     body.presentation-mode .filters,
     body.presentation-mode .table-wrap,
-    body.presentation-mode #aiOpenButton,
     body.presentation-mode .mobile-menu-button {
       display: none !important;
     }
@@ -937,6 +936,253 @@
       gap: 10px;
       flex-wrap: wrap;
       margin-top: 18px;
+    }
+
+    .quick-filter-bar {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin: -4px 0 14px;
+    }
+
+    .quick-filter-bar .button {
+      min-height: 34px;
+      padding: 0 12px;
+      font-size: 12px;
+    }
+
+    .quick-filter-bar .button.active {
+      border-color: var(--amber);
+      background: var(--amber-soft);
+      color: var(--amber);
+    }
+
+    #page-estoque {
+      color: var(--text);
+    }
+
+    body[data-page="estoque"],
+    body[data-page="estoque"] .main {
+      background: var(--navy);
+    }
+
+    #page-estoque .topbar {
+      align-items: flex-start;
+      margin-bottom: 28px;
+    }
+
+    #page-estoque .topbar h1 {
+      color: var(--text);
+      font-size: 22px;
+      line-height: 1.1;
+      margin: 0 0 4px;
+      letter-spacing: 0;
+    }
+
+    #page-estoque .stock-count {
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    #page-estoque .topbar > div:last-child {
+      display: flex !important;
+      gap: 10px !important;
+      align-items: center;
+    }
+
+    #page-estoque .button {
+      min-height: 30px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--surface-3);
+      color: var(--text);
+      box-shadow: none;
+      font-size: 12px;
+      font-weight: 800;
+      padding: 0 12px;
+      width: auto;
+    }
+
+    #page-estoque .button.primary {
+      border-color: var(--blue);
+      background: var(--blue);
+      color: #fff;
+    }
+
+    #page-estoque .stock-panel {
+      padding: 14px 14px 0;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: var(--navy-2);
+      box-shadow: none;
+    }
+
+    #page-estoque .stock-panel::after,
+    #page-estoque .stock-form-panel,
+    #page-estoque .quick-filter-bar {
+      display: none;
+    }
+
+    #page-estoque .stock-filter-row {
+      display: grid;
+      grid-template-columns: minmax(420px, 1fr) 190px 190px;
+      gap: 10px;
+      margin-bottom: 14px;
+    }
+
+    #page-estoque .stock-filter-row .field:nth-child(n+4) {
+      display: none;
+    }
+
+    #page-estoque .stock-filter-row label {
+      display: none;
+    }
+
+    #page-estoque .input,
+    #page-estoque .select {
+      min-height: 36px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: var(--navy-3);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 600;
+      box-shadow: 0 1px 2px rgba(31, 42, 68, .03);
+    }
+
+    #page-estoque .input::placeholder {
+      color: var(--muted-2);
+    }
+
+    #page-estoque .table-wrap {
+      border: 0;
+      border-radius: 0;
+      background: var(--navy-2);
+      box-shadow: none;
+    }
+
+    #page-estoque table {
+      min-width: 1060px;
+      color: var(--text);
+      font-size: 12px;
+    }
+
+    #page-estoque th,
+    #page-estoque td {
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    #page-estoque th {
+      position: static;
+      background: var(--navy-3);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .04em;
+      text-transform: uppercase;
+    }
+
+    #page-estoque tbody tr,
+    #page-estoque tbody tr:nth-child(even) {
+      background: transparent;
+    }
+
+    #page-estoque tbody tr:first-child {
+      background: rgba(30, 111, 217, .12);
+    }
+
+    #page-estoque tbody tr:hover {
+      background: rgba(255, 255, 255, .035);
+    }
+
+    #page-estoque .mono {
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 600;
+    }
+
+    #page-estoque .item-name {
+      color: var(--text);
+      font-size: 12px;
+      font-weight: 900;
+      text-transform: uppercase;
+    }
+
+    #page-estoque .stock-qty {
+      color: var(--text);
+      font-size: 16px;
+      font-weight: 900;
+    }
+
+    #page-estoque .badge {
+      min-height: 20px;
+      padding: 0 8px;
+      border-radius: 999px;
+      font-size: 10px;
+      gap: 4px;
+      box-shadow: 0 0 18px rgba(245, 166, 35, .18);
+    }
+
+    #page-estoque .badge.ok {
+      background: var(--green-soft);
+      color: var(--green);
+      border: 1px solid rgba(34, 197, 94, .2);
+    }
+
+    #page-estoque .badge.limit,
+    #page-estoque .badge.buy {
+      background: var(--amber-soft);
+      color: var(--amber);
+      border: 1px solid rgba(245, 166, 35, .2);
+    }
+
+    #page-estoque .badge.empty {
+      background: var(--red-soft);
+      color: var(--red);
+      border: 1px solid rgba(239, 68, 68, .2);
+    }
+
+    #page-estoque .status-dot {
+      width: 9px;
+      height: 9px;
+      margin-right: 0;
+      box-shadow: 0 0 10px currentColor;
+    }
+
+    #page-estoque .stock-actions {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+    }
+
+    #page-estoque .icon-button {
+      display: inline-grid;
+      place-items: center;
+      width: 34px;
+      min-width: 34px;
+      height: 30px;
+      min-height: 30px;
+      padding: 0;
+      border-radius: 10px;
+    }
+
+    #page-estoque .icon-button svg {
+      width: 14px;
+      height: 14px;
+    }
+
+    #page-estoque .icon-edit {
+      color: var(--amber);
+    }
+
+    #page-estoque .icon-box-action {
+      color: var(--text);
+    }
+
+    #page-estoque .icon-delete {
+      color: var(--red);
     }
 
     /* Interface baseada no dashboard operacional Nexaro/SuperEstoque */
@@ -1179,8 +1425,7 @@
     #qrModal,
     #labelModal,
     #scannerModal,
-    #confirmModal,
-    #aiModal {
+    #confirmModal {
       background: rgba(2, 6, 23, .72) !important;
     }
 
@@ -1439,13 +1684,6 @@
         min-width: 96px;
       }
 
-      #aiOpenButton {
-        right: 10px !important;
-        bottom: 10px !important;
-        width: auto;
-        min-width: 64px;
-      }
-
       #toastHost {
         left: 10px !important;
         right: 10px !important;
@@ -1455,8 +1693,7 @@
       #qrModal,
       #labelModal,
       #scannerModal,
-      #confirmModal,
-      #aiModal {
+      #confirmModal {
         padding: 10px !important;
         place-items: center !important;
       }
@@ -1464,8 +1701,7 @@
       #qrModal .card,
       #labelModal .card,
       #scannerModal .card,
-      #confirmModal .card,
-      #aiModal .card {
+      #confirmModal .card {
         width: 100% !important;
         max-height: calc(100vh - 20px);
         overflow: auto;
@@ -1477,6 +1713,31 @@
 
       .label-preview {
         grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 900px) {
+      #page-estoque .topbar > div:last-child {
+        display: flex !important;
+        width: auto;
+      }
+
+      #page-estoque .stock-filter-row {
+        grid-template-columns: 1fr;
+      }
+
+      #page-estoque .button {
+        width: auto;
+      }
+    }
+
+    @media (max-width: 640px) {
+      #page-estoque .stock-panel {
+        padding: 10px 10px 0;
+      }
+
+      #page-estoque table {
+        min-width: 900px;
       }
     }
   </style>
@@ -1492,6 +1753,9 @@
     <symbol id="icon-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></symbol>
     <symbol id="icon-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="M7 10l5 5 5-5"/><path d="M12 15V3"/></symbol>
     <symbol id="icon-lock" viewBox="0 0 24 24"><rect width="18" height="11" x="3" y="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></symbol>
+    <symbol id="icon-pencil" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.1 2.1 0 0 1 3 3L7 19l-4 1 1-4Z"/></symbol>
+    <symbol id="icon-briefcase" viewBox="0 0 24 24"><path d="M10 6V5a2 2 0 0 1 2-2h0a2 2 0 0 1 2 2v1"/><rect width="18" height="14" x="3" y="6" rx="2"/><path d="M3 12h18"/><path d="M12 12v2"/></symbol>
+    <symbol id="icon-trash" viewBox="0 0 24 24"><path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M19 6l-1 14H6L5 6"/><path d="M10 11v5"/><path d="M14 11v5"/></symbol>
   </svg>
 
   <div class="login-screen" id="loginScreen">
@@ -1678,16 +1942,15 @@
       <section class="page" id="page-estoque">
         <div class="topbar">
           <div>
-            <p class="eyebrow">Inventário</p>
-            <h1>Tabela de estoque</h1>
-            <p class="lead">Filtre rapidamente por status, local ou termo de busca para apoiar a rotina operacional.</p>
+            <h1>Estoque</h1>
+            <div class="stock-count" id="stockPageCount">0 itens encontrados</div>
           </div>
           <div style="display:flex;gap:10px;flex-wrap:wrap">
-            <button class="button" id="stockCsvButton">Exportar CSV</button>
-            <button class="button primary" id="stockExcelButton">Exportar Excel</button>
+            <button class="button" id="stockCsvButton"><svg><use href="#icon-download"></use></svg>CSV</button>
+            <button class="button primary" id="addStockItemButton">+ Novo Item</button>
           </div>
         </div>
-        <section class="card panel">
+        <section class="card panel stock-form-panel" id="stockFormPanel">
           <div class="panel-head">
             <h2 class="panel-title">Novo item</h2>
           </div>
@@ -1709,11 +1972,11 @@
             </div>
           </form>
         </section>
-        <section class="card panel">
-          <div class="filters">
+        <section class="card panel stock-panel">
+          <div class="filters stock-filter-row">
             <div class="field">
               <label for="searchInput2">Buscar</label>
-              <input class="input mirror-search" id="searchInput2" placeholder="Código, descrição ou local">
+              <input class="input mirror-search" id="searchInput2" placeholder="🔍 Buscar por código ou descrição...">
             </div>
             <div class="field">
               <label for="statusFilter2">Status</label>
@@ -1732,25 +1995,23 @@
               <select class="select" id="classFilter2"></select>
             </div>
           </div>
+          <div class="quick-filter-bar" aria-label="Filtros rápidos de estoque">
+            <button class="button" type="button" data-quick-status="SEM ESTOQUE">Faltando</button>
+            <button class="button" type="button" data-quick-status="COMPRAR">Abaixo do mínimo</button>
+            <button class="button" type="button" data-quick-status="NO LIMITE">No limite</button>
+            <button class="button" type="button" data-quick-status="">Limpar filtro</button>
+          </div>
           <div class="table-wrap">
             <table>
               <thead>
                 <tr>
                   <th data-sort="cod">Código</th>
-                  <th>Fav</th>
                   <th data-sort="desc">Descrição</th>
-                  <th data-sort="codeType">Tipo</th>
-                  <th data-sort="itemClass">Classe</th>
                   <th data-sort="loc">Local</th>
                   <th data-sort="end">Endereço</th>
-                  <th data-sort="qty">Qtd</th>
+                  <th data-sort="qty">Qtd atual</th>
                   <th data-sort="min">Mínimo</th>
                   <th data-sort="status">Status</th>
-                  <th>Origem</th>
-                  <th>Custo</th>
-                  <th>Validade</th>
-                  <th>Saída</th>
-                  <th>QR</th>
                   <th>Ações</th>
                 </tr>
               </thead>
@@ -2034,22 +2295,6 @@
       </div>
     </div>
   </div>
-  <button class="button primary" id="aiOpenButton" style="position:fixed;right:16px;bottom:16px;z-index:1800">IA</button>
-  <div id="aiModal" style="display:none;position:fixed;inset:0;z-index:1900;background:rgba(0,0,0,.55);place-items:end;padding:24px">
-    <div class="card panel" style="width:min(100%,520px);max-height:86vh;overflow:auto">
-      <div class="panel-head"><h2 class="panel-title">Assistente IA</h2><button class="button" id="aiCloseButton">Fechar</button></div>
-      <div class="field"><label for="anthropicKey">Chave Anthropic</label><input class="input" id="anthropicKey" type="password" placeholder="Configure no backend em produção" disabled></div>
-      <div class="summary-list" id="aiMessages" style="margin:12px 0"></div>
-      <div class="field"><label for="aiQuestion">Pergunta</label><input class="input" id="aiQuestion" placeholder="Ex: o que comprar primeiro?"></div>
-      <div style="display:flex;gap:10px;flex-wrap:wrap;margin-top:12px">
-        <button class="button primary" id="aiSendButton">Enviar</button>
-        <button class="button" data-ai-preset="quais itens vão zerar?">Itens que vao zerar</button>
-        <button class="button" data-ai-preset="o que comprar primeiro?">Prioridade de compra</button>
-        <button class="button" data-ai-preset="resumo do estoque">Resumo</button>
-      </div>
-    </div>
-  </div>
-
   <script>
     const STORAGE = {
       items: "superestoque.items.company.v1",
@@ -2062,8 +2307,7 @@
       purchaseOrders: "superestoque.purchaseOrders.company.v1",
       costs: "superestoque.costs.company.v1",
       lots: "superestoque.lots.company.v1",
-      obsLimit: "superestoque.obsRequiredQty.company.v1",
-      anthropicKey: "superestoque.anthropicKey.disabled"
+      obsLimit: "superestoque.obsRequiredQty.company.v1"
     };
 
     const byId = id => document.getElementById(id);
@@ -2466,7 +2710,7 @@
       try {
         if (force || !dataVersion) {
           renderTableSkeleton("stockTable", 13, 5);
-          renderTableSkeleton("stockTableFull", 13, 6);
+          renderTableSkeleton("stockTableFull", 8, 6);
           renderTableSkeleton("historyTable", 6, 5);
           const [itemsPayload, movementsPayload] = await Promise.all([
             api("/api/items"),
@@ -2825,6 +3069,27 @@
     }
 
     function renderTable(targetId, data) {
+      if (targetId === "stockTableFull") {
+        byId(targetId).innerHTML = data.map(item => `
+          <tr>
+            <td class="mono">${escapeHtml(item.cod)}</td>
+            <td><span class="item-name">${escapeHtml(item.desc)}</span></td>
+            <td>${escapeHtml(item.loc)}</td>
+            <td>${escapeHtml(item.end || "-")}</td>
+            <td class="stock-qty">${formatNumber(item.qty)}</td>
+            <td class="mono">${formatNumber(item.min)}</td>
+            <td>${statusBadge(item.status)}</td>
+            <td>
+              <div class="stock-actions">
+                <button class="button icon-button icon-edit" title="Editar" aria-label="Editar item" data-edit-item="${escapeAttr(item.cod)}"><svg><use href="#icon-pencil"></use></svg></button>
+                <button class="button icon-button icon-box-action" title="Etiqueta" aria-label="Gerar etiqueta" data-label="${escapeAttr(item.cod)}"><svg><use href="#icon-briefcase"></use></svg></button>
+                <button class="button icon-button icon-delete" title="Excluir" aria-label="Excluir item" data-delete="${escapeAttr(item.cod)}"><svg><use href="#icon-trash"></use></svg></button>
+              </div>
+            </td>
+          </tr>
+        `).join("");
+        return;
+      }
       byId(targetId).innerHTML = data.map(item => `
         <tr>
           <td class="mono">${escapeHtml(item.cod)}</td>
@@ -3621,75 +3886,6 @@
         .map(([cod, qty]) => ({ cod, qty, desc: items.find(item => item.cod === cod)?.desc || "Item" }));
     }
 
-    function buildAiContext() {
-      return {
-        resumo: {
-          totalItens: items.length,
-          valorEstoque: stockValue(),
-          semEstoque: items.filter(item => item.status === "SEM ESTOQUE").map(item => item.cod),
-          comprar: items.filter(item => item.status === "COMPRAR").map(item => item.cod),
-          saldo6ou9: items.filter(item => (item.codeType === "6_DIGITOS" || item.codeType === "9_DIGITOS") && Number(item.qty || 0) > 0).map(item => item.cod),
-          abrirCodigo: items.filter(item => item.codeType === "PENDENTE_CODIGO").map(item => item.cod),
-          dhasConsumo: items.filter(item => item.itemClass === "CONSUMO").map(item => item.cod),
-          enderecosRevisar: items.filter(item => !item.addressValidated || !item.end).map(item => item.cod),
-          lotesVencendo: lots.filter(lot => lotStatus(lot).startsWith("Vence")).map(lot => ({ cod: lot.cod, lote: lot.lote, validade: lot.validity, saldo: lot.qty }))
-        },
-        itens: items.map(item => ({ codigo: item.cod, descricao: item.desc, tipoCodigo: item.codeType, classe: item.itemClass, local: item.loc, endereco: item.end, enderecoValidado: item.addressValidated, quantidade: item.qty, minimo: item.min, status: item.status, origem: supplierName(item.supplierId), custo: itemCost(item), tendencia: getTrend(item.cod) })),
-        topMovimentados: getTopMovedItems()
-      };
-    }
-
-    function localAiAnswer(question) {
-      const q = question.toLowerCase();
-      const critical = items.filter(item => item.status === "SEM ESTOQUE" || item.status === "COMPRAR")
-        .sort((a, b) => (a.status === "SEM ESTOQUE" ? -1 : 1) - (b.status === "SEM ESTOQUE" ? -1 : 1));
-      if (q.includes("zerar")) {
-        return critical.slice(0, 6).map(item => `${item.cod} - ${item.desc}: ${item.status}, saldo ${item.qty}`).join("\n") || "Nenhum item critico no momento.";
-      }
-      if (q.includes("comprar")) {
-        return critical.slice(0, 6).map(item => `${item.cod}: comprar ${suggestedPurchase(item)} un. Origem: ${supplierName(item.supplierId)}`).join("\n") || "Sem compras urgentes.";
-      }
-      if (q.includes("codigo") || q.includes("cadastro")) {
-        const pending = items.filter(item => item.codeType === "PENDENTE_CODIGO");
-        return pending.slice(0, 10).map(item => `${item.cod} - ${item.desc}: revisar item e abrir código 6/9`).join("\n") || "Nenhum item pendente de abertura de código 6/9.";
-      }
-      if (q.includes("dhas") || q.includes("consumo")) {
-        const dhas = items.filter(item => item.itemClass === "CONSUMO");
-        return dhas.slice(0, 10).map(item => `${item.cod} - ${item.desc}: saldo ${item.qty}, endereço ${item.end || "sem endereço"}`).join("\n") || "Nenhum material de consumo DHAS cadastrado.";
-      }
-      if (q.includes("endereco") || q.includes("etiqueta")) {
-        const review = items.filter(item => !item.addressValidated || !item.end);
-        return review.slice(0, 10).map(item => `${item.cod} - ${item.desc}: ${item.end || "sem endereço"} / ${item.addressValidated ? "validado" : "revisar etiqueta"}`).join("\n") || "Todos os endereços estão validados.";
-      }
-      return `Resumo: ${items.length} itens, valor em estoque ${formatCurrency(stockValue())}, ${critical.length} item(ns) críticos e ${getTopMovedItems().length} itens com giro relevante.`;
-    }
-
-    async function askAnthropic(question) {
-      // Em produção, não chamamos Anthropic direto do navegador para não expor API key.
-      // Quando houver backend/proxy seguro, esta função pode chamar uma rota interna autenticada.
-      return localAiAnswer(question);
-    }
-
-    function addAiMessage(role, text) {
-      const box = document.createElement("div");
-      box.className = "summary-row";
-      box.innerHTML = `<div><strong>${escapeHtml(role)}</strong><span style="white-space:pre-wrap">${escapeHtml(text)}</span></div>`;
-      byId("aiMessages").appendChild(box);
-    }
-
-    async function sendAiQuestion(question = byId("aiQuestion").value.trim()) {
-      if (!question) return;
-      addAiMessage("Você", question);
-      byId("aiQuestion").value = "";
-      try {
-        const answer = await askAnthropic(question);
-        addAiMessage("IA", answer);
-        addAudit("Consultou assistente IA");
-      } catch (err) {
-        addAiMessage("IA local", localAiAnswer(question));
-      }
-    }
-
     function populateFilters() {
       const locations = [...new Set(items.map(item => item.loc))].sort();
       const statusOptions = `<option value="">Todos</option><option value="OK">OK</option><option value="NO LIMITE">No Limite</option><option value="COMPRAR">Comprar</option><option value="SEM ESTOQUE">Sem Estoque</option>`;
@@ -3699,6 +3895,8 @@
       byId("statusFilter2").innerHTML = statusOptions;
       byId("localFilter").innerHTML = localOptions;
       byId("localFilter2").innerHTML = localOptions;
+      byId("statusFilter2").options[0].textContent = "Todos os status";
+      byId("localFilter2").options[0].textContent = "Todos os locais";
       byId("codeFilter").innerHTML = codeOptions;
       byId("codeFilter2").innerHTML = codeOptions;
       byId("classFilter").innerHTML = classOptions;
@@ -3708,6 +3906,7 @@
     function renderAll() {
       const filtered = getFilteredItems();
       byId("tableCount").textContent = `${filtered.length} itens`;
+      byId("stockPageCount").textContent = `${filtered.length} itens encontrados`;
       renderKpis();
       renderOpsMetrics();
       renderTable("stockTable", filtered);
@@ -3746,6 +3945,9 @@
       byId("codeFilter2").value = filters.codeType;
       byId("classFilter").value = filters.itemClass;
       byId("classFilter2").value = filters.itemClass;
+      document.querySelectorAll("[data-quick-status]").forEach(button => {
+        button.classList.toggle("active", button.dataset.quickStatus === filters.status);
+      });
     }
 
     function updateFilters(next) {
@@ -3755,6 +3957,7 @@
     }
 
     function switchPage(page) {
+      document.body.dataset.page = page;
       document.querySelectorAll(".page").forEach(el => el.classList.toggle("active", el.id === `page-${page}`));
       document.querySelectorAll(".nav-button").forEach(el => el.classList.toggle("active", el.dataset.page === page));
     }
@@ -4135,10 +4338,17 @@
       byId("codeFilter2").addEventListener("change", event => updateFilters({ codeType: event.target.value }));
       byId("classFilter").addEventListener("change", event => updateFilters({ itemClass: event.target.value }));
       byId("classFilter2").addEventListener("change", event => updateFilters({ itemClass: event.target.value }));
+      document.querySelectorAll("[data-quick-status]").forEach(button => {
+        button.addEventListener("click", () => updateFilters({ status: button.dataset.quickStatus }));
+      });
       byId("exportButton").addEventListener("click", exportCsv);
       byId("stockCsvButton").addEventListener("click", exportCsv);
       byId("excelButton").addEventListener("click", exportExcel);
-      byId("stockExcelButton").addEventListener("click", exportExcel);
+      byId("addStockItemButton").addEventListener("click", () => {
+        const panel = byId("stockFormPanel");
+        panel.style.display = panel.style.display === "block" ? "none" : "block";
+        if (panel.style.display === "block") byId("itemCod").focus();
+      });
       byId("notificationButton").addEventListener("click", enableNotifications);
       byId("obsLimitButton").addEventListener("click", configureObservationLimit);
       byId("presentationButton").addEventListener("click", togglePresentationMode);
@@ -4161,16 +4371,6 @@
       byId("confirmFinalButton").addEventListener("click", confirmFinalStep);
       byId("historyCsvButton").addEventListener("click", exportHistoryCsv);
       byId("printReportButton").addEventListener("click", exportReportPdf);
-      byId("aiOpenButton").addEventListener("click", () => {
-        byId("anthropicKey").value = "";
-        byId("aiModal").style.display = "grid";
-      });
-      byId("aiCloseButton").addEventListener("click", () => byId("aiModal").style.display = "none");
-      byId("aiSendButton").addEventListener("click", () => sendAiQuestion());
-      byId("aiQuestion").addEventListener("keydown", event => {
-        if (event.key === "Enter") sendAiQuestion();
-      });
-      document.querySelectorAll("[data-ai-preset]").forEach(button => button.addEventListener("click", () => sendAiQuestion(button.dataset.aiPreset)));
       ["histStart", "histEnd", "histType"].forEach(id => byId(id).addEventListener("change", () => {
         historyFilters = { start: byId("histStart").value, end: byId("histEnd").value, type: byId("histType").value };
         renderAll();
