@@ -609,7 +609,17 @@ def init_db():
         )
         sync_env_user(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", "SUPERESTOQUE_ADMIN_PASSWORD")
         sync_env_user(conn, DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", "SUPERESTOQUE_EMPLOYEE_PASSWORD")
-        if not os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD") and not os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD"):
+        if os.environ.get("SUPERESTOQUE_RESET_DEFAULT_USERS", "").strip().lower() in ("1", "true", "sim", "yes"):
+            sync_user_password(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", DEFAULT_ADMIN_PASSWORD)
+            sync_user_password(conn, DEFAULT_OPERATOR_BADGE, "Operador Estoque", "operator", DEFAULT_EMPLOYEE_PASSWORD)
+            conn.execute(
+                """
+                INSERT INTO app_state (key, value)
+                VALUES ('default_passwords_applied', '1')
+                ON CONFLICT(key) DO UPDATE SET value = excluded.value
+                """
+            )
+        elif not os.environ.get("SUPERESTOQUE_ADMIN_PASSWORD") and not os.environ.get("SUPERESTOQUE_EMPLOYEE_PASSWORD"):
             applied = conn.execute("SELECT value FROM app_state WHERE key = 'default_passwords_applied'").fetchone()
             if not applied:
                 sync_user_password(conn, DEFAULT_ADMIN_BADGE, "Administrador do Estoque", "admin", DEFAULT_ADMIN_PASSWORD)
