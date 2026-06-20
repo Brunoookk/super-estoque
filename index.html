@@ -1956,7 +1956,7 @@
         </div>
         <section class="card panel stock-form-panel" id="stockFormPanel">
           <div class="panel-head">
-            <h2 class="panel-title">Novo item</h2>
+            <h2 class="panel-title" id="stockFormTitle">Novo item</h2>
           </div>
           <form id="itemForm" class="grid">
             <input id="itemEditCod" type="hidden">
@@ -1971,7 +1971,7 @@
             <label style="display:flex;gap:8px;align-items:center"><input id="itemAddressValidated" type="checkbox"> Endereço validado</label>
             <div class="field"><label for="itemObs">Observação</label><input class="input" id="itemObs" placeholder="Detalhes internos"></div>
             <div style="display:flex;gap:10px;flex-wrap:wrap">
-              <button class="button primary" type="submit">Salvar item</button>
+              <button class="button primary" id="itemSaveButton" type="submit">Salvar item</button>
               <button class="button" id="clearItemFormButton" type="button">Novo cadastro</button>
             </div>
           </form>
@@ -3491,6 +3491,18 @@
       byId("itemArm").value = "";
       byId("itemAddressValidated").checked = false;
       byId("itemObs").value = "";
+      byId("stockFormTitle").textContent = "Novo item";
+      byId("itemSaveButton").textContent = "Salvar item";
+    }
+
+    function openStockForm() {
+      const panel = byId("stockFormPanel");
+      panel.style.display = "block";
+      panel.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+
+    function closeStockForm() {
+      byId("stockFormPanel").style.display = "none";
     }
 
     // Carrega um item existente no formulario para edicao rapida.
@@ -3509,7 +3521,10 @@
       byId("itemArm").value = item.arm || "";
       byId("itemAddressValidated").checked = !!item.addressValidated;
       byId("itemObs").value = item.obs || "";
+      byId("stockFormTitle").textContent = `Editando ${item.cod}`;
+      byId("itemSaveButton").textContent = "Salvar alterações";
       switchPage("estoque");
+      openStockForm();
       byId("itemDesc").focus();
     }
 
@@ -3574,6 +3589,7 @@
       populateFilters();
       renderAll();
       clearItemForm();
+      closeStockForm();
       toast(previous ? "Item atualizado." : "Item cadastrado.");
       syncFromServer(true);
     }
@@ -4366,9 +4382,9 @@
       byId("stockCsvButton").addEventListener("click", exportCsv);
       byId("excelButton").addEventListener("click", exportExcel);
       byId("addStockItemButton").addEventListener("click", () => {
-        const panel = byId("stockFormPanel");
-        panel.style.display = panel.style.display === "block" ? "none" : "block";
-        if (panel.style.display === "block") byId("itemCod").focus();
+        clearItemForm();
+        openStockForm();
+        byId("itemCod").focus();
       });
       byId("notificationButton").addEventListener("click", enableNotifications);
       byId("obsLimitButton").addEventListener("click", configureObservationLimit);
